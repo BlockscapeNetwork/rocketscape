@@ -1,0 +1,38 @@
+strict digraph {
+subgraph cluster_31577_RocketStorageInterface {
+label = "RocketStorageInterface"
+"31577_getAddress" [label="getAddress"]
+"31577_getNodeWithdrawalAddress" [label="getNodeWithdrawalAddress"]
+"31577_getUint" [label="getUint"]
+"31577_deleteString" [label="deleteString"]
+"31577_getGuardian" [label="getGuardian"]
+"31577_confirmGuardian" [label="confirmGuardian"]
+"31577_deleteBytes32" [label="deleteBytes32"]
+"31577_setString" [label="setString"]
+"31577_setUint" [label="setUint"]
+"31577_subUint" [label="subUint"]
+"31577_addUint" [label="addUint"]
+"31577_setAddress" [label="setAddress"]
+"31577_deleteBytes" [label="deleteBytes"]
+"31577_getNodePendingWithdrawalAddress" [label="getNodePendingWithdrawalAddress"]
+"31577_getBool" [label="getBool"]
+"31577_deleteAddress" [label="deleteAddress"]
+"31577_setInt" [label="setInt"]
+"31577_getBytes" [label="getBytes"]
+"31577_deleteUint" [label="deleteUint"]
+"31577_getBytes32" [label="getBytes32"]
+"31577_setBytes32" [label="setBytes32"]
+"31577_setWithdrawalAddress" [label="setWithdrawalAddress"]
+"31577_getInt" [label="getInt"]
+"31577_setBool" [label="setBool"]
+"31577_setBytes" [label="setBytes"]
+"31577_getString" [label="getString"]
+"31577_deleteInt" [label="deleteInt"]
+"31577_confirmWithdrawalAddress" [label="confirmWithdrawalAddress"]
+"31577_setGuardian" [label="setGuardian"]
+"31577_getDeployedStatus" [label="getDeployedStatus"]
+"31577_deleteBool" [label="deleteBool"]
+}subgraph cluster_solidity {
+label = "[Solidity]"
+}
+}

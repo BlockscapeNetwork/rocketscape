@@ -1,0 +1,9 @@
+strict digraph {
+subgraph cluster_31291_RocketNodeDepositInterface {
+label = "RocketNodeDepositInterface"
+"31291_getDepositType" [label="getDepositType"]
+"31291_deposit" [label="deposit"]
+}subgraph cluster_solidity {
+label = "[Solidity]"
+}
+}

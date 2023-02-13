@@ -1,0 +1,12 @@
+strict digraph {
+subgraph cluster_27068_IERC165 {
+label = "IERC165"
+"27068_supportsInterface" [label="supportsInterface"]
+}subgraph cluster_26333_IERC1155Receiver {
+label = "IERC1155Receiver"
+"26333_onERC1155BatchReceived" [label="onERC1155BatchReceived"]
+"26333_onERC1155Received" [label="onERC1155Received"]
+}subgraph cluster_solidity {
+label = "[Solidity]"
+}
+}

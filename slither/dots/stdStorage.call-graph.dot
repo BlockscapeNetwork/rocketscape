@@ -1,0 +1,35 @@
+strict digraph {
+subgraph cluster_6307_stdStorage {
+label = "stdStorage"
+"6307_target" [label="target"]
+"6307_read_address" [label="read_address"]
+"6307_with_key" [label="with_key"]
+"6307_find" [label="find"]
+"6307_read_bytes32" [label="read_bytes32"]
+"6307_bytesToBytes32" [label="bytesToBytes32"]
+"6307_read_uint" [label="read_uint"]
+"6307_flatten" [label="flatten"]
+"6307_depth" [label="depth"]
+"6307_sigs" [label="sigs"]
+"6307_read_int" [label="read_int"]
+"6307_checked_write" [label="checked_write"]
+"6307_slitherConstructorConstantVariables" [label="slitherConstructorConstantVariables"]
+"6307_sig" [label="sig"]
+"6307_read_bool" [label="read_bool"]
+"6307_checked_write" -> "6307_checked_write"
+"6307_checked_write" -> "6307_flatten"
+"6307_checked_write" -> "6307_find"
+"6307_checked_write" -> "6307_bytesToBytes32"
+}subgraph cluster_solidity {
+label = "[Solidity]"
+"keccak256(bytes)" 
+"mstore(uint256,uint256)" 
+"abi.encodePacked()" 
+"require(bool,string)" 
+"6307_flatten" -> "mstore(uint256,uint256)"
+"6307_checked_write" -> "abi.encodePacked()"
+"6307_checked_write" -> "keccak256(bytes)"
+"6307_checked_write" -> "require(bool,string)"
+"6307_slitherConstructorConstantVariables" -> "keccak256(bytes)"
+}
+}

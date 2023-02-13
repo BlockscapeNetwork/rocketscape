@@ -1,0 +1,15 @@
+strict digraph {
+subgraph cluster_4842_stdMath {
+label = "stdMath"
+"4842_abs" [label="abs"]
+"4842_delta" [label="delta"]
+"4842_slitherConstructorConstantVariables" [label="slitherConstructorConstantVariables"]
+"4842_percentDelta" [label="percentDelta"]
+"4842_percentDelta" -> "4842_delta"
+"4842_delta" -> "4842_delta"
+"4842_delta" -> "4842_abs"
+"4842_percentDelta" -> "4842_abs"
+}subgraph cluster_solidity {
+label = "[Solidity]"
+}
+}

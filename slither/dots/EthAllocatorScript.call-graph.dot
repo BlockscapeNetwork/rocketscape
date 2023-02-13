@@ -1,0 +1,132 @@
+strict digraph {
+subgraph cluster_7114_StdUtils {
+label = "StdUtils"
+"7114_bytesToUint" [label="bytesToUint"]
+"7114_addressFromLast20Bytes" [label="addressFromLast20Bytes"]
+"7114__bound" [label="_bound"]
+"7114_computeCreateAddress" [label="computeCreateAddress"]
+"7114_bound" [label="bound"]
+"7114_hashInitCode" [label="hashInitCode"]
+"7114_getTokenBalances" [label="getTokenBalances"]
+"7114_computeCreate2Address" [label="computeCreate2Address"]
+"7114_console2_log" [label="console2_log"]
+"7114_computeCreate2Address" -> "7114_addressFromLast20Bytes"
+"7114_computeCreateAddress" -> "7114_addressFromLast20Bytes"
+"7114_computeCreate2Address" -> "7114_computeCreate2Address"
+"7114_hashInitCode" -> "7114_hashInitCode"
+"7114_bound" -> "7114__bound"
+"7114_bound" -> "7114_console2_log"
+}subgraph cluster_2006_StdChains {
+label = "StdChains"
+"2006__toUpper" [label="_toUpper"]
+"2006_setChain" [label="setChain"]
+"2006_setChainWithDefaultRpcUrl" [label="setChainWithDefaultRpcUrl"]
+"2006_getChainWithUpdatedRpcUrl" [label="getChainWithUpdatedRpcUrl"]
+"2006_getChain" [label="getChain"]
+"2006_initialize" [label="initialize"]
+"2006_setChain" -> "2006_setChain"
+"2006_setChain" -> "2006_initialize"
+"2006_initialize" -> "2006_setChainWithDefaultRpcUrl"
+"2006_getChain" -> "2006_getChainWithUpdatedRpcUrl"
+"2006_getChain" -> "2006_initialize"
+"2006_getChainWithUpdatedRpcUrl" -> "2006__toUpper"
+"2006_setChainWithDefaultRpcUrl" -> "2006_setChain"
+}subgraph cluster_3578_StdCheatsSafe {
+label = "StdCheatsSafe"
+"3578_assumeNoPrecompiles" [label="assumeNoPrecompiles"]
+"3578__bytesToUint" [label="_bytesToUint"]
+"3578_isFork" [label="isFork"]
+"3578_rawToConvertedEIP1559Detail" [label="rawToConvertedEIP1559Detail"]
+"3578_rawToConvertedEIPTx1559s" [label="rawToConvertedEIPTx1559s"]
+"3578_readReceipts" [label="readReceipts"]
+"3578_rawToConvertedReceipts" [label="rawToConvertedReceipts"]
+"3578_makeAddrAndKey" [label="makeAddrAndKey"]
+"3578_rawToConvertedReceipt" [label="rawToConvertedReceipt"]
+"3578_rawToConvertedEIPTx1559" [label="rawToConvertedEIPTx1559"]
+"3578_deployCode" [label="deployCode"]
+"3578_readEIP1559ScriptArtifact" [label="readEIP1559ScriptArtifact"]
+"3578_assumePayable" [label="assumePayable"]
+"3578_readReceipt" [label="readReceipt"]
+"3578_deriveRememberKey" [label="deriveRememberKey"]
+"3578_makeAddr" [label="makeAddr"]
+"3578_rawToConvertedReceiptLogs" [label="rawToConvertedReceiptLogs"]
+"3578_readTx1559" [label="readTx1559"]
+"3578_readTx1559s" [label="readTx1559s"]
+"3578_readTx1559" -> "3578_rawToConvertedEIPTx1559"
+"3578_assumeNoPrecompiles" -> "3578_assumeNoPrecompiles"
+"3578_readTx1559s" -> "3578_rawToConvertedEIPTx1559s"
+"3578_rawToConvertedReceiptLogs" -> "3578__bytesToUint"
+"3578_rawToConvertedReceipt" -> "3578_rawToConvertedReceiptLogs"
+"3578_rawToConvertedEIP1559Detail" -> "3578__bytesToUint"
+"3578_makeAddr" -> "3578_makeAddrAndKey"
+"3578_rawToConvertedEIPTx1559" -> "3578_rawToConvertedEIP1559Detail"
+"3578_rawToConvertedReceipt" -> "3578__bytesToUint"
+"3578_rawToConvertedReceipts" -> "3578_rawToConvertedReceipt"
+"3578_readEIP1559ScriptArtifact" -> "3578_rawToConvertedEIPTx1559s"
+"3578_readReceipt" -> "3578_rawToConvertedReceipt"
+"3578_readReceipts" -> "3578_rawToConvertedReceipts"
+"3578_readEIP1559ScriptArtifact" -> "3578_rawToConvertedReceipts"
+"3578_rawToConvertedEIPTx1559s" -> "3578_rawToConvertedEIPTx1559"
+}subgraph cluster_29813_EthAllocatorScript {
+label = "EthAllocatorScript"
+"29813_slitherConstructorVariables" [label="slitherConstructorVariables"]
+"29813_slitherConstructorConstantVariables" [label="slitherConstructorConstantVariables"]
+"29813_run" [label="run"]
+"29813_setUp" [label="setUp"]
+}subgraph cluster_solidity {
+label = "[Solidity]"
+"mload(uint256)" 
+"require(bool,string)" 
+"abi.encodePacked()" 
+"abi.decode()" 
+"abi.encodeWithSignature()" 
+"keccak256(bytes)" 
+"abi.encodeWithSelector()" 
+"create(uint256,uint256,uint256)" 
+"revert(uint256,uint256)" 
+"chainid()" 
+"3578_readTx1559" -> "abi.decode()"
+"3578_readReceipt" -> "abi.encodePacked()"
+"29813_slitherConstructorConstantVariables" -> "keccak256(bytes)"
+"7114_hashInitCode" -> "abi.encodePacked()"
+"3578_readReceipt" -> "abi.decode()"
+"3578__bytesToUint" -> "require(bool,string)"
+"7114__bound" -> "require(bool,string)"
+"7114_computeCreateAddress" -> "abi.encodePacked()"
+"2006_setChain" -> "abi.encodePacked()"
+"2006_setChain" -> "require(bool,string)"
+"2006_getChain" -> "abi.encodePacked()"
+"2006_getChainWithUpdatedRpcUrl" -> "keccak256(bytes)"
+"3578_makeAddrAndKey" -> "keccak256(bytes)"
+"7114_computeCreateAddress" -> "keccak256(bytes)"
+"7114_bytesToUint" -> "abi.decode()"
+"7114_hashInitCode" -> "keccak256(bytes)"
+"2006_getChainWithUpdatedRpcUrl" -> "abi.encodePacked()"
+"3578__bytesToUint" -> "abi.decode()"
+"2006_setChain" -> "keccak256(bytes)"
+"3578_readTx1559s" -> "abi.decode()"
+"3578_readEIP1559ScriptArtifact" -> "abi.decode()"
+"7114_computeCreate2Address" -> "keccak256(bytes)"
+"3578_readTx1559" -> "abi.encodePacked()"
+"7114_bytesToUint" -> "require(bool,string)"
+"3578_deployCode" -> "create(uint256,uint256,uint256)"
+"7114_console2_log" -> "abi.encodeWithSignature()"
+"2006_getChain" -> "require(bool,string)"
+"3578_deployCode" -> "abi.encodePacked()"
+"3578_deployCode" -> "mload(uint256)"
+"2006_getChainWithUpdatedRpcUrl" -> "mload(uint256)"
+"7114_computeCreate2Address" -> "abi.encodePacked()"
+"3578_assumeNoPrecompiles" -> "chainid()"
+"3578_readReceipts" -> "abi.decode()"
+"7114_getTokenBalances" -> "require(bool,string)"
+"2006_getChainWithUpdatedRpcUrl" -> "abi.encodeWithSignature()"
+"3578__bytesToUint" -> "abi.encodePacked()"
+"7114_bound" -> "require(bool,string)"
+"7114_getTokenBalances" -> "abi.decode()"
+"7114_getTokenBalances" -> "abi.encodeWithSelector()"
+"2006_getChainWithUpdatedRpcUrl" -> "revert(uint256,uint256)"
+"3578_deployCode" -> "require(bool,string)"
+"7114_bytesToUint" -> "abi.encodePacked()"
+"3578_makeAddrAndKey" -> "abi.encodePacked()"
+}
+}

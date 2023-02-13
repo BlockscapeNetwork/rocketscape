@@ -1,0 +1,1627 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offset",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "limit",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "rplPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateTotalEffectiveRPLStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getNodeEffectiveRPLStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getNodeMaximumRPLStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getNodeMinimumRPLStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getNodeMinipoolLimit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getNodeRPLStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        }
+      ],
+      "name": "getNodeRPLStakedTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTotalEffectiveRPLStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTotalRPLStake",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_ethSlashAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "slashRPL",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "stakeRPL",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_nodeAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "stakeRPLFor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdrawRPL",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "calculateTotalEffectiveRPLStake(uint256,uint256,uint256)": "e8e34cc2",
+    "getNodeEffectiveRPLStake(address)": "f0d19b89",
+    "getNodeMaximumRPLStake(address)": "4e58ff6e",
+    "getNodeMinimumRPLStake(address)": "03fa87b4",
+    "getNodeMinipoolLimit(address)": "90f7ff4c",
+    "getNodeRPLStake(address)": "9961cee4",
+    "getNodeRPLStakedTime(address)": "c0d05dd8",
+    "getTotalEffectiveRPLStake()": "4b24426d",
+    "getTotalRPLStake()": "9a206c8e",
+    "slashRPL(address,uint256)": "245395a6",
+    "stakeRPL(uint256)": "3e200d4b",
+    "stakeRPLFor(address,uint256)": "cb1c8321",
+    "withdrawRPL(uint256)": "6b088d5c"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"offset\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"limit\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"rplPrice\",\"type\":\"uint256\"}],\"name\":\"calculateTotalEffectiveRPLStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"}],\"name\":\"getNodeEffectiveRPLStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"}],\"name\":\"getNodeMaximumRPLStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"}],\"name\":\"getNodeMinimumRPLStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"}],\"name\":\"getNodeMinipoolLimit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"}],\"name\":\"getNodeRPLStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"}],\"name\":\"getNodeRPLStakedTime\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTotalEffectiveRPLStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getTotalRPLStake\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_ethSlashAmount\",\"type\":\"uint256\"}],\"name\":\"slashRPL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"stakeRPL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_nodeAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"stakeRPLFor\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdrawRPL\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/utils/RocketNodeStakingInterface.sol\":\"RocketNodeStakingInterface\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":10000000},\"remappings\":[\":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"src/utils/RocketNodeStakingInterface.sol\":{\"keccak256\":\"0x562ef87f2e518db7dbff2e06f0bf097675f478bcbf83198f8b285a41d2683f7f\",\"license\":\"GPL-3.0-only\",\"urls\":[\"bzz-raw://fdb8742144c4d5641018dc9854606159d8cc6e9f65dc419223b54d31e13a4bc7\",\"dweb:/ipfs/QmUiQvZHvXXg3asYAB1YHGqkiw614UTa3Pe6hEW2eJAaRQ\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.16+commit.07a7930e"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "offset",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "limit",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "rplPrice",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "calculateTotalEffectiveRPLStake",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNodeEffectiveRPLStake",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNodeMaximumRPLStake",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNodeMinimumRPLStake",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNodeMinipoolLimit",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNodeRPLStake",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getNodeRPLStakedTime",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getTotalEffectiveRPLStake",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getTotalRPLStake",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_ethSlashAmount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "slashRPL"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "stakeRPL"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_nodeAddress",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "_amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "stakeRPLFor"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "_amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "withdrawRPL"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {},
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+        ":forge-std/=lib/forge-std/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 10000000
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/utils/RocketNodeStakingInterface.sol": "RocketNodeStakingInterface"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "src/utils/RocketNodeStakingInterface.sol": {
+        "keccak256": "0x562ef87f2e518db7dbff2e06f0bf097675f478bcbf83198f8b285a41d2683f7f",
+        "urls": [
+          "bzz-raw://fdb8742144c4d5641018dc9854606159d8cc6e9f65dc419223b54d31e13a4bc7",
+          "dweb:/ipfs/QmUiQvZHvXXg3asYAB1YHGqkiw614UTa3Pe6hEW2eJAaRQ"
+        ],
+        "license": "GPL-3.0-only"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/utils/RocketNodeStakingInterface.sol",
+    "id": 31386,
+    "exportedSymbols": {
+      "RocketNodeStakingInterface": [
+        31385
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "0:1285:35",
+    "nodes": [
+      {
+        "id": 31297,
+        "nodeType": "PragmaDirective",
+        "src": "0:30:35",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          ">",
+          "0.5",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ]
+      },
+      {
+        "id": 31385,
+        "nodeType": "ContractDefinition",
+        "src": "188:1097:35",
+        "nodes": [
+          {
+            "id": 31302,
+            "nodeType": "FunctionDefinition",
+            "src": "231:60:35",
+            "nodes": [],
+            "functionSelector": "9a206c8e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getTotalRPLStake",
+            "nameLocation": "240:16:35",
+            "parameters": {
+              "id": 31298,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "256:2:35"
+            },
+            "returnParameters": {
+              "id": 31301,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31300,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31302,
+                  "src": "282:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31299,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "282:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "281:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31309,
+            "nodeType": "FunctionDefinition",
+            "src": "296:79:35",
+            "nodes": [],
+            "functionSelector": "9961cee4",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNodeRPLStake",
+            "nameLocation": "305:15:35",
+            "parameters": {
+              "id": 31305,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31304,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "329:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31309,
+                  "src": "321:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31303,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "321:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "320:22:35"
+            },
+            "returnParameters": {
+              "id": 31308,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31307,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31309,
+                  "src": "366:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31306,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "366:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "365:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31316,
+            "nodeType": "FunctionDefinition",
+            "src": "380:84:35",
+            "nodes": [],
+            "functionSelector": "c0d05dd8",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNodeRPLStakedTime",
+            "nameLocation": "389:20:35",
+            "parameters": {
+              "id": 31312,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31311,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "418:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31316,
+                  "src": "410:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31310,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "410:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "409:22:35"
+            },
+            "returnParameters": {
+              "id": 31315,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31314,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31316,
+                  "src": "455:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31313,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "455:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "454:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31321,
+            "nodeType": "FunctionDefinition",
+            "src": "469:69:35",
+            "nodes": [],
+            "functionSelector": "4b24426d",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getTotalEffectiveRPLStake",
+            "nameLocation": "478:25:35",
+            "parameters": {
+              "id": 31317,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "503:2:35"
+            },
+            "returnParameters": {
+              "id": 31320,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31319,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31321,
+                  "src": "529:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31318,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "529:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "528:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31332,
+            "nodeType": "FunctionDefinition",
+            "src": "543:122:35",
+            "nodes": [],
+            "functionSelector": "e8e34cc2",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "calculateTotalEffectiveRPLStake",
+            "nameLocation": "552:31:35",
+            "parameters": {
+              "id": 31328,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31323,
+                  "mutability": "mutable",
+                  "name": "offset",
+                  "nameLocation": "592:6:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31332,
+                  "src": "584:14:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31322,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "584:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 31325,
+                  "mutability": "mutable",
+                  "name": "limit",
+                  "nameLocation": "608:5:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31332,
+                  "src": "600:13:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31324,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "600:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 31327,
+                  "mutability": "mutable",
+                  "name": "rplPrice",
+                  "nameLocation": "623:8:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31332,
+                  "src": "615:16:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31326,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "615:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "583:49:35"
+            },
+            "returnParameters": {
+              "id": 31331,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31330,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31332,
+                  "src": "656:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31329,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "656:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "655:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31339,
+            "nodeType": "FunctionDefinition",
+            "src": "670:88:35",
+            "nodes": [],
+            "functionSelector": "f0d19b89",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNodeEffectiveRPLStake",
+            "nameLocation": "679:24:35",
+            "parameters": {
+              "id": 31335,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31334,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "712:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31339,
+                  "src": "704:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31333,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "704:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "703:22:35"
+            },
+            "returnParameters": {
+              "id": 31338,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31337,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31339,
+                  "src": "749:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31336,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "749:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "748:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31346,
+            "nodeType": "FunctionDefinition",
+            "src": "763:86:35",
+            "nodes": [],
+            "functionSelector": "03fa87b4",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNodeMinimumRPLStake",
+            "nameLocation": "772:22:35",
+            "parameters": {
+              "id": 31342,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31341,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "803:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31346,
+                  "src": "795:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31340,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "795:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "794:22:35"
+            },
+            "returnParameters": {
+              "id": 31345,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31344,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31346,
+                  "src": "840:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31343,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "840:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "839:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31353,
+            "nodeType": "FunctionDefinition",
+            "src": "854:86:35",
+            "nodes": [],
+            "functionSelector": "4e58ff6e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNodeMaximumRPLStake",
+            "nameLocation": "863:22:35",
+            "parameters": {
+              "id": 31349,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31348,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "894:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31353,
+                  "src": "886:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31347,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "886:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "885:22:35"
+            },
+            "returnParameters": {
+              "id": 31352,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31351,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31353,
+                  "src": "931:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31350,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "931:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "930:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31360,
+            "nodeType": "FunctionDefinition",
+            "src": "945:84:35",
+            "nodes": [],
+            "functionSelector": "90f7ff4c",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getNodeMinipoolLimit",
+            "nameLocation": "954:20:35",
+            "parameters": {
+              "id": 31356,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31355,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "983:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31360,
+                  "src": "975:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31354,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "975:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "974:22:35"
+            },
+            "returnParameters": {
+              "id": 31359,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31358,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31360,
+                  "src": "1020:7:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31357,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1020:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1019:9:35"
+            },
+            "scope": 31385,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31365,
+            "nodeType": "FunctionDefinition",
+            "src": "1034:44:35",
+            "nodes": [],
+            "functionSelector": "3e200d4b",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "stakeRPL",
+            "nameLocation": "1043:8:35",
+            "parameters": {
+              "id": 31363,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31362,
+                  "mutability": "mutable",
+                  "name": "_amount",
+                  "nameLocation": "1060:7:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31365,
+                  "src": "1052:15:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31361,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1052:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1051:17:35"
+            },
+            "returnParameters": {
+              "id": 31364,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1077:0:35"
+            },
+            "scope": 31385,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31372,
+            "nodeType": "FunctionDefinition",
+            "src": "1083:69:35",
+            "nodes": [],
+            "functionSelector": "cb1c8321",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "stakeRPLFor",
+            "nameLocation": "1092:11:35",
+            "parameters": {
+              "id": 31370,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31367,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "1112:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31372,
+                  "src": "1104:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31366,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1104:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 31369,
+                  "mutability": "mutable",
+                  "name": "_amount",
+                  "nameLocation": "1134:7:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31372,
+                  "src": "1126:15:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31368,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1126:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1103:39:35"
+            },
+            "returnParameters": {
+              "id": 31371,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1151:0:35"
+            },
+            "scope": 31385,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31377,
+            "nodeType": "FunctionDefinition",
+            "src": "1157:47:35",
+            "nodes": [],
+            "functionSelector": "6b088d5c",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "withdrawRPL",
+            "nameLocation": "1166:11:35",
+            "parameters": {
+              "id": 31375,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31374,
+                  "mutability": "mutable",
+                  "name": "_amount",
+                  "nameLocation": "1186:7:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31377,
+                  "src": "1178:15:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31373,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1178:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1177:17:35"
+            },
+            "returnParameters": {
+              "id": 31376,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1203:0:35"
+            },
+            "scope": 31385,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 31384,
+            "nodeType": "FunctionDefinition",
+            "src": "1209:74:35",
+            "nodes": [],
+            "functionSelector": "245395a6",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "slashRPL",
+            "nameLocation": "1218:8:35",
+            "parameters": {
+              "id": 31382,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 31379,
+                  "mutability": "mutable",
+                  "name": "_nodeAddress",
+                  "nameLocation": "1235:12:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31384,
+                  "src": "1227:20:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 31378,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1227:7:35",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 31381,
+                  "mutability": "mutable",
+                  "name": "_ethSlashAmount",
+                  "nameLocation": "1257:15:35",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 31384,
+                  "src": "1249:23:35",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 31380,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1249:7:35",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1226:47:35"
+            },
+            "returnParameters": {
+              "id": 31383,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1282:0:35"
+            },
+            "scope": 31385,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "RocketNodeStakingInterface",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          31385
+        ],
+        "name": "RocketNodeStakingInterface",
+        "nameLocation": "198:26:35",
+        "scope": 31386,
+        "usedErrors": []
+      }
+    ],
+    "license": "GPL-3.0-only"
+  },
+  "id": 35
+}

@@ -1,0 +1,20 @@
+strict digraph {
+subgraph cluster_31381_RocketNodeStakingInterface {
+label = "RocketNodeStakingInterface"
+"31381_stakeRPL" [label="stakeRPL"]
+"31381_stakeRPLFor" [label="stakeRPLFor"]
+"31381_getNodeMaximumRPLStake" [label="getNodeMaximumRPLStake"]
+"31381_getNodeMinipoolLimit" [label="getNodeMinipoolLimit"]
+"31381_calculateTotalEffectiveRPLStake" [label="calculateTotalEffectiveRPLStake"]
+"31381_slashRPL" [label="slashRPL"]
+"31381_getNodeRPLStake" [label="getNodeRPLStake"]
+"31381_getTotalEffectiveRPLStake" [label="getTotalEffectiveRPLStake"]
+"31381_getNodeEffectiveRPLStake" [label="getNodeEffectiveRPLStake"]
+"31381_getNodeRPLStakedTime" [label="getNodeRPLStakedTime"]
+"31381_getNodeMinimumRPLStake" [label="getNodeMinimumRPLStake"]
+"31381_getTotalRPLStake" [label="getTotalRPLStake"]
+"31381_withdrawRPL" [label="withdrawRPL"]
+}subgraph cluster_solidity {
+label = "[Solidity]"
+}
+}

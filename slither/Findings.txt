@@ -1,0 +1,142 @@
+BlockscapeValidatorNFT.allowPubDeposit (src/BlockscapeValidatorNFT.sol#45) is never initialized. It is used in:
+        - BlockscapeValidatorNFT.openValidatorNFT() (src/BlockscapeValidatorNFT.sol#118-127)
+        - BlockscapeValidatorNFT.closeValidatorNFT() (src/BlockscapeValidatorNFT.sol#144-148)
+        - BlockscapeValidatorNFT.depositValidatorNFT() (src/BlockscapeValidatorNFT.sol#152-183)
+        - BlockscapeValidatorNFT.withdrawBatch() (src/BlockscapeValidatorNFT.sol#189-198)
+        - BlockscapeValidatorNFT.isVaultOpen() (src/BlockscapeValidatorNFT.sol#288-290)
+        - BlockscapeValidatorNFT._closeValidatorNFTInternal() (src/BlockscapeValidatorNFT.sol#480-484)
+BlockscapeValidatorNFTGoerli.allowPubDeposit (src/BlockscapeValidatorNFTGoerli.sol#47) is never initialized. It is used in:
+        - BlockscapeValidatorNFTGoerli.openValidatorNFT() (src/BlockscapeValidatorNFTGoerli.sol#123-132)
+        - BlockscapeValidatorNFTGoerli.closeValidatorNFT() (src/BlockscapeValidatorNFTGoerli.sol#149-153)
+        - BlockscapeValidatorNFTGoerli.tryDepositValidatorNFT() (src/BlockscapeValidatorNFTGoerli.sol#157-176)
+        - BlockscapeValidatorNFTGoerli.tryWithdrawBatch() (src/BlockscapeValidatorNFTGoerli.sol#182-191)
+        - BlockscapeValidatorNFTGoerli.isVaultOpen() (src/BlockscapeValidatorNFTGoerli.sol#284-286)
+        - BlockscapeValidatorNFTGoerli._closeValidatorNFTInternal() (src/BlockscapeValidatorNFTGoerli.sol#470-474)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-state-variables
+
+BlockscapeValidatorNFT.viewUserRequestWithdraw(uint256) (src/BlockscapeValidatorNFT.sol#359-379) performs a multiplication on the result of a division:
+        - secFee = (initWithdrawFee / 31536000) (src/BlockscapeValidatorNFT.sol#367)
+        - curWithdrawFee = (initWithdrawFee - (secFee * timePassed)) (src/BlockscapeValidatorNFT.sol#375)
+BlockscapeValidatorNFTGoerli.viewUserRequestWithdraw(uint256) (src/BlockscapeValidatorNFTGoerli.sol#354-372) performs a multiplication on the result of a division:
+        - secFee = (initWithdrawFee / 31536000) (src/BlockscapeValidatorNFTGoerli.sol#362)
+        - curWithdrawFee = (initWithdrawFee - (secFee * timePassed)) (src/BlockscapeValidatorNFTGoerli.sol#368)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#divide-before-multiply
+
+BlockscapeValidatorNFT.hasNodeEnoughRPLStake() (src/BlockscapeValidatorNFT.sol#337-351) contains a tautology or contradiction:
+        - (nodeRPLStake - minimumReqRPL) >= 0 (src/BlockscapeValidatorNFT.sol#350)
+BlockscapeValidatorNFTGoerli.hasNodeEnoughRPLStake() (src/BlockscapeValidatorNFTGoerli.sol#332-346) contains a tautology or contradiction:
+        - (nodeRPLStake - minimumReqRPL) >= 0 (src/BlockscapeValidatorNFTGoerli.sol#345)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#tautology-or-contradiction
+
+BlockscapeValidatorNFT._metadataValidatorNFTInternal(uint256,address,uint256).metadata (src/BlockscapeValidatorNFT.sol#467) is a local variable never initialized
+BlockscapeValidatorNFTGoerli._metadataValidatorNFTInternal(uint256,address,uint256).metadata (src/BlockscapeValidatorNFTGoerli.sol#460) is a local variable never initialized
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-local-variables
+
+BlockscapeValidatorNFT.changeETHLimit(uint256) (src/BlockscapeValidatorNFT.sol#257-259) should emit an event for: 
+        - curETHlimit = _newLimit (src/BlockscapeValidatorNFT.sol#258) 
+BlockscapeValidatorNFTGoerli.changeETHLimit(uint256) (src/BlockscapeValidatorNFTGoerli.sol#253-255) should emit an event for: 
+        - curETHlimit = _newLimit (src/BlockscapeValidatorNFTGoerli.sol#254) 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-events-arithmetic
+
+BlockscapeValidatorNFT.setBlockscapeRocketPoolNode(address)._newBlockscapeRocketPoolNode (src/BlockscapeValidatorNFT.sol#273) lacks a zero-check on :
+                - blockscapeRocketPoolNode = _newBlockscapeRocketPoolNode (src/BlockscapeValidatorNFT.sol#277)
+BlockscapeValidatorNFTGoerli.setBlockscapeRocketPoolNode(address)._newBlockscapeRocketPoolNode (src/BlockscapeValidatorNFTGoerli.sol#269) lacks a zero-check on :
+                - blockscapeRocketPoolNode = _newBlockscapeRocketPoolNode (src/BlockscapeValidatorNFTGoerli.sol#273)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation
+
+BlockscapeValidatorNFT.totalSupply() (src/BlockscapeValidatorNFT.sol#422-428) has external calls inside a loop: i <= this.getTokenID() (src/BlockscapeValidatorNFT.sol#424)
+BlockscapeValidatorNFT.totalSupply() (src/BlockscapeValidatorNFT.sol#422-428) has external calls inside a loop: amount += this.totalSupply(i) (src/BlockscapeValidatorNFT.sol#425)
+BlockscapeValidatorNFTGoerli.totalSupply() (src/BlockscapeValidatorNFTGoerli.sol#415-421) has external calls inside a loop: i <= this.getTokenID() (src/BlockscapeValidatorNFTGoerli.sol#417)
+BlockscapeValidatorNFTGoerli.totalSupply() (src/BlockscapeValidatorNFTGoerli.sol#415-421) has external calls inside a loop: amount += this.totalSupply(i) (src/BlockscapeValidatorNFTGoerli.sol#418)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation/#calls-inside-a-loop
+
+BlockscapeValidatorNFT.viewUserRequestWithdraw(uint256) (src/BlockscapeValidatorNFT.sol#359-379) uses timestamp for comparisons
+        Dangerous comparisons:
+        - timePassed >= maxTime05EthReached (src/BlockscapeValidatorNFT.sol#372)
+BlockscapeValidatorNFTGoerli.userRequestWithdraw(uint256) (src/BlockscapeValidatorNFTGoerli.sol#223-244) uses timestamp for comparisons
+        Dangerous comparisons:
+        - timePassed < 30747600 (src/BlockscapeValidatorNFTGoerli.sol#233)
+BlockscapeValidatorNFTGoerli.viewUserRequestWithdraw(uint256) (src/BlockscapeValidatorNFTGoerli.sol#354-372) uses timestamp for comparisons
+        Dangerous comparisons:
+        - timePassed >= 30747600 (src/BlockscapeValidatorNFTGoerli.sol#365)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+
+BlockscapeValidatorNFT.openValidatorNFT() (src/BlockscapeValidatorNFT.sol#118-127) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFT.sol#121-126)
+BlockscapeValidatorNFT.closeValidatorNFT() (src/BlockscapeValidatorNFT.sol#144-148) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFT.sol#145-147)
+BlockscapeValidatorNFT.depositValidatorNFT() (src/BlockscapeValidatorNFT.sol#152-183) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFT.sol#153-166)
+        - INLINE ASM (src/BlockscapeValidatorNFT.sol#174-179)
+BlockscapeValidatorNFT.withdrawBatch() (src/BlockscapeValidatorNFT.sol#189-198) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFT.sol#190-195)
+BlockscapeValidatorNFT._closeValidatorNFTInternal() (src/BlockscapeValidatorNFT.sol#480-484) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFT.sol#481-483)
+BlockscapeValidatorNFTGoerli.openValidatorNFT() (src/BlockscapeValidatorNFTGoerli.sol#123-132) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFTGoerli.sol#126-131)
+BlockscapeValidatorNFTGoerli.closeValidatorNFT() (src/BlockscapeValidatorNFTGoerli.sol#149-153) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFTGoerli.sol#150-152)
+BlockscapeValidatorNFTGoerli.tryDepositValidatorNFT() (src/BlockscapeValidatorNFTGoerli.sol#157-176) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFTGoerli.sol#167-172)
+BlockscapeValidatorNFTGoerli.tryWithdrawBatch() (src/BlockscapeValidatorNFTGoerli.sol#182-191) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFTGoerli.sol#183-188)
+BlockscapeValidatorNFTGoerli._closeValidatorNFTInternal() (src/BlockscapeValidatorNFTGoerli.sol#470-474) uses assembly
+        - INLINE ASM (src/BlockscapeValidatorNFTGoerli.sol#471-473)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#assembly-usage
+
+BlockscapeValidatorNFT.rocketNodeStaking (src/BlockscapeValidatorNFT.sol#58-59) is set pre-construction with a non-constant function or state variable:
+        - RocketNodeStakingInterface(rocketNodeStakingAddress)
+BlockscapeValidatorNFTGoerli.rocketNodeStaking (src/BlockscapeValidatorNFTGoerli.sol#60-61) is set pre-construction with a non-constant function or state variable:
+        - RocketNodeStakingInterface(rocketNodeStakingAddress)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#function-initializing-state
+
+Pragma version>=0.8.0<0.9.0 (src/BlockscapeValidatorNFT.sol#2) is too complex
+Pragma version>=0.8.0<0.9.0 (src/BlockscapeValidatorNFTGoerli.sol#2) is too complex
+Pragma version>0.5.0<0.9.0 (src/utils/RocketNodeDepositInterface.sol#1) is too complex
+Pragma version>0.5.0<0.9.0 (src/utils/RocketNodeStakingInterface.sol#1) is too complex
+Pragma version>0.5.0<0.9.0 (src/utils/RocketStorageInterface.sol#1) is too complex
+Pragma version0.8.17 (src/utils/MinipoolDeposit.sol#1) necessitates a version too recent to be trusted. Consider deploying with 0.6.12/0.7.6/0.8.16
+solc-0.8.17 is not recommended for deployment
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity
+
+Parameter BlockscapeValidatorNFT.withdraw(uint256)._amount (src/BlockscapeValidatorNFT.sol#136) is not in mixedCase
+Parameter BlockscapeValidatorNFT.updateValidator(uint256,bytes)._tokenID (src/BlockscapeValidatorNFT.sol#206) is not in mixedCase
+Parameter BlockscapeValidatorNFT.updateValidator(uint256,bytes)._vali (src/BlockscapeValidatorNFT.sol#206) is not in mixedCase
+Parameter BlockscapeValidatorNFT.userRequestWithdraw(uint256)._tokenID (src/BlockscapeValidatorNFT.sol#230) is not in mixedCase
+Parameter BlockscapeValidatorNFT.changeETHLimit(uint256)._newLimit (src/BlockscapeValidatorNFT.sol#257) is not in mixedCase
+Parameter BlockscapeValidatorNFT.setWithdrawFee(uint256)._amount (src/BlockscapeValidatorNFT.sol#265) is not in mixedCase
+Parameter BlockscapeValidatorNFT.setBlockscapeRocketPoolNode(address)._newBlockscapeRocketPoolNode (src/BlockscapeValidatorNFT.sol#273) is not in mixedCase
+Parameter BlockscapeValidatorNFT.viewUserRequestWithdraw(uint256)._tokenID (src/BlockscapeValidatorNFT.sol#359) is not in mixedCase
+Parameter BlockscapeValidatorNFT.getMetadata(uint256)._tokenID (src/BlockscapeValidatorNFT.sol#388) is not in mixedCase
+Parameter BlockscapeValidatorNFT.uri(uint256)._tokenID (src/BlockscapeValidatorNFT.sol#445) is not in mixedCase
+Constant BlockscapeValidatorNFT.rocketStorage (src/BlockscapeValidatorNFT.sol#21-22) is not in UPPER_CASE_WITH_UNDERSCORES
+Parameter BlockscapeValidatorNFTGoerli.withdraw(uint256)._amount (src/BlockscapeValidatorNFTGoerli.sol#141) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.updateValidator(uint256,bytes)._tokenID (src/BlockscapeValidatorNFTGoerli.sol#199) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.updateValidator(uint256,bytes)._vali (src/BlockscapeValidatorNFTGoerli.sol#199) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.userRequestWithdraw(uint256)._tokenID (src/BlockscapeValidatorNFTGoerli.sol#223) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.changeETHLimit(uint256)._newLimit (src/BlockscapeValidatorNFTGoerli.sol#253) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.setWithdrawFee(uint256)._amount (src/BlockscapeValidatorNFTGoerli.sol#261) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.setBlockscapeRocketPoolNode(address)._newBlockscapeRocketPoolNode (src/BlockscapeValidatorNFTGoerli.sol#269) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.viewUserRequestWithdraw(uint256)._tokenID (src/BlockscapeValidatorNFTGoerli.sol#354) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.getMetadata(uint256)._tokenID (src/BlockscapeValidatorNFTGoerli.sol#381) is not in mixedCase
+Parameter BlockscapeValidatorNFTGoerli.uri(uint256)._tokenID (src/BlockscapeValidatorNFTGoerli.sol#438) is not in mixedCase
+Constant BlockscapeValidatorNFTGoerli.rocketStorage (src/BlockscapeValidatorNFTGoerli.sol#23-24) is not in UPPER_CASE_WITH_UNDERSCORES
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions
+
+BlockscapeValidatorNFT.allowPubDeposit (src/BlockscapeValidatorNFT.sol#45) should be constant 
+BlockscapeValidatorNFT.tokenID (src/BlockscapeValidatorNFT.sol#51) should be constant 
+BlockscapeValidatorNFTGoerli.allowPubDeposit (src/BlockscapeValidatorNFTGoerli.sol#47) should be constant 
+BlockscapeValidatorNFTGoerli.tokenID (src/BlockscapeValidatorNFTGoerli.sol#53) should be constant 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-constant
+
+BlockscapeValidatorNFT.rocketNodeStaking (src/BlockscapeValidatorNFT.sol#58-59) should be immutable 
+BlockscapeValidatorNFT.rocketNodeStakingAddress (src/BlockscapeValidatorNFT.sol#53-56) should be immutable 
+BlockscapeValidatorNFTGoerli.rocketNodeStaking (src/BlockscapeValidatorNFTGoerli.sol#60-61) should be immutable 
+BlockscapeValidatorNFTGoerli.rocketNodeStakingAddress (src/BlockscapeValidatorNFTGoerli.sol#55-58) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
+
+The function BlockscapeValidatorNFT.totalSupply() (src/BlockscapeValidatorNFT.sol#422-428) reads i <= this.getTokenID() (src/BlockscapeValidatorNFT.sol#424) with `this` which adds an extra STATICCALL.
+The function BlockscapeValidatorNFT.totalSupply() (src/BlockscapeValidatorNFT.sol#422-428) reads amount += this.totalSupply(i) (src/BlockscapeValidatorNFT.sol#425) with `this` which adds an extra STATICCALL.
+The function BlockscapeValidatorNFTGoerli.totalSupply() (src/BlockscapeValidatorNFTGoerli.sol#415-421) reads i <= this.getTokenID() (src/BlockscapeValidatorNFTGoerli.sol#417) with `this` which adds an extra STATICCALL.
+The function BlockscapeValidatorNFTGoerli.totalSupply() (src/BlockscapeValidatorNFTGoerli.sol#415-421) reads amount += this.totalSupply(i) (src/BlockscapeValidatorNFTGoerli.sol#418) with `this` which adds an extra STATICCALL.
+Reference: https://github.com/crytic/slither/wiki/Vulnerabilities-Description#public-variable-read-in-external-context
