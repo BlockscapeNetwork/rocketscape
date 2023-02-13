@@ -5,6 +5,9 @@ The Rocketscape smart contract allows users to stake their ETH and receive a Blo
 ## Live Deployment
 Goerli Playground https://stakedev.blockscape.network/pstake/ETH/solo/
 
+## Docs
+https://blockscapenetwork.github.io/rocketscape/index.html
+
 
 ## Run test locally
 
