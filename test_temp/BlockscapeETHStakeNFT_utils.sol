@@ -3,16 +3,16 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
+import {BlockscapeETHStakeNFT} from "src/BlockscapeETHStakeNFT.sol";
 
 import "../src/utils/RocketStorageInterface.sol";
 import "../src/utils/RocketNodeStakingInterface.sol";
 import "../src/utils/RocketNodeDepositInterface.sol";
 
 abstract contract HelperContract is Test {
-    uint256 curETHlimit = 16 ether; // blockscapeValidatorNFT.getCurrentEthLimit();
+    uint256 curETHlimit = 16 ether; // blockscapeETHStakeNFT.getCurrentEthLimit();
 
-    BlockscapeValidatorNFT blockscapeValidatorNFT;
+    BlockscapeETHStakeNFT blockscapeETHStakeNFT;
 
     address blockscapeRocketPoolNode =
         0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982;
@@ -115,7 +115,7 @@ abstract contract HelperContract is Test {
         // vm.deal(deployer, 1 ether);
         vm.label(deployer, "deployer");
         vm.prank(deployer);
-        blockscapeValidatorNFT = new BlockscapeValidatorNFT();
+        blockscapeETHStakeNFT = new BlockscapeETHStakeNFT();
 
         singleStaker = vm.addr(0xDe0);
         vm.deal(singleStaker, 100 ether);
@@ -130,31 +130,18 @@ abstract contract HelperContract is Test {
         vm.label(poolStaker2, "poolStaker2");
     }
 
-    function _openVaultDepositAndTestInitSetup() internal {
-        _testInitContractSetup();
-        _testInitRocketPoolSetup();
-
-        _openValidatorNFT();
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-
-        _depositSoloStaker();
-
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
-        assertEq(blockscapeValidatorNFT.getBalance(), curETHlimit);
-    }
+  
 
     function _testInitContractSetup() internal {
-        assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
-        assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
-        assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+        assertEq(blockscapeETHStakeNFT.getBalance(), 0 ether);
+        assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
     }
 
     function _testInitRocketPoolSetup() internal {
-        availableRPL = blockscapeValidatorNFT.getAvailableRPLStake();
+        availableRPL = blockscapeETHStakeNFT.getAvailableRPLStake();
         assertEq(availableRPL, 0);
 
-        reqRPL = blockscapeValidatorNFT.getReqRPLStake();
+        reqRPL = blockscapeETHStakeNFT.getReqRPLStake();
         assertEq(reqRPL, 0);
 
         minimumRPLStake = rocketNodeStaking.getNodeMinimumRPLStake(
@@ -169,17 +156,15 @@ abstract contract HelperContract is Test {
     }
 
     function _testContractSetupAfterStaking() internal {
-        assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
-        assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
-        assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+        assertEq(blockscapeETHStakeNFT.getBalance(), 0 ether);
+        assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
     }
 
     function _testRocketPoolSetupAfterStaking() internal {
-        availableRPL = blockscapeValidatorNFT.getAvailableRPLStake();
+        availableRPL = blockscapeETHStakeNFT.getAvailableRPLStake();
         assertEq(availableRPL, 84061696117349943401);
 
-        reqRPL = blockscapeValidatorNFT.getReqRPLStake();
+        reqRPL = blockscapeETHStakeNFT.getReqRPLStake();
         assertEq(reqRPL, 0);
 
         minimumRPLStake = rocketNodeStaking.getNodeMinimumRPLStake(
@@ -193,13 +178,9 @@ abstract contract HelperContract is Test {
         assertEq(minipoolLimit, 1);
     }
 
-    function _openValidatorNFT() internal {
-        vm.prank(deployer);
-        blockscapeValidatorNFT.openValidatorNFT();
-    }
 
     function _depositSoloStaker() internal {
         vm.prank(singleStaker);
-        blockscapeValidatorNFT.depositValidatorNFT{value: 16 ether}();
+        blockscapeETHStakeNFT.depositStakeNFT{value: 16 ether}();
     }
 }

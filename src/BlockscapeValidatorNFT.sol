@@ -69,8 +69,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /// @dev Mappings of tokenID to Metadata
     mapping(uint256 => Metadata) tokenIDtoMetadata;
-    /// @dev Mappings of tokenID to Staker
-    //mapping(uint256 => address) tokenIDtoStaker;
+    
     /// @dev Mappings of tokenID to Validator
     mapping(uint256 => bytes) tokenIDtoValidator;
 

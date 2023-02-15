@@ -22,7 +22,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46);
 
     /// @notice Contract name
-    string public constant name = "Blockscape Stake NFTs";
+    string public constant name = "Blockscape ETH Stake NFTs";
 
     /// @notice Contract symbol
     string public constant symbol = "BSS";
@@ -30,7 +30,12 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     /// @notice Current inital Withdraw Fee
     uint256 initWithdrawFee = 20 * 1e18;
 
+    /// @notice Current ETH pool supply
     uint256 poolSupply = 0;
+
+    /// @notice Blockscape Rocket Pool Node Address
+    address blockscapeRocketPoolNode =
+        0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982;
 
     /**
         @notice state of the Solo Vault Pool
@@ -43,6 +48,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         @dev the tokenID is the same as the tokenID of the pool (poolID)
     */
     uint256 tokenID = 1;
+
     /// @dev this is a given way to always retrieve the most up-to-date node address
     address rocketNodeStakingAddress =
         rocketStorage.getAddress(
@@ -72,7 +78,6 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     /// are available yet
     event RPLStakeRequired(uint256 _availRPL, uint256 _requiredRPL);
 
-
     /// @dev event for when a user requests a withdrawal
     event UserRequestedWithdrawal(
         uint256 _tokenID,
@@ -97,18 +102,10 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         new nfts get added to the underlying ipfs folder
      */
     constructor()
-        ERC1155(
-            "https://ipfs.blockscape.network/ipns/"
-            "k51qzi5uqu5divkfa2vxu2i71yhj3k6rm6bgvgnd4q00h4f80cb4imsg9uy29l/"
-            "{id}.json"
-        )
+        ERC1155("https://ipfs.blockscape.network/ipns/" "TBD/" "{id}.json")
     {}
 
     /// @notice Custom Errors for higher gas efficiency
-
-    /// @notice for a token the validator can only be set once otherwise revert
-    /// with this error
-    error ValidatorAlreadySet(bytes _vali);
 
     // functions
 
@@ -116,7 +113,6 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /// @notice makes the vault stakable again after it has been closed
     /// @dev is triggered when the vault can be staked at rocketpool
-   
 
     /**
         @notice withdraw the given amount to the deployer, triggered when the 
@@ -129,22 +125,19 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         payable(owner()).transfer(_amount);
     }
 
-    
-
     /// @notice used when staking eth into the contract
     /// @dev the vault must be open and equal the depositing amount
     function depositStakeNFT() external payable nonReentrant {
-         assembly {
+        assembly {
             // check is msg.value is higher than 0 ETH
             if lt(callvalue(), 0) {
-              revert(0, 0)  
-            } 
+                revert(0, 0)
+            }
             if eq(callvalue(), 0) {
-              revert(0, 0)  
-            } 
+                revert(0, 0)
+            }
         }
 
-        
         // create metadata for the new tokenID
         _metadataStakeNFTInternal(msg.value, tokenID);
 
@@ -154,9 +147,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
             let new_tokenID_value := add(tokenID_value, 1)
             sstore(tokenID.slot, new_tokenID_value)
         }
-
-        // close the vault
-        _closeStakeNFTInternal();
+        poolSupply += msg.value;
     }
 
     /**
@@ -164,67 +155,62 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         @dev works only once and emits, then reverts
         @param _tokenID Identifier of the vault
     */
-    function updateStake(uint256 _tokenID)
-        external
-        payable
-        nonReentrant
-    {
-         assembly {
-            // check is msg.value is higher than 0 ETH
-            if lt(callvalue(), 0) {
-              revert(0, 0)  
-            } 
-            if eq(callvalue(), 0) {
-              revert(0, 0)  
-            } 
-        }
-        
-        tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
+    function updateStake(uint256 _tokenID) external payable nonReentrant {
+        if (balanceOf(msg.sender, _tokenID) >= 1) {
+            assembly {
+                // check is msg.value is higher than 0 ETH
+                if lt(callvalue(), 0) {
+                    revert(0, 0)
+                }
+                if eq(callvalue(), 0) {
+                    revert(0, 0)
+                }
+            }
 
-        emit StakeUpdated(
-            _tokenID,
-            msg.sender,
-            tokenIDtoMetadata[_tokenID].stakedETH
-        );
-       
+            // update ETH value of the tokenID by adding the msg.value
+            tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
+
+            poolSupply += msg.value;
+
+            // emit event
+            emit StakeUpdated(
+                _tokenID,
+                msg.sender,
+                tokenIDtoMetadata[_tokenID].stakedETH
+            );
+        } else {
+            revert("You do not own this NFT");
+        }
     }
 
-     /**
+    /**
         @notice used when user wants to unstake
         @param _tokenID which pool the staker wants to unstake
         @return _amount how much the user gets back
      */
-    function userRequestWithdraw(uint256 _tokenID)
+
+    function userRequestFullWithdraw(uint256 _tokenID)
         external
         returns (uint256 _amount)
     {
-        uint256 curWithdrawFee = viewUserRequestWithdraw(_tokenID);
+        uint256 curWithdrawFee = viewuserRequestFullWithdraw(_tokenID);
 
-        if (balanceOf(msg.sender, _tokenID) >= 1) {
-            emit UserRequestedWithdrawal(
-                _tokenID,
-                msg.sender,
-                curWithdrawFee,
-                tokenIDtoMetadata[_tokenID].stakedETH
-            );
-        }
+         if (balanceOf(msg.sender, _tokenID) >= 1) {
+        poolSupply -= tokenIDtoMetadata[_tokenID].stakedETH;
+
+        emit UserRequestedWithdrawal(
+            _tokenID,
+            msg.sender,
+            curWithdrawFee,
+            tokenIDtoMetadata[_tokenID].stakedETH
+        );
+
+         }
 
         return curWithdrawFee;
     }
 
-
-
     // functions for future maintainability
-
-    /**
-        @notice the limit might change in the future if rocketpool supports 
-        smaller pool sizes
-        @param _newLimit the new pool amount which has to be staked
-    */
-    function changeETHLimit(uint256 _newLimit) external onlyOwner {
-        curETHlimit = _newLimit;
-        emit ETHLimitChanged(_newLimit);
-    }
 
     /**
         @notice the withdraw fee might be changed in the future
@@ -247,24 +233,6 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     // view / pure functions
-
-    /** 
-        @notice does the vault currently allow depositing
-        @dev the backend controller will reopen then vault after the stake
-        have been transferred
-        @return is depositing enabled
-    */
-    function isVaultOpen() public view returns (bool) {
-        return allowPubDeposit;
-    }
-
-    /**
-        @notice the current depositing threshold
-        @return is depositing enabled
-    */
-    function getCurrentEthLimit() public view returns (uint256) {
-        return curETHlimit;
-    }
 
     /**
         @notice show the currently available RPL stake which is needed to create 
@@ -320,12 +288,20 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     /**
+     * @notice returns the current ETH supply of the pool(s)
+     *
+     */
+    function getPoolSupply() public view returns (uint256) {
+        return poolSupply;
+    }
+
+    /**
         @notice how much fees would the user has to pay if he would unstake now
         within the first year of staking the fee is 20%, afterwards 0.5%
         @param _tokenID which pool the staker wants to unstake
         @return _amount how much the user would pay on fees
      */
-    function viewUserRequestWithdraw(uint256 _tokenID)
+    function viewuserRequestFullWithdraw(uint256 _tokenID)
         public
         view
         returns (uint256 _amount)
@@ -338,6 +314,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
                 (tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
+
             if (timePassed >= maxTime05EthReached) {
                 curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 ether
             } else {
@@ -347,7 +324,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         return curWithdrawFee;
     }
 
-   /**
+    /**
         @notice gets the metadata of a given pool
         @param _tokenID identifies the pool
         @return Metadata of the pool 
@@ -358,11 +335,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         view
         returns (Metadata memory, bytes memory)
     {
-        return (
-            tokenIDtoMetadata[_tokenID],
-            // tokenIDtoStaker[_tokenID],
-            tokenIDtoValidator[_tokenID]
-        );
+        return (tokenIDtoMetadata[_tokenID], tokenIDtoValidator[_tokenID]);
     }
 
     /**
@@ -397,8 +370,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         @return the fixed collection metadata path 
      */
     function contractURI() external pure returns (string memory) {
-        return
-            "https://ipfs.blockscape.network/ipfs/QmPRDjSg3idxTE8BTS37umDmTZ2LZb3x34LVBQMyaj9nVy";
+        return "https://ipfs.blockscape.network/ipfs/TBD";
     }
 
     /**
@@ -406,10 +378,15 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         @param _tokenID the pool
         @return the url
      */
-    function uri(uint256 _tokenID) override public pure returns (string memory) {
+    function uri(uint256 _tokenID)
+        public
+        pure
+        override
+        returns (string memory)
+    {
         return
             string.concat(
-                "https://ipfs.blockscape.network/ipns/k51qzi5uqu5divkfa2vxu2i71yhj3k6rm6bgvgnd4q00h4f80cb4imsg9uy29l/",
+                "https://ipfs.blockscape.network/ipns/TBD/",
                 Strings.toString(_tokenID),
                 ".json"
             );
@@ -422,27 +399,18 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         @param _stakedETH staked amount from the sender
         @param _tokenID Identifier of the vault
     */
-    function _metadataStakeNFTInternal(
-        uint256 _stakedETH,
-        uint256 _tokenID
-    ) internal {
+    function _metadataStakeNFTInternal(uint256 _stakedETH, uint256 _tokenID)
+        internal
+    {
         Metadata memory metadata;
 
         metadata.stakedETH = _stakedETH;
         metadata.stakedTimestamp = block.timestamp;
 
         tokenIDtoMetadata[_tokenID] = metadata;
-        //tokenIDtoStaker[_tokenID] = _staker;
         tokenIDtoValidator[_tokenID] = "";
 
         _mint(msg.sender, _tokenID, 1, "");
-    }
-
-    /// @notice closes the vault to temporarily prevent further depositing
-    function _closeStakeNFTInternal() internal {
-        assembly {
-            sstore(allowPubDeposit.slot, 0)
-        }
     }
 
     /**
