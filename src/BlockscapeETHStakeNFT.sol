@@ -13,8 +13,7 @@ import "./utils/RocketNodeStakingInterface.sol";
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
-    @notice collects staking, mints NFT in return for staker and let's backend controller 
-    transfer the stake when the pool is full (currently 16 ETH) and enough RPL are available
+    @notice collects staking, mints NFT in return for stake, which can be any amount of ETH
 */
 contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     /// @dev RocketStorageInterface of rocketpool
@@ -45,7 +44,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /** 
         @notice initial tokenID
-        @dev the tokenID is the same as the tokenID of the pool (poolID)
+        @dev the tokenID is used to identify the ETh Stake NFTs
     */
     uint256 tokenID = 1;
 
@@ -69,8 +68,6 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /// @dev Mappings of tokenID to Metadata
     mapping(uint256 => Metadata) tokenIDtoMetadata;
-    /// @dev Mappings of tokenID to Staker
-    //mapping(uint256 => address) tokenIDtoStaker;
     /// @dev Mappings of tokenID to Validator
     mapping(uint256 => bytes) tokenIDtoValidator;
 
@@ -105,23 +102,18 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         ERC1155("https://ipfs.blockscape.network/ipns/" "TBD/" "{id}.json")
     {}
 
-    /// @notice Custom Errors for higher gas efficiency
 
     // functions
 
     // public & external functions
 
-    /// @notice makes the vault stakable again after it has been closed
-    /// @dev is triggered when the vault can be staked at rocketpool
-
     /**
-        @notice withdraw the given amount to the deployer, triggered when the 
-        the backend controller moves the stake to rocketpool
+        @notice withdraw the given amount to the backend, triggered when the acciount balance is above 16 ETH or 8 ETH (RPIP-8)
         @dev the withdraw function remains public as safety measurement to
         not lock-in client stakes in case of contract issues
         @param _amount the amount in wei to withdraw
      */
-    function withdraw(uint256 _amount) public onlyOwner {
+    function withdraw(uint256 _amount) external onlyOwner {
         payable(owner()).transfer(_amount);
     }
 
@@ -151,8 +143,8 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     /**
-        @notice set validator address for given token id
-        @dev works only once and emits, then reverts
+        @notice update the stake of the given tokenID, if the NFT owner decides to stake more ETH
+        @dev emits the StakeUpdated event & increases the poolSupply based on the msg.value
         @param _tokenID Identifier of the vault
     */
     function updateStake(uint256 _tokenID) external payable nonReentrant {
@@ -185,7 +177,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /**
         @notice used when user wants to unstake
-        @param _tokenID which pool the staker wants to unstake
+        @param _tokenID is the tokenID of the NFT
         @return _amount how much the user gets back
      */
 
@@ -297,7 +289,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /**
         @notice how much fees would the user has to pay if he would unstake now
-        within the first year of staking the fee is 20%, afterwards 0.5%
+        within the first year of staking the fee is starting at 20% & decreasing linearly, afterwards 0.5%
         @param _tokenID which pool the staker wants to unstake
         @return _amount how much the user would pay on fees
      */
@@ -395,7 +387,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     // internal functions
 
     /**
-        @notice creates and mints metadata for a given pool and staker
+        @notice creates and mints metadata for a given NFT tokenID
         @param _stakedETH staked amount from the sender
         @param _tokenID Identifier of the vault
     */

@@ -39,14 +39,14 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /**
         @notice state of the Solo Vault Pool
-        @dev is `false` when pool is full, will be reopened, as soon as 
+        @dev is `false` when validator is currently onboarding, will be reopened, as soon as 
         the backend controller withdraws & transfers the stake
     */
     bool allowPubDeposit = false;
 
     /** 
         @notice initial tokenID
-        @dev the tokenID is the same as the tokenID of the pool (poolID)
+        @dev the tokenID is the same as the tokenID of the validator
     */
     uint256 tokenID = 1;
     /// @dev this is a given way to always retrieve the most up-to-date node address
@@ -54,6 +54,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         rocketStorage.getAddress(
             keccak256(abi.encodePacked("contract.address", "rocketNodeStaking"))
         );
+
     /// @dev rocketpool contract interface for interactions
     RocketNodeStakingInterface rocketNodeStaking =
         RocketNodeStakingInterface(rocketNodeStakingAddress);
@@ -96,7 +97,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     error NotEnoughRPLStake();
 
     /** 
-        @notice each pool related vault gets its separate tokenID which depicts 
+        @notice each validator related vault gets its separate tokenID which depicts 
         the nft for each staker
         @dev the IPNS makes sure the nfts stay reachable via this link while 
         new nfts get added to the underlying ipfs folder
@@ -201,9 +202,9 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     /**
-        @notice set validator address for given token id
-        @dev works only once and emits, then reverts
-        @param _tokenID Identifier of the vault
+        @notice set validator address for given token id, this function will only be called by the backend
+        @dev works only once for a tokenID; will only reopen the vault if the node has enough RPL stake
+        @param _tokenID Identifier of the NFT
         @param _vali the current address of the validator
     */
     function updateValidator(uint256 _tokenID, bytes memory _vali)
@@ -227,7 +228,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
      /**
         @notice used when user wants to unstake
-        @param _tokenID which pool the staker wants to unstake
+        @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
         @return _amount how much the user gets back
      */
     function userRequestWithdraw(uint256 _tokenID)
@@ -248,13 +249,11 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         return curWithdrawFee;
     }
 
-
-
     // functions for future maintainability
 
     /**
         @notice the limit might change in the future if rocketpool supports 
-        smaller pool sizes
+        smaller pool sizes (RPIP-8)
         @param _newLimit the new pool amount which has to be staked
     */
     function changeETHLimit(uint256 _newLimit) external onlyOwner {
@@ -271,8 +270,8 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     /**
-        @notice gets used if rocket pool changes the address of their node
-        @param _newBlockscapeRocketPoolNode the new address of the pool node
+        @notice gets used if rocketpool changes the address of their node
+        @param _newBlockscapeRocketPoolNode the new address of the rocketpool node
      */
     function setBlockscapeRocketPoolNode(address _newBlockscapeRocketPoolNode)
         external
@@ -357,7 +356,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /**
         @notice how much fees would the user has to pay if he would unstake now
-        within the first year of staking the fee is 20%, afterwards 0.5%
+        within the first year of staking the fee is starting at 20% & decreasing linearly, afterwards 0.5%
         @param _tokenID which pool the staker wants to unstake
         @return _amount how much the user would pay on fees
      */
