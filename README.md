@@ -19,6 +19,8 @@ forge test -vv --fork-url $MAINNET_RPC_URL --fork-block-number=16376809 --match-
 
 Replace `$MAINNET_RPC_URL` with your own mainnet rpc url.
 
+Please see [the Makefile](./Makefile) for further available commands.
+
 ## Git Clone
 
 Please clone the repo with `--recursive` flag to clone the submodules.
