@@ -22,7 +22,7 @@ Goerli Playground <https://stakedev.blockscape.network/pstake/ETH/solo/>
 ## Run test locally
 
 ```
-forge test -vv --fork-url $MAINNET_RPC_URL --fork-block-number=16376809 --match-contract BlockscapeSoloVault
+forge test -vv --fork-url $MAINNET_RPC_URL --fork-block-number=16376809 --match-contract BlockscapeValidatorNFT
 ```
 
 Replace `$MAINNET_RPC_URL` with your own mainnet rpc url.

@@ -10,71 +10,67 @@
   },
   "ast": {
     "absolutePath": "src/utils/MinipoolDeposit.sol",
-    "id": 31269,
+    "id": 32955,
     "exportedSymbols": {
       "MinipoolDeposit": [
-        31268
+        32954
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "0:573:33",
+    "src": "0:566:37",
     "nodes": [
       {
-        "id": 31263,
+        "id": 32949,
         "nodeType": "PragmaDirective",
-        "src": "0:30:33",
+        "src": "0:23:37",
         "nodes": [],
         "literals": [
           "solidity",
-          ">",
-          "0.5",
-          ".0",
-          "<",
-          "0.9",
-          ".0"
+          "0.8",
+          ".16"
         ]
       },
       {
-        "id": 31268,
+        "id": 32954,
         "nodeType": "EnumDefinition",
-        "src": "133:439:33",
+        "src": "126:439:37",
         "nodes": [],
         "canonicalName": "MinipoolDeposit",
         "members": [
           {
-            "id": 31264,
+            "id": 32950,
             "name": "None",
-            "nameLocation": "160:4:33",
+            "nameLocation": "153:4:37",
             "nodeType": "EnumValue",
-            "src": "160:4:33"
+            "src": "153:4:37"
           },
           {
-            "id": 31265,
+            "id": 32951,
             "name": "Full",
-            "nameLocation": "206:4:33",
+            "nameLocation": "199:4:37",
             "nodeType": "EnumValue",
-            "src": "206:4:33"
+            "src": "199:4:37"
           },
           {
-            "id": 31266,
+            "id": 32952,
             "name": "Half",
-            "nameLocation": "329:4:33",
+            "nameLocation": "322:4:37",
             "nodeType": "EnumValue",
-            "src": "329:4:33"
+            "src": "322:4:37"
           },
           {
-            "id": 31267,
+            "id": 32953,
             "name": "Empty",
-            "nameLocation": "442:5:33",
+            "nameLocation": "435:5:37",
             "nodeType": "EnumValue",
-            "src": "442:5:33"
+            "src": "435:5:37"
           }
         ],
         "name": "MinipoolDeposit",
-        "nameLocation": "138:15:33"
+        "nameLocation": "131:15:37"
       }
     ],
     "license": "GPL-3.0-only"
   },
-  "id": 33
+  "id": 37
 }

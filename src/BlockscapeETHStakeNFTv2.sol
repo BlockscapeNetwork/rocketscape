@@ -1,59 +1,52 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity ^0.8.16;
+pragma solidity 0.8.16;
 
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/access/Ownable.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
+
 import "./utils/RocketStorageInterface.sol";
 import "./utils/RocketNodeStakingInterface.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
-    @notice collects staking, mints NFT in return for staker and let's backend controller 
-    transfer the stake when the pool is full (currently 16 ETH) and enough RPL are available
+    @notice collects staking, mints NFT in return for stake, which can be any amount of ETH
 */
-contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
+contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     /// @dev RocketStorageInterface of rocketpool
-    RocketStorageInterface constant rocketStorage =
-        RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46); // mainnet: 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46
-
-    /// @notice Contract name
-    string public constant name = "Blockscape Validator NFTs";
-
-    /// @notice Contract symbol
-    string public constant symbol = "BSV";
-
-    /// @notice Blockscape Rocket Pool Node Address
-    address blockscapeRocketPoolNode =
-       0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982;//0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5;
+    RocketStorageInterface constant ROCKET_STORAGE =
+        RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46);
 
     /// @notice Current inital Withdraw Fee
     uint256 initWithdrawFee = 20 * 1e18;
 
-    /// @notice Current Rocketpool Minipool Limit
-    uint256 curETHlimit = 16 ether;
+    /// @notice Current ETH pool supply
+    uint256 poolSupply = 0;
+
+    /// @notice Blockscape Rocket Pool Node Address
+    address blockscapeRocketPoolNode =
+        0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982;
 
     /**
         @notice state of the Solo Vault Pool
-        @dev is `false` when validator is currently onboarding, will be reopened, as soon as 
+        @dev is `false` when pool is full, will be reopened, as soon as 
         the backend controller withdraws & transfers the stake
     */
-    bool allowPubDeposit = false;
 
     /** 
         @notice initial tokenID
-        @dev the tokenID is the same as the tokenID of the validator
+        @dev the tokenID is used to identify the ETh Stake NFTs
     */
     uint256 tokenID = 1;
+
     /// @dev this is a given way to always retrieve the most up-to-date node address
     address rocketNodeStakingAddress =
-        rocketStorage.getAddress(
+        ROCKET_STORAGE.getAddress(
             keccak256(abi.encodePacked("contract.address", "rocketNodeStaking"))
         );
-
     /// @dev rocketpool contract interface for interactions
     RocketNodeStakingInterface rocketNodeStaking =
         RocketNodeStakingInterface(rocketNodeStakingAddress);
@@ -69,7 +62,6 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
 
     /// @dev Mappings of tokenID to Metadata
     mapping(uint256 => Metadata) tokenIDtoMetadata;
-
     /// @dev Mappings of tokenID to Validator
     mapping(uint256 => bytes) tokenIDtoValidator;
 
@@ -85,17 +77,17 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         uint256 _stakedETH
     );
 
-    /// @dev event for when the ETH limit is changed
-    event ETHLimitChanged(uint256 _newLimit);
-
     /// @dev event for when the RocketPool Node Address is changed
     event RocketPoolNodeAddressChanged(address _newAddress);
+
+    /// @dev event for when the NFT stake is updated
+    event StakeUpdated(uint256 _tokenID, address _owner, uint256 _newStake);
 
     /// @dev more RPL stake has to be done in order to open vault
     error NotEnoughRPLStake();
 
     /** 
-        @notice each validator related vault gets its separate tokenID which depicts 
+        @notice each pool related vault gets its separate tokenID which depicts 
         the nft for each staker
         @dev the IPNS makes sure the nfts stay reachable via this link while 
         new nfts get added to the underlying ipfs folder
@@ -103,77 +95,40 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     constructor()
         ERC1155(
             "https://ipfs.blockscape.network/ipns/"
-            "k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/"
+            "TBD/"
             "{id}.json"
         )
     {}
-
-    /// @notice Custom Errors for higher gas efficiency
-
-    /// @notice for a token the validator can only be set once otherwise revert
-    /// with this error
-    error ValidatorAlreadySet(bytes _vali);
 
     // functions
 
     // public & external functions
 
-    /// @notice makes the vault stakable again after it has been closed
-    /// @dev is triggered when the vault can be staked at rocketpool
-    function openValidatorNFT() public onlyOwner {
-        if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
-
-        assembly {
-            if sload(allowPubDeposit.slot) {
-                revert(0, 0)
-            }
-            sstore(allowPubDeposit.slot, 1)
-        }
-    }
-
     /**
-        @notice withdraw the given amount to the deployer, triggered when the 
-        the backend controller moves the stake to rocketpool
+        @notice withdraw the given amount to the backend, triggered when the acciount balance is above 16 ETH or 8 ETH (RPIP-8)
         @dev the withdraw function remains public as safety measurement to
         not lock-in client stakes in case of contract issues
         @param _amount the amount in wei to withdraw
      */
-    function withdraw(uint256 _amount) public onlyOwner {
+    function withdraw(uint256 _amount) external onlyOwner {
         payable(owner()).transfer(_amount);
-    }
-
-    /**
-        @notice is triggered when the vault can be staked at rocketpool
-        @dev future staking interactions are prevented afterwards
-     */
-    function closeValidatorNFT() external onlyOwner {
-        assembly {
-            sstore(allowPubDeposit.slot, 0)
-        }
     }
 
     /// @notice used when staking eth into the contract
     /// @dev the vault must be open and equal the depositing amount
-    function depositValidatorNFT() external payable nonReentrant {
-       // if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake(); // need to verify!!!
-
+    function depositStakeNFT() external payable nonReentrant {
         assembly {
-            // load the curETHlimit from storage
-            let cel := sload(curETHlimit.slot)
-
-            // check if the vault is open
-            if iszero(sload(allowPubDeposit.slot)) {
+            // check is msg.value is higher than 0 ETH
+            if lt(callvalue(), 0) {
                 revert(0, 0)
             }
-
-            // check if the deposit is valid (like the current RP ETH limit 16ETH/8ETH)
-            if iszero(eq(callvalue(), cel)) {
+            if eq(callvalue(), 0) {
                 revert(0, 0)
             }
         }
 
         // create metadata for the new tokenID
-        _metadataValidatorNFTInternal(msg.value, tokenID);
+        _metadataStakeNFTInternal(msg.value, tokenID);
 
         assembly {
             // increase the tokenID
@@ -181,62 +136,56 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
             let new_tokenID_value := add(tokenID_value, 1)
             sstore(tokenID.slot, new_tokenID_value)
         }
-
-        // close the vault
-        _closeValidatorNFTInternal();
+        poolSupply += msg.value;
     }
 
     /**
-        @notice this gets triggered by the backend controller when the vault 
-        is closed
-     */
-    function withdrawBatch() external onlyOwner {
-        assembly {
-            // check if the vault is closed
-            if sload(allowPubDeposit.slot) {
-                revert(0, 0)
-            }
-        }
-
-        withdraw(curETHlimit);
-    }
-
-    /**
-        @notice set validator address for given token id, this function will only be called by the backend
-        @dev works only once for a tokenID; will only reopen the vault if the node has enough RPL stake
-        @param _tokenID Identifier of the NFT
-        @param _vali the current address of the validator
+        @notice update the stake of the given tokenID, if the NFT owner decides to stake more ETH
+        @dev emits the StakeUpdated event & increases the poolSupply based on the msg.value
+        @param _tokenID Identifier of the vault
     */
-    function updateValidator(
-        uint256 _tokenID,
-        bytes memory _vali
-    ) external onlyOwner {
-        if (!_compareBytes("", tokenIDtoValidator[_tokenID])) {
-            revert ValidatorAlreadySet(tokenIDtoValidator[_tokenID]);
-        }
-        tokenIDtoValidator[_tokenID] = _vali;
+    function updateStake(uint256 _tokenID) external payable nonReentrant {
+        if (balanceOf(msg.sender, _tokenID) >= 1) {
+            assembly {
+                // check is msg.value is higher than 0 ETH
+                if lt(callvalue(), 0) {
+                    revert(0, 0)
+                }
+                if eq(callvalue(), 0) {
+                    revert(0, 0)
+                }
+            }
 
-        if (hasNodeEnoughRPLStake()) {
-            openValidatorNFT();
+            // update ETH value of the tokenID by adding the msg.value
+            tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
+
+            poolSupply += msg.value;
+
+            // emit event
+            emit StakeUpdated(
+                _tokenID,
+                msg.sender,
+                tokenIDtoMetadata[_tokenID].stakedETH
+            );
         } else {
-            uint256 availableRPL = getAvailableRPLStake();
-            uint256 reqRPL = getReqRPLStake();
-
-            emit RPLStakeRequired(availableRPL, reqRPL);
+            revert("You do not own this NFT");
         }
     }
 
     /**
         @notice used when user wants to unstake
-        @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
+        @param _tokenID is the tokenID of the NFT
         @return _amount how much the user gets back
      */
-    function userRequestWithdraw(
+
+    function userRequestFullWithdraw(
         uint256 _tokenID
     ) external returns (uint256 _amount) {
-        uint256 curWithdrawFee = viewUserRequestWithdraw(_tokenID, msg.sender);
+        uint256 curWithdrawFee = viewuserRequestFullWithdraw(_tokenID);
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
+            poolSupply -= tokenIDtoMetadata[_tokenID].stakedETH;
+
             emit UserRequestedWithdrawal(
                 _tokenID,
                 msg.sender,
@@ -251,16 +200,6 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     // functions for future maintainability
 
     /**
-        @notice the limit might change in the future if rocketpool supports 
-        smaller pool sizes (RPIP-8)
-        @param _newLimit the new pool amount which has to be staked
-    */
-    function changeETHLimit(uint256 _newLimit) external onlyOwner {
-        curETHlimit = _newLimit;
-        emit ETHLimitChanged(_newLimit);
-    }
-
-    /**
         @notice the withdraw fee might be changed in the future
         @param _amount the new fee in wei
      */
@@ -269,8 +208,8 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     /**
-        @notice gets used if rocketpool changes the address of their node
-        @param _newBlockscapeRocketPoolNode the new address of the rocketpool node
+        @notice gets used if rocket pool changes the address of their node
+        @param _newBlockscapeRocketPoolNode the new address of the pool node
      */
     function setBlockscapeRocketPoolNode(
         address _newBlockscapeRocketPoolNode
@@ -280,24 +219,6 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     // view / pure functions
-
-    /** 
-        @notice does the vault currently allow depositing
-        @dev the backend controller will reopen then vault after the stake
-        have been transferred
-        @return is depositing enabled
-    */
-    function isVaultOpen() public view returns (bool) {
-        return allowPubDeposit;
-    }
-
-    /**
-        @notice the current depositing threshold
-        @return is depositing enabled
-    */
-    function getCurrentEthLimit() public view returns (uint256) {
-        return curETHlimit;
-    }
 
     /**
         @notice show the currently available RPL stake which is needed to create 
@@ -353,23 +274,31 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     }
 
     /**
+     * @notice returns the current ETH supply of the pool(s)
+     *
+     */
+    function getPoolSupply() public view returns (uint256) {
+        return poolSupply;
+    }
+
+    /**
         @notice how much fees would the user has to pay if he would unstake now
         within the first year of staking the fee is starting at 20% & decreasing linearly, afterwards 0.5%
         @param _tokenID which pool the staker wants to unstake
         @return _amount how much the user would pay on fees
      */
-    function viewUserRequestWithdraw(
-        uint256 _tokenID,
-        address _user
+    function viewuserRequestFullWithdraw(
+        uint256 _tokenID
     ) public view returns (uint256 _amount) {
         uint256 curWithdrawFee = initWithdrawFee;
 
-        if (balanceOf(_user, _tokenID) >= 1) {
+        if (balanceOf(msg.sender, _tokenID) >= 1) {
             uint256 secFee = (initWithdrawFee / 365 days); // 20%
             uint256 timePassed = block.timestamp -
                 (tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
+
             if (timePassed >= maxTime05EthReached) {
                 curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 ether
             } else {
@@ -388,11 +317,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     function getMetadata(
         uint256 _tokenID
     ) external view returns (Metadata memory, bytes memory) {
-        return (
-            tokenIDtoMetadata[_tokenID],
-            // tokenIDtoStaker[_tokenID],
-            tokenIDtoValidator[_tokenID]
-        );
+        return (tokenIDtoMetadata[_tokenID], tokenIDtoValidator[_tokenID]);
     }
 
     /**
@@ -427,8 +352,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         @return the fixed collection metadata path 
      */
     function contractURI() external pure returns (string memory) {
-        return
-            "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7";
+        return "https://ipfs.blockscape.network/ipfs/TBD";
     }
 
     /**
@@ -441,7 +365,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     ) public pure override returns (string memory) {
         return
             string.concat(
-                "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/",
+                "https://ipfs.blockscape.network/ipns/TBD/",
                 Strings.toString(_tokenID),
                 ".json"
             );
@@ -450,11 +374,11 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     // internal functions
 
     /**
-        @notice creates and mints metadata for a given pool and staker
+        @notice creates and mints metadata for a given NFT tokenID
         @param _stakedETH staked amount from the sender
         @param _tokenID Identifier of the vault
     */
-    function _metadataValidatorNFTInternal(
+    function _metadataStakeNFTInternal(
         uint256 _stakedETH,
         uint256 _tokenID
     ) internal {
@@ -464,17 +388,9 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         metadata.stakedTimestamp = block.timestamp;
 
         tokenIDtoMetadata[_tokenID] = metadata;
-        //tokenIDtoStaker[_tokenID] = _staker;
         tokenIDtoValidator[_tokenID] = "";
 
         _mint(msg.sender, _tokenID, 1, "");
-    }
-
-    /// @notice closes the vault to temporarily prevent further depositing
-    function _closeValidatorNFTInternal() internal {
-        assembly {
-            sstore(allowPubDeposit.slot, 0)
-        }
     }
 
     /**
@@ -488,5 +404,19 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     ) internal pure returns (bool) {
         return (keccak256(abi.encodePacked((a))) ==
             keccak256(abi.encodePacked((b))));
+    }
+
+    /**
+     * @return name of the ERC-1155 token
+     */
+    function name() public pure returns (string memory) {
+        return "Blockscape ETH Stake NFTs";
+    }
+
+    /**
+     * @return symbol of the ERC-1155 token
+     */
+    function symbol() public pure returns (string memory) {
+        return "BSS";
     }
 }

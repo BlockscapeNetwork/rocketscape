@@ -1,4 +1,4 @@
-pragma solidity >0.5.0 <0.9.0;
+pragma solidity 0.8.16;
 
 // SPDX-License-Identifier: GPL-3.0-only
 

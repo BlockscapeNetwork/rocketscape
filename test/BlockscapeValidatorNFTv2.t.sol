@@ -3,8 +3,8 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
-import {HelperContract} from "./BlockscapeValidatorNFT_utils.sol";
+import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFTv2.sol";
+import {HelperContract} from "./BlockscapeValidatorNFT_utilsv2.sol";
 
 contract BlockscapeValidatorNFTTest is Test, HelperContract {
     uint256 initWithdrawFee = 20 ether;
@@ -92,13 +92,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         BlockscapeValidatorNFT.Metadata memory shouldBeM;
         shouldBeM.stakedETH = curETHlimit;
         shouldBeM.stakedTimestamp = block.timestamp;
-        shouldBeM.institution = false;
-        shouldBeM.institutionName = "";
-        shouldBeM.institutionVerified = false;
 
         (
             BlockscapeValidatorNFT.Metadata memory m,
-           // address staker,
             bytes memory validator
         ) = blockscapeValidatorNFT.getMetadata(1);
 
@@ -107,9 +103,6 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
 
         assertEq(m.stakedETH, shouldBeM.stakedETH);
         assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
-        assertEq(m.institution, shouldBeM.institution);
-        assertEq(m.institutionName, shouldBeM.institutionName);
-        assertEq(m.institutionVerified, shouldBeM.institutionVerified);
        // assertEq(staker, singleStaker);
         assertEq(string(validator), string(""));
 
@@ -138,26 +131,26 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         payable(address(blockscapeValidatorNFT)).transfer(5 ether);
     }
 
-    function testWithdraw() public {
-        _stakeRPL();
-        _openValidatorNFT();
-        _depositSoloStaker();
+    // function testWithdraw() public {
+    //     _stakeRPL();
+    //     _openValidatorNFT();
+    //     _depositSoloStaker();
 
-        assertEq(blockscapeValidatorNFT.getBalance(), curETHlimit);
+    //     assertEq(blockscapeValidatorNFT.getBalance(), curETHlimit);
 
-        // only owner should be able to call function
-        vm.expectRevert("Ownable: caller is not the owner");
-        vm.prank(singleStaker);
-        blockscapeValidatorNFT.withdraw(curETHlimit);
+    //     // only owner should be able to call function
+    //     vm.expectRevert("Ownable: caller is not the owner");
+    //     //vm.prank(singleStaker);
+    //     //blockscapeValidatorNFT.withdraw(curETHlimit);
 
-        uint256 deployerBalance = deployer.balance;
+    //     uint256 deployerBalance = deployer.balance;
 
-        vm.prank(deployer);
-        blockscapeValidatorNFT.withdraw(curETHlimit);
+    //     // vm.prank(deployer);
+    //     // blockscapeValidatorNFT.withdraw(curETHlimit);
 
-        assertEq(deployer.balance - deployerBalance, curETHlimit);
-        assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
-    }
+    //     assertEq(deployer.balance - deployerBalance, curETHlimit);
+    //     assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
+    // }
 
     function testWithdrawBatch() public {
         _stakeRPL();
@@ -187,8 +180,8 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
         assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
 
-        blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+        // blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
+        // assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
 
         vm.stopPrank();
 
@@ -205,35 +198,35 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         // _unstakeRPL();
     }
 
-    function testUpdateValidator() public {
-        _stakeRPL();
-        _openValidatorNFT();
-        _depositSoloStaker();
+    // function testUpdateValidator() public {
+    //     _stakeRPL();
+    //     _openValidatorNFT();
+    //     _depositSoloStaker();
 
-        bytes memory otherBytesAddr = abi.encodePacked(address(2));
+    //     bytes memory otherBytesAddr = abi.encodePacked(address(2));
 
-        // only owner should be able to call function
-        vm.expectRevert("Ownable: caller is not the owner");
-        vm.prank(singleStaker);
-        blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
+    //     // only owner should be able to call function
+    //     vm.expectRevert("Ownable: caller is not the owner");
+    //     vm.prank(singleStaker);
+    //     blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
 
-        vm.prank(deployer);
-        blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
+    //     vm.prank(deployer);
+    //     blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
 
-        (, bytes memory validator) = blockscapeValidatorNFT
-            .getMetadata(1);
+    //     (, bytes memory validator) = blockscapeValidatorNFT
+    //         .getMetadata(1);
 
-        // TODO: Right test cases for other token ids that they return
-        // default values == they are unset?
+    //     // TODO: Right test cases for other token ids that they return
+    //     // default values == they are unset?
 
-       // assertEq(staker, singleStaker);
-        assertEq(validator, validatorBytesAddress);
+    //    // assertEq(staker, singleStaker);
+    //     assertEq(validator, validatorBytesAddress);
 
-        // can only be set once
-        vm.expectRevert();
-        vm.prank(deployer);
-        blockscapeValidatorNFT.updateValidator(1, otherBytesAddr);
-    }
+    //     // can only be set once
+    //     vm.expectRevert();
+    //     vm.prank(deployer);
+    //     blockscapeValidatorNFT.updateValidator(1, otherBytesAddr);
+    // }
 
     function testUserRequestWithdraw() public {
         _stakeRPL();
@@ -337,9 +330,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         vm.prank(poolStaker1);
         blockscapeValidatorNFT.depositValidatorNFT{value: curETHlimit}();
 
-        vm.prank(deployer);
-        blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
-
+        
         vm.prank(poolStaker1);
         blockscapeValidatorNFT.depositValidatorNFT{value: curETHlimit}();
 
@@ -353,9 +344,6 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
 
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
         assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
-
-        vm.prank(deployer);
-        blockscapeValidatorNFT.updateValidator(2, validatorBytesAddress);
 
         assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
 
@@ -372,8 +360,6 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         _unstakeRPL();
         console.log(blockscapeValidatorNFT.getAvailableRPLStake());
         console.log(blockscapeValidatorNFT.getReqRPLStake());
-
-        blockscapeValidatorNFT.updateValidator(3, validatorBytesAddress);
 
         // updateValidator doesn't open vault as not enough RPL are present
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
