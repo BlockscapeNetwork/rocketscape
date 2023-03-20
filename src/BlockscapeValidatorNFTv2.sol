@@ -12,6 +12,7 @@ import "openzeppelin-contracts/utils/Address.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 import "./utils/RocketStorageInterface.sol";
 import "./utils/RocketNodeStakingInterface.sol";
+import "./utils/RocketMinipoolManagerInterface.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -24,55 +25,66 @@ contract BlockscapeValidatorNFT is
     ReentrancyGuard,
     AccessControl
 {
+    /// @dev using OZs sendValue implementation
     using Address for address payable;
 
-    /// @dev role to adjust the config of the smart contract
+    /// @dev role to adjust the config of the smart contract parameters
     bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
 
-    /// @dev role for the backendController identity
+    /// @dev role for the backendController executer
     bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
 
-    /// @dev role for the admin identity
-    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-
     /// @dev RocketStorageInterface of rocketpool
-    RocketStorageInterface constant ROCKET_STORAGE =
+    RocketStorageInterface public constant ROCKET_STORAGE =
         RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46); // mainnet: 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46 // goerli :0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3
 
-    /// @dev this is a given way to always retrieve the most up-to-date node address
-    address rocketNodeStakingAddress =
-        ROCKET_STORAGE.getAddress(
-            keccak256(abi.encodePacked("contract.address", "rocketNodeStaking"))
+    /// @dev rocketpool contract interface for interactions with the rocketNodeStaking contract
+    RocketNodeStakingInterface immutable rocketNodeStaking =
+        RocketNodeStakingInterface(
+            ROCKET_STORAGE.getAddress(
+                keccak256(
+                    abi.encodePacked("contract.address", "rocketNodeStaking")
+                )
+            )
         );
-    /// @dev rocketpool contract interface for interactions
-    RocketNodeStakingInterface rocketNodeStaking =
-        RocketNodeStakingInterface(rocketNodeStakingAddress);
 
-    /// @notice Admin Address
-    address public admin = 0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982; //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5;
+    /// @dev rocketpool contract interface for interactions with the rocketMinipoolManager contract
+    RocketMinipoolManagerInterface immutable rocketMinipoolManager =
+        RocketMinipoolManagerInterface(
+            ROCKET_STORAGE.getAddress(
+                keccak256(
+                    abi.encodePacked(
+                        "contract.address",
+                        "rocketMinipoolManager"
+                    )
+                )
+            )
+        );
 
     /// @notice Blockscape Rocket Pool Node Address
     address payable public blockscapeRocketPoolNode =
         payable(0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982); //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5;
 
-    /// @notice Current inital Withdraw Fee
+    /// @notice Current initial RP commission for 8 ETH minipools
+    uint256 public rpComm8 = 14;
+
+    /// @notice Current initial withdraw fee
     uint256 public initWithdrawFee = 20 * 1e18;
 
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
 
     /**
-        @notice state of the Solo Vault Pool
+        @notice state of the Validator Vault
         @dev is `false` when validator is currently onboarding, will be reopened, as soon as 
-        the backend controller withdraws & transfers the stake
+        the backend controller withdraws the ETH batch & stakes it
     */
-    bool public allowPubDeposit;
+    bool public vaultOpen = true;
 
     /** 
-        @notice initial tokenID
-        @dev the tokenID is the same as the tokenID of the validator
+        @notice initial tokenID for the NFTs
     */
-    uint256 public tokenID = 1000;
+    uint256 public tokenID = 1;
 
     /** 
         @notice array for storing the Validator Public Keys
@@ -89,7 +101,13 @@ contract BlockscapeValidatorNFT is
     mapping(uint256 => Metadata) public tokenIDtoMetadata;
 
     /// @dev Mappings of tokenID to Validator public key
-    mapping(uint256 => bytes) public tokenIDtoValidator;
+    mapping(uint256 => address) public tokenIDtoValidator;
+
+    /// @dev Mappings of tokenID to timestamp to track a request withdrawal
+    mapping(address => uint256) public senderToTimestamp;
+
+    /// @dev Mappings of tokenID to the final exit reward for the staker
+    mapping(uint256 => uint256) public tokenIDToExitReward;
 
     /// @dev event for when a batch is tried to withdrawn but not enough rpl
     /// are available yet
@@ -100,7 +118,8 @@ contract BlockscapeValidatorNFT is
         uint256 _tokenID,
         address _user,
         uint256 _fee,
-        uint256 _stakedETH
+        uint256 _stakedETH,
+        uint256 _rewards
     );
 
     /// @dev event for when the ETH limit is changed
@@ -111,6 +130,12 @@ contract BlockscapeValidatorNFT is
 
     /// @dev more RPL stake has to be done in order to open vault
     error NotEnoughRPLStake();
+
+    /// @dev for a token the validator can only be set once otherwise revert
+    error ValidatorAlreadySet(address _vali);
+
+    /// @dev for a token the validator can only be set once otherwise revert
+    error ErrorVaultState(bool _isOpen);
 
     /** 
         @notice each validator related vault gets its separate tokenID which depicts 
@@ -127,9 +152,11 @@ contract BlockscapeValidatorNFT is
     {
         _grantRole(ADJ_CONFIG_ROLE, msg.sender);
         _grantRole(RP_BACKEND_ROLE, blockscapeRocketPoolNode);
-        _grantRole(ADMIN_ROLE, admin);
     }
 
+    /**
+     * @dev needed as the OZ ERC1155 && AccessControl does both implement the supportsInterface function
+     */
     function supportsInterface(
         bytes4 interfaceId
     ) public view virtual override(ERC1155, AccessControl) returns (bool) {
@@ -137,41 +164,24 @@ contract BlockscapeValidatorNFT is
     }
 
     // functions
-
     // public & external functions
 
     /// @notice makes the vault stakable again after it has been closed
     /// @dev is triggered when the vault can be staked at rocketpool
-    function openValidatorNFT() public onlyRole(RP_BACKEND_ROLE) {
+    function openVault() public onlyRole(RP_BACKEND_ROLE) {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
-        assembly {
-            if sload(allowPubDeposit.slot) {
-                revert(0, 0)
-            }
-            sstore(allowPubDeposit.slot, 1)
-        }
-    }
+        if (vaultOpen) revert();
 
-    /**
-        @notice withdraw the given amount to the deployer, triggered when the 
-        the backend controller moves the stake to rocketpool
-        @dev the withdraw function remains public as safety measurement to
-        not lock-in client stakes in case of contract issues
-        @param _amount the amount in wei to withdraw
-     */
-    // function withdraw(uint256 _amount) public onlyRole(ADMIN_ROLE) {
-    //     payable(owner()).transfer(_amount);
-    // }
+        vaultOpen = true;
+    }
 
     /**
         @notice is triggered when the vault can be staked at rocketpool
         @dev future staking interactions are prevented afterwards
      */
-    function closeValidatorNFT() external onlyRole(RP_BACKEND_ROLE) {
-        assembly {
-            sstore(allowPubDeposit.slot, 0)
-        }
+    function closeVault() external onlyRole(RP_BACKEND_ROLE) {
+        vaultOpen = false;
     }
 
     /// @notice used when staking eth into the contract
@@ -179,108 +189,133 @@ contract BlockscapeValidatorNFT is
     function depositValidatorNFT() external payable {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
-        if (_compareBytes(tokenIDtoValidator[tokenID], bytes(""))) {
-            revert();
-        }
+        if (tokenIDtoValidator[tokenID] == address(0)) revert();
 
-        assembly {
-            // load the curETHlimit from storage
-            let cel := sload(curETHlimit.slot)
+        if (!vaultOpen) revert ErrorVaultState(vaultOpen);
 
-            // check if the vault is open
-            if iszero(sload(allowPubDeposit.slot)) {
-                revert(0, 0)
-            }
-
-            // check if the deposit is valid (like the current RP ETH limit 16ETH/8ETH)
-            if iszero(eq(callvalue(), cel)) {
-                revert(0, 0)
-            }
-        }
+        if (curETHlimit != msg.value) revert();
 
         // create metadata for the new tokenID
         _metadataValidatorNFTInternal(msg.value, tokenID);
 
-        assembly {
-            // increase the tokenID
-            let tokenID_value := sload(tokenID.slot)
-            let new_tokenID_value := add(tokenID_value, 1)
-            sstore(tokenID.slot, new_tokenID_value)
-        }
+        tokenID++;
 
         // close the vault
-        _closeValidatorNFTInternal();
+        _closeVaultInternal();
     }
 
     /**
-        @notice this gets triggered by the backend controller when the vault 
-        is closed
+        @notice this gets triggered by the backend controller when a new token is minted
      */
     function withdrawBatch() external onlyRole(RP_BACKEND_ROLE) {
-        assembly {
-            // check if the vault is closed
-            if sload(allowPubDeposit.slot) {
-                revert(0, 0)
-            }
-        }
-
+        if (vaultOpen) revert ErrorVaultState(vaultOpen);
         Address.sendValue(blockscapeRocketPoolNode, curETHlimit);
+    }
+
+    /**
+        @notice update validator address for given token id only once after the NFT has been issued and the validator was created by the backend, this function will only be called by the backend
+        @dev works only once for a tokenID; it will reopen the vault 
+        @param _tokenID Identifier of the NFT
+        @param _vali the current address of the validator
+    */
+    function updateValidator(
+        uint256 _tokenID,
+        address _vali
+    ) external onlyRole(RP_BACKEND_ROLE) {
+        if (address(0) != tokenIDtoValidator[_tokenID]) {
+            revert ValidatorAlreadySet(tokenIDtoValidator[_tokenID]);
+        }
+        if (vaultOpen == true) revert ErrorVaultState(vaultOpen);
+        tokenIDtoValidator[_tokenID] = _vali;
+        vaultOpen = true;
     }
 
     /**
         @notice used when user wants to unstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
-    function startRequestWithdrawProcess(
-        uint256 _tokenID,
-        bytes32 _hashedMessage,
-        uint8 _v,
-        bytes32 _r,
-        bytes32 _s
-    ) external {
-        uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
-        bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-        bytes32 prefixedHashMessage = keccak256(
-            abi.encodePacked(prefix, _hashedMessage)
-        );
-        address signer = ecrecover(prefixedHashMessage, _v, _r, _s);
+    function prepareWithdrawProcess(uint256 _tokenID) external {
+        if (senderToTimestamp[msg.sender] <= 0) revert();
 
-        if (balanceOf(msg.sender, _tokenID) >= 1 && signer == msg.sender) {
+        uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
+
+        if (balanceOf(msg.sender, _tokenID) >= 1) {
+            // && signer == msg.sender
+            senderToTimestamp[msg.sender] = block.timestamp;
             emit UserRequestedWithdrawal(
                 _tokenID,
                 msg.sender,
                 curWithdrawFee,
-                tokenIDtoMetadata[_tokenID].stakedETH
+                tokenIDtoMetadata[_tokenID].stakedETH,
+                estRewardsNoMEV(_tokenID)
             );
         }
     }
 
+    /**
+     *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
+     */
+    function withdrawFunds(uint256 _tokenID) external {
+        if (senderToTimestamp[msg.sender] + 7 days < block.timestamp) revert();
+        if (estRewardsNoMEV(_tokenID) <= 0) {
+            tokenIDToExitReward[_tokenID] = estRewardsNoMEV(_tokenID);
+        }
+
+        safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
+
+        Address.sendValue(
+            payable(msg.sender),
+            tokenIDtoMetadata[_tokenID].stakedETH +
+                tokenIDToExitReward[_tokenID]
+        );
+    }
+
+    /**
+     * @notice this function is called by the backend controller when the UserRequestedWithdrawal is emited
+     * @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
+     * @param _tokenID the tokenID of the validator
+     * @param _calcReward the calculated rewards in wei
+     *
+     */
+    function calcRewards(
+        uint256 _tokenID,
+        uint256 _calcReward
+    ) public onlyRole(RP_BACKEND_ROLE) {
+        tokenIDToExitReward[_tokenID] = _calcReward;
+    }
+
     // functions for future maintainability
+    // all functions below are only callable by the ADJ_CONFIG_ROLE, which is only assigned to a multi-sig wallet owned by the team
 
     /**
         @notice the limit might change in the future if rocketpool supports 
         smaller pool sizes (RPIP-8)
-        @param _newLimit the new pool amount which has to be staked
     */
-    function changeETHLimit(
-        uint256 _newLimit
-    ) external onlyRole(ADJ_CONFIG_ROLE) {
-        curETHlimit = _newLimit;
-        emit ETHLimitChanged(_newLimit);
+    function changeETHLimit8() external onlyRole(ADJ_CONFIG_ROLE) {
+        curETHlimit = 8 ether;
+        emit ETHLimitChanged(8 ether);
     }
 
     /**
-        @notice the withdraw fee might be changed in the future
+        @notice the withdraw fee might be lowered in the future
         @param _amount the new fee in wei
      */
-    function setWithdrawFee(
+    function lowerWithdrawFee(
         uint256 _amount
     ) external onlyRole(ADJ_CONFIG_ROLE) {
+        if (_amount >= 20 * 1e18) revert();
         initWithdrawFee = _amount;
     }
 
+    function lowerRPCommFee8(
+        uint256 _amount
+    ) external onlyRole(ADJ_CONFIG_ROLE) {
+        if (_amount >= 14) revert();
+        rpComm8 = _amount;
+    }
+
     /**
-        @notice gets used if rocketpool changes the address of their node
+        @notice gets used if blockscape changes the address of their rp node
         @param _newBlockscapeRocketPoolNode the new address of the rocketpool node
      */
     function setBlockscapeRocketPoolNode(
@@ -288,15 +323,6 @@ contract BlockscapeValidatorNFT is
     ) external onlyRole(ADJ_CONFIG_ROLE) {
         blockscapeRocketPoolNode = payable(_newBlockscapeRocketPoolNode);
         emit RocketPoolNodeAddressChanged(_newBlockscapeRocketPoolNode);
-    }
-
-    // add new validator public keys to the tokenIDtoValidator mapping
-    function addValidatorPublicKeys(
-        bytes[] memory _newValidatorPubKeys
-    ) external onlyRole(ADMIN_ROLE) {
-        for (uint i = 0; i < _newValidatorPubKeys.length; i++) {
-            tokenIDtoValidator[tokenID + 1 + i] = _newValidatorPubKeys[i];
-        }
     }
 
     // view / pure functions
@@ -308,7 +334,7 @@ contract BlockscapeValidatorNFT is
         @return is depositing enabled
     */
     function isVaultOpen() public view returns (bool) {
-        return allowPubDeposit;
+        return vaultOpen;
     }
 
     /**
@@ -369,6 +395,9 @@ contract BlockscapeValidatorNFT is
         );
         uint256 minimumReqRPL = getReqRPLStake();
 
+        if (minimumReqRPL > nodeRPLStake) {
+            return false;
+        }
         return (nodeRPLStake - minimumReqRPL) >= 0;
     }
 
@@ -391,10 +420,12 @@ contract BlockscapeValidatorNFT is
 
             uint256 maxTime05EthReached = 30747600;
             if (timePassed >= maxTime05EthReached) {
-                curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 ether
+                curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 %
             } else {
                 curWithdrawFee = (initWithdrawFee - (secFee * timePassed));
             }
+        } else {
+            curWithdrawFee = 0;
         }
         return curWithdrawFee;
     }
@@ -402,17 +433,12 @@ contract BlockscapeValidatorNFT is
     /**
         @notice gets the metadata of a given pool
         @param _tokenID identifies the pool
-        @return Metadata of the pool 
-        @return the validator address
+        @return a Metadata object and a dynamic bytes array
      */
     function getMetadata(
         uint256 _tokenID
-    ) external view returns (Metadata memory, bytes memory) {
-        return (
-            tokenIDtoMetadata[_tokenID],
-            // tokenIDtoStaker[_tokenID],
-            tokenIDtoValidator[_tokenID]
-        );
+    ) external view returns (Metadata memory, address) {
+        return (tokenIDtoMetadata[_tokenID], tokenIDtoValidator[_tokenID]);
     }
 
     /**
@@ -431,8 +457,27 @@ contract BlockscapeValidatorNFT is
         return address(this).balance;
     }
 
-    /// @notice how many staker are there totally
-    /// @return total amount of staker
+    /**
+        @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella upgrade
+        @param _tokenID tokenID of the NFT, the user wants to unstake
+        @return rewards in wei
+     */
+    function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
+        uint256 balance;
+        uint256 balanceComm;
+        if (curETHlimit >= 16 ether) {
+            balance = (address(tokenIDtoValidator[_tokenID]).balance / 2);
+            balanceComm = (15 * balance) / 100;
+        } else {
+            balance = (address(tokenIDtoValidator[_tokenID]).balance / 4);
+            balanceComm = (rpComm8 * (balance * 3)) / 100;
+        }
+        uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * balanceComm;
+        return (balance + balanceComm - wfee);
+    }
+
+    /// @notice total amount of supply
+    /// @return total amount of ERC-1155 tokens of the contract
     function totalSupply() external view returns (uint256) {
         uint256 amount = 0;
         for (uint256 i = 1; i <= getTokenID(); i++) {
@@ -450,6 +495,9 @@ contract BlockscapeValidatorNFT is
         return
             "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7";
     }
+
+    // Allow contract to receive ETH without making a delegated call
+    receive() external payable {}
 
     /**
         @notice gets the url to the metadata of a given pool
@@ -489,25 +537,11 @@ contract BlockscapeValidatorNFT is
     }
 
     /// @notice closes the vault to temporarily prevent further depositing
-    function _closeValidatorNFTInternal() internal {
-        assembly {
-            sstore(allowPubDeposit.slot, 0)
-        }
+    function _closeVaultInternal() internal {
+        vaultOpen = false;
     }
 
-    /**
-        @notice compares two values and checks if there are equal
-        @dev hashes the stringified values and compares those hashes
-        @return are the bytes equal
-     */
-    function _compareBytes(
-        bytes memory a,
-        bytes memory b
-    ) internal pure returns (bool) {
-        return (keccak256(abi.encodePacked((a))) ==
-            keccak256(abi.encodePacked((b))));
-    }
-
+    
     function name() public pure returns (string memory) {
         return "Blockscape Validator NFTs";
     }

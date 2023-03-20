@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "forge-std/Script.sol";
-import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
+import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFTv2.sol";
 
 contract EthAllocatorScript is Script {
 
@@ -15,7 +15,6 @@ contract EthAllocatorScript is Script {
         
         vm.startBroadcast(deployerPrivateKey);
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
-        blockscapeValidatorNFT.openValidatorNFT();
       //  blockscapeValidatorNFT.transferOwnership(0xf0d22Db91DE516b44e5c976F71E394c9ac97e645);
         //blockscapeValidatorNFT.depositValidatorNFT{value: 0.001 ether}();
         vm.stopBroadcast();

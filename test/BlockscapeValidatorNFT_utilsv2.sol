@@ -32,7 +32,8 @@ abstract contract HelperContract is Test {
     RocketNodeDepositInterface rocketNodeDeposit =
         RocketNodeDepositInterface(0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5);
 
-    address internal deployer;
+    address internal rp_backend;
+    address internal adj_config;
 
     address internal singleStaker;
     address internal poolStaker1;
@@ -111,11 +112,11 @@ abstract contract HelperContract is Test {
         //     uint256(uint160(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84))
         // );
         // deployer = vm.addr(0xDe);
-        deployer = address(blockscapeRocketPoolNode);
+        rp_backend = address(blockscapeRocketPoolNode);
 
-        // vm.deal(deployer, 1 ether);
-        vm.label(deployer, "deployer");
-        vm.prank(deployer);
+        // vm.deal(rp_backend, 1 ether);
+        vm.label(rp_backend, "rp_backend");
+        vm.prank(rp_backend);
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
 
         singleStaker = vm.addr(0xDe0);
@@ -135,7 +136,6 @@ abstract contract HelperContract is Test {
         _testInitContractSetup();
         _testInitRocketPoolSetup();
 
-        _openValidatorNFT();
         assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
 
         _depositSoloStaker();
@@ -194,10 +194,6 @@ abstract contract HelperContract is Test {
         assertEq(minipoolLimit, 1);
     }
 
-    function _openValidatorNFT() internal {
-        vm.prank(deployer);
-        blockscapeValidatorNFT.openValidatorNFT();
-    }
 
     function _depositSoloStaker() internal {
         vm.prank(singleStaker);

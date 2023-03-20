@@ -4,27 +4,43 @@ pragma solidity 0.8.16;
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
-import "openzeppelin-contracts/access/Ownable.sol";
+//import "openzeppelin-contracts/access/Ownable.sol"; replaced by: AccessControl
+import "openzeppelin-contracts/access/AccessControl.sol";
+
 import "openzeppelin-contracts/utils/Strings.sol";
 
 import "./utils/RocketStorageInterface.sol";
 import "./utils/RocketNodeStakingInterface.sol";
+import "./utils/RocketMinipoolManagerInterface.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
     @notice collects staking, mints NFT in return for stake, which can be any amount of ETH
 */
-contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
+contract BlockscapeETHStakeNFT is
+    ERC1155Supply,
+    ReentrancyGuard,
+    AccessControl
+{
     /// @dev RocketStorageInterface of rocketpool
     RocketStorageInterface constant ROCKET_STORAGE =
         RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46);
+
+    /// @dev using OZs sendValue implementation
+    using Address for address payable;
+
+    /// @dev role to adjust the config of the smart contract parameters
+    bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
+
+    /// @dev role for the backendController executer
+    bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
 
     /// @notice Current inital Withdraw Fee
     uint256 initWithdrawFee = 20 * 1e18;
 
     /// @notice Current ETH pool supply
-    uint256 poolSupply = 0;
+    uint256 poolSupply;
 
     /// @notice Blockscape Rocket Pool Node Address
     address blockscapeRocketPoolNode =
@@ -42,28 +58,43 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
     */
     uint256 tokenID = 1;
 
-    /// @dev this is a given way to always retrieve the most up-to-date node address
-    address rocketNodeStakingAddress =
-        ROCKET_STORAGE.getAddress(
-            keccak256(abi.encodePacked("contract.address", "rocketNodeStaking"))
+    /// @dev rocketpool contract interface for interactions with the rocketNodeStaking contract
+    RocketNodeStakingInterface immutable rocketNodeStaking =
+        RocketNodeStakingInterface(
+            ROCKET_STORAGE.getAddress(
+                keccak256(
+                    abi.encodePacked("contract.address", "rocketNodeStaking")
+                )
+            )
         );
-    /// @dev rocketpool contract interface for interactions
-    RocketNodeStakingInterface rocketNodeStaking =
-        RocketNodeStakingInterface(rocketNodeStakingAddress);
+
+    /// @dev rocketpool contract interface for interactions with the rocketMinipoolManager contract
+    RocketMinipoolManagerInterface immutable rocketMinipoolManager =
+        RocketMinipoolManagerInterface(
+            ROCKET_STORAGE.getAddress(
+                keccak256(
+                    abi.encodePacked(
+                        "contract.address",
+                        "rocketMinipoolManager"
+                    )
+                )
+            )
+        );
 
     /// @dev Metadata struct
     struct Metadata {
         uint256 stakedETH;
         uint256 stakedTimestamp;
-        bool institution;
-        bytes32 institutionName;
-        bool institutionVerified;
     }
 
     /// @dev Mappings of tokenID to Metadata
     mapping(uint256 => Metadata) tokenIDtoMetadata;
-    /// @dev Mappings of tokenID to Validator
-    mapping(uint256 => bytes) tokenIDtoValidator;
+
+    /// @dev Mappings of tokenID to timestamp to track a request withdrawal
+    mapping(address => uint256) public senderToTimestamp;
+
+    /// @dev Mappings of tokenID to the final exit reward for the staker
+    mapping(uint256 => uint256) public tokenIDToExitReward;
 
     /// @dev event for when a batch is tried to withdrawn but not enough rpl
     /// are available yet
@@ -74,7 +105,8 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         uint256 _tokenID,
         address _user,
         uint256 _fee,
-        uint256 _stakedETH
+        uint256 _stakedETH,
+        uint256 _rewards
     );
 
     /// @dev event for when the RocketPool Node Address is changed
@@ -100,6 +132,15 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         )
     {}
 
+     /**
+     * @dev needed as the OZ ERC1155 && AccessControl does both implement the supportsInterface function
+     */
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC1155, AccessControl) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
     // functions
 
     // public & external functions
@@ -110,8 +151,8 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         not lock-in client stakes in case of contract issues
         @param _amount the amount in wei to withdraw
      */
-    function withdraw(uint256 _amount) external onlyOwner {
-        payable(owner()).transfer(_amount);
+    function withdraw(uint256 _amount) external onlyRole(RP_BACKEND_ROLE) {
+        Address.sendValue(blockscapeRocketPoolNode, _amount);
     }
 
     /// @notice used when staking eth into the contract
@@ -191,6 +232,8 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
                 msg.sender,
                 curWithdrawFee,
                 tokenIDtoMetadata[_tokenID].stakedETH
+                                estRewardsNoMEV(_tokenID)
+
             );
         }
 
@@ -203,7 +246,9 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         @notice the withdraw fee might be changed in the future
         @param _amount the new fee in wei
      */
-    function setWithdrawFee(uint256 _amount) external onlyOwner {
+    function setWithdrawFee(
+        uint256 _amount
+    ) external onlyRole(RP_BACKEND_ROLE) {
         initWithdrawFee = _amount;
     }
 
@@ -213,7 +258,7 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
      */
     function setBlockscapeRocketPoolNode(
         address _newBlockscapeRocketPoolNode
-    ) external onlyOwner {
+    ) external onlyRole(RP_BACKEND_ROLE) {
         blockscapeRocketPoolNode = _newBlockscapeRocketPoolNode;
         emit RocketPoolNodeAddressChanged(_newBlockscapeRocketPoolNode);
     }
@@ -316,8 +361,8 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
      */
     function getMetadata(
         uint256 _tokenID
-    ) external view returns (Metadata memory, bytes memory) {
-        return (tokenIDtoMetadata[_tokenID], tokenIDtoValidator[_tokenID]);
+    ) external view returns (Metadata memory) {
+        return (tokenIDtoMetadata[_tokenID]);
     }
 
     /**
@@ -388,7 +433,6 @@ contract BlockscapeETHStakeNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         metadata.stakedTimestamp = block.timestamp;
 
         tokenIDtoMetadata[_tokenID] = metadata;
-        tokenIDtoValidator[_tokenID] = "";
 
         _mint(msg.sender, _tokenID, 1, "");
     }
