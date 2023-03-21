@@ -1,8 +1,8 @@
-pragma solidity 0.8.16;
+pragma solidity ^0.8.16;
 
 // SPDX-License-Identifier: GPL-3.0-only
 
-import "./MinipoolDeposit.sol";
+import "../types/MinipoolDeposit.sol";
 
 interface RocketNodeDepositInterface {
     function deposit(
@@ -14,8 +14,7 @@ interface RocketNodeDepositInterface {
         address _expectedMinipoolAddress
     ) external payable;
 
-    function getDepositType(uint256 _amount)
-        external
-        view
-        returns (MinipoolDeposit);
+    function getDepositType(
+        uint256 _amount
+    ) external view returns (MinipoolDeposit);
 }

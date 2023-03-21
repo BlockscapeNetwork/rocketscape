@@ -1,17 +1,15 @@
-// SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.16;
+
+// SPDX-License-Identifier: BUSL-1.1
 
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
-//import "openzeppelin-contracts/access/Ownable.sol"; replaced by: AccessControl
-import "openzeppelin-contracts/access/AccessControl.sol";
-
 import "openzeppelin-contracts/utils/Strings.sol";
 
-import "./utils/RocketStorageInterface.sol";
-import "./utils/RocketNodeStakingInterface.sol";
-import "./utils/RocketMinipoolManagerInterface.sol";
+import "./utils/BlockscapeStaking.sol";
+import "./utils/BlockscapeAccess.sol";
+import "./utils/RocketPoolVars.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -21,30 +19,12 @@ import "./utils/RocketMinipoolManagerInterface.sol";
 contract BlockscapeETHStakeNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    AccessControl
+    BlockscapeAccess,
+    BlockscapeStaking,
+    RocketPoolVars
 {
-    /// @dev RocketStorageInterface of rocketpool
-    RocketStorageInterface constant ROCKET_STORAGE =
-        RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46);
-
-    /// @dev using OZs sendValue implementation
-    using Address for address payable;
-
-    /// @dev role to adjust the config of the smart contract parameters
-    bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
-
-    /// @dev role for the backendController executer
-    bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
-
-    /// @notice Current inital Withdraw Fee
-    uint256 initWithdrawFee = 20 * 1e18;
-
     /// @notice Current ETH pool supply
     uint256 poolSupply;
-
-    /// @notice Blockscape Rocket Pool Node Address
-    address blockscapeRocketPoolNode =
-        0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982;
 
     /**
         @notice state of the Solo Vault Pool
@@ -58,65 +38,8 @@ contract BlockscapeETHStakeNFT is
     */
     uint256 tokenID = 1;
 
-    /// @dev rocketpool contract interface for interactions with the rocketNodeStaking contract
-    RocketNodeStakingInterface immutable rocketNodeStaking =
-        RocketNodeStakingInterface(
-            ROCKET_STORAGE.getAddress(
-                keccak256(
-                    abi.encodePacked("contract.address", "rocketNodeStaking")
-                )
-            )
-        );
-
-    /// @dev rocketpool contract interface for interactions with the rocketMinipoolManager contract
-    RocketMinipoolManagerInterface immutable rocketMinipoolManager =
-        RocketMinipoolManagerInterface(
-            ROCKET_STORAGE.getAddress(
-                keccak256(
-                    abi.encodePacked(
-                        "contract.address",
-                        "rocketMinipoolManager"
-                    )
-                )
-            )
-        );
-
-    /// @dev Metadata struct
-    struct Metadata {
-        uint256 stakedETH;
-        uint256 stakedTimestamp;
-    }
-
-    /// @dev Mappings of tokenID to Metadata
-    mapping(uint256 => Metadata) tokenIDtoMetadata;
-
-    /// @dev Mappings of tokenID to timestamp to track a request withdrawal
-    mapping(address => uint256) public senderToTimestamp;
-
-    /// @dev Mappings of tokenID to the final exit reward for the staker
-    mapping(uint256 => uint256) public tokenIDToExitReward;
-
-    /// @dev event for when a batch is tried to withdrawn but not enough rpl
-    /// are available yet
-    event RPLStakeRequired(uint256 _availRPL, uint256 _requiredRPL);
-
-    /// @dev event for when a user requests a withdrawal
-    event UserRequestedWithdrawal(
-        uint256 _tokenID,
-        address _user,
-        uint256 _fee,
-        uint256 _stakedETH,
-        uint256 _rewards
-    );
-
-    /// @dev event for when the RocketPool Node Address is changed
-    event RocketPoolNodeAddressChanged(address _newAddress);
-
     /// @dev event for when the NFT stake is updated
     event StakeUpdated(uint256 _tokenID, address _owner, uint256 _newStake);
-
-    /// @dev more RPL stake has to be done in order to open vault
-    error NotEnoughRPLStake();
 
     /** 
         @notice each pool related vault gets its separate tokenID which depicts 
@@ -130,9 +53,11 @@ contract BlockscapeETHStakeNFT is
             "TBD/"
             "{id}.json"
         )
-    {}
+    {
+        // TODO: Also _grantRoles here? -> if yes then put in BlockscapeStaking constructor
+    }
 
-     /**
+    /**
      * @dev needed as the OZ ERC1155 && AccessControl does both implement the supportsInterface function
      */
     function supportsInterface(
@@ -152,7 +77,10 @@ contract BlockscapeETHStakeNFT is
         @param _amount the amount in wei to withdraw
      */
     function withdraw(uint256 _amount) external onlyRole(RP_BACKEND_ROLE) {
-        Address.sendValue(blockscapeRocketPoolNode, _amount);
+        Address.sendValue(
+            payable(RocketPoolVars.blockscapeRocketPoolNode),
+            _amount
+        );
     }
 
     /// @notice used when staking eth into the contract
@@ -198,7 +126,8 @@ contract BlockscapeETHStakeNFT is
             }
 
             // update ETH value of the tokenID by adding the msg.value
-            tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
+            BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH += msg
+                .value;
 
             poolSupply += msg.value;
 
@@ -206,7 +135,7 @@ contract BlockscapeETHStakeNFT is
             emit StakeUpdated(
                 _tokenID,
                 msg.sender,
-                tokenIDtoMetadata[_tokenID].stakedETH
+                BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH
             );
         } else {
             revert("You do not own this NFT");
@@ -225,15 +154,18 @@ contract BlockscapeETHStakeNFT is
         uint256 curWithdrawFee = viewuserRequestFullWithdraw(_tokenID);
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
-            poolSupply -= tokenIDtoMetadata[_tokenID].stakedETH;
+            poolSupply -= BlockscapeStaking
+                .tokenIDtoMetadata[_tokenID]
+                .stakedETH;
 
-            emit UserRequestedWithdrawal(
+            emit BlockscapeStaking.UserRequestedWithdrawal(
                 _tokenID,
                 msg.sender,
                 curWithdrawFee,
-                tokenIDtoMetadata[_tokenID].stakedETH
-                                estRewardsNoMEV(_tokenID)
-
+                BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
+                // TODO:
+                0
+                // estRewardsNoMEV(_tokenID)
             );
         }
 
@@ -249,74 +181,10 @@ contract BlockscapeETHStakeNFT is
     function setWithdrawFee(
         uint256 _amount
     ) external onlyRole(RP_BACKEND_ROLE) {
-        initWithdrawFee = _amount;
-    }
-
-    /**
-        @notice gets used if rocket pool changes the address of their node
-        @param _newBlockscapeRocketPoolNode the new address of the pool node
-     */
-    function setBlockscapeRocketPoolNode(
-        address _newBlockscapeRocketPoolNode
-    ) external onlyRole(RP_BACKEND_ROLE) {
-        blockscapeRocketPoolNode = _newBlockscapeRocketPoolNode;
-        emit RocketPoolNodeAddressChanged(_newBlockscapeRocketPoolNode);
+        BlockscapeStaking.initWithdrawFee = _amount;
     }
 
     // view / pure functions
-
-    /**
-        @notice show the currently available RPL stake which is needed to create 
-        a pool on rocketscape
-        @return the current available RPL stake with already deducted minimum
-        stake
-     */
-    function getAvailableRPLStake() public view returns (uint256) {
-        uint256 nodeRPLStake = rocketNodeStaking.getNodeRPLStake(
-            blockscapeRocketPoolNode
-        );
-
-        return nodeRPLStake;
-    }
-
-    /**
-        @notice calculates the required RPL needed to stake according to 
-        poolsize
-        @dev if the minipoollimit is `0` then the required stake is also `0`!
-        @return the RPLs needed
-     */
-    function getReqRPLStake() public view returns (uint256) {
-        uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
-            blockscapeRocketPoolNode
-        );
-
-        uint256 minimumRPLStake = rocketNodeStaking.getNodeMinimumRPLStake(
-            blockscapeRocketPoolNode
-        );
-
-        if (minipoolLimit == 0) {
-            return 0;
-        }
-
-        return (minimumRPLStake / minipoolLimit);
-    }
-
-    /// @notice has the node enough RPL to stake another minipool
-    function hasNodeEnoughRPLStake() public view returns (bool) {
-        uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
-            blockscapeRocketPoolNode
-        );
-        if (minipoolLimit == 0) {
-            return false;
-        }
-
-        uint256 nodeRPLStake = rocketNodeStaking.getNodeRPLStake(
-            blockscapeRocketPoolNode
-        );
-        uint256 minimumReqRPL = getReqRPLStake();
-
-        return (nodeRPLStake - minimumReqRPL) >= 0;
-    }
 
     /**
      * @notice returns the current ETH supply of the pool(s)
@@ -335,34 +203,23 @@ contract BlockscapeETHStakeNFT is
     function viewuserRequestFullWithdraw(
         uint256 _tokenID
     ) public view returns (uint256 _amount) {
-        uint256 curWithdrawFee = initWithdrawFee;
+        uint256 curWithdrawFee = BlockscapeStaking.initWithdrawFee;
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
-            uint256 secFee = (initWithdrawFee / 365 days); // 20%
+            uint256 secFee = (BlockscapeStaking.initWithdrawFee / 365 days); // 20%
             uint256 timePassed = block.timestamp -
-                (tokenIDtoMetadata[_tokenID].stakedTimestamp);
+                (BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
 
             if (timePassed >= maxTime05EthReached) {
                 curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 ether
             } else {
-                curWithdrawFee = (initWithdrawFee - (secFee * timePassed));
+                curWithdrawFee = (BlockscapeStaking.initWithdrawFee -
+                    (secFee * timePassed));
             }
         }
         return curWithdrawFee;
-    }
-
-    /**
-        @notice gets the metadata of a given pool
-        @param _tokenID identifies the pool
-        @return Metadata of the pool 
-        @return the validator address
-     */
-    function getMetadata(
-        uint256 _tokenID
-    ) external view returns (Metadata memory) {
-        return (tokenIDtoMetadata[_tokenID]);
     }
 
     /**
@@ -427,12 +284,12 @@ contract BlockscapeETHStakeNFT is
         uint256 _stakedETH,
         uint256 _tokenID
     ) internal {
-        Metadata memory metadata;
+        BlockscapeStaking.Metadata memory metadata;
 
         metadata.stakedETH = _stakedETH;
         metadata.stakedTimestamp = block.timestamp;
 
-        tokenIDtoMetadata[_tokenID] = metadata;
+        BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
 
         _mint(msg.sender, _tokenID, 1, "");
     }

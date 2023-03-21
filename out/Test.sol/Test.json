@@ -962,7 +962,7 @@
     "id": 7157,
     "exportedSymbols": {
       "DSTest": [
-        29721
+        29997
       ],
       "StdAssertions": [
         1342
@@ -1358,7 +1358,7 @@
         "file": "ds-test/test.sol",
         "nameLocation": "-1:-1:-1",
         "scope": 7157,
-        "sourceUnit": 29722,
+        "sourceUnit": 29998,
         "symbolAliases": [
           {
             "foreign": {
@@ -1366,7 +1366,7 @@
               "name": "DSTest",
               "nodeType": "Identifier",
               "overloadedDeclarations": [],
-              "referencedDeclaration": 29721,
+              "referencedDeclaration": 29997,
               "src": "660:6:10",
               "typeDescriptions": {}
             },
@@ -1390,7 +1390,7 @@
                 "735:6:10"
               ],
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 29721,
+              "referencedDeclaration": 29997,
               "src": "735:6:10"
             },
             "id": 7145,
@@ -1486,7 +1486,7 @@
           3578,
           2006,
           1342,
-          29721
+          29997
         ],
         "name": "Test",
         "nameLocation": "727:4:10",
