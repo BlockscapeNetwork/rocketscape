@@ -47,6 +47,7 @@ contract BlockscapeETHStakeNFT is
         @dev the IPNS makes sure the nfts stay reachable via this link while 
         new nfts get added to the underlying ipfs folder
      */
+
     constructor()
         ERC1155(
             "https://ipfs.blockscape.network/ipns/"
@@ -55,6 +56,8 @@ contract BlockscapeETHStakeNFT is
         )
     {
         // TODO: Also _grantRoles here? -> if yes then put in BlockscapeStaking constructor
+        _grantRole(ADJ_CONFIG_ROLE, msg.sender);
+        _grantRole(RP_BACKEND_ROLE, blockscapeRocketPoolNode);
     }
 
     /**
@@ -76,36 +79,33 @@ contract BlockscapeETHStakeNFT is
         not lock-in client stakes in case of contract issues
         @param _amount the amount in wei to withdraw
      */
-    function withdraw(uint256 _amount) external onlyRole(RP_BACKEND_ROLE) {
-        Address.sendValue(
-            payable(RocketPoolVars.blockscapeRocketPoolNode),
-            _amount
-        );
+    function withdrawForMinipool() external onlyRole(RP_BACKEND_ROLE) {
+        if (vaultOpen) revert ErrorVaultState(vaultOpen);
+        Address.sendValue(blockscapeRocketPoolNode, 8 ether);
+    }
+
+    function internalWithdrawForMinipools() internal {
+        Address.sendValue(blockscapeRocketPoolNode, address(this).balance);
     }
 
     /// @notice used when staking eth into the contract
     /// @dev the vault must be open and equal the depositing amount
-    function depositStakeNFT() external payable nonReentrant {
-        assembly {
-            // check is msg.value is higher than 0 ETH
-            if lt(callvalue(), 0) {
-                revert(0, 0)
-            }
-            if eq(callvalue(), 0) {
-                revert(0, 0)
-            }
-        }
+    function depositStakeNFT() external payable {
+        if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
+
+        if (!vaultOpen) revert ErrorVaultState(vaultOpen);
+
+        if (msg.value == 0) revert();
 
         // create metadata for the new tokenID
         _metadataStakeNFTInternal(msg.value, tokenID);
 
-        assembly {
-            // increase the tokenID
-            let tokenID_value := sload(tokenID.slot)
-            let new_tokenID_value := add(tokenID_value, 1)
-            sstore(tokenID.slot, new_tokenID_value)
-        }
+        tokenID++;
         poolSupply += msg.value;
+
+        if (address(this).balance >= 8 ether) {
+            Address.sendValue(blockscapeRocketPoolNode, address(this).balance);
+        }
     }
 
     /**
@@ -115,15 +115,7 @@ contract BlockscapeETHStakeNFT is
     */
     function updateStake(uint256 _tokenID) external payable nonReentrant {
         if (balanceOf(msg.sender, _tokenID) >= 1) {
-            assembly {
-                // check is msg.value is higher than 0 ETH
-                if lt(callvalue(), 0) {
-                    revert(0, 0)
-                }
-                if eq(callvalue(), 0) {
-                    revert(0, 0)
-                }
-            }
+            if (msg.value == 0) revert();
 
             // update ETH value of the tokenID by adding the msg.value
             BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH += msg
@@ -148,28 +140,48 @@ contract BlockscapeETHStakeNFT is
         @return _amount how much the user gets back
      */
 
-    function userRequestFullWithdraw(
-        uint256 _tokenID
-    ) external returns (uint256 _amount) {
-        uint256 curWithdrawFee = viewuserRequestFullWithdraw(_tokenID);
+    /**
+        @notice used when user wants to unstake
+        @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
+     */
+    function prepareWithdrawProcess(uint256 _tokenID) external {
+        if (senderToTimestamp[msg.sender] <= 0) revert();
+
+        uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
-            poolSupply -= BlockscapeStaking
-                .tokenIDtoMetadata[_tokenID]
-                .stakedETH;
-
+            senderToTimestamp[msg.sender] = block.timestamp;
             emit BlockscapeStaking.UserRequestedWithdrawal(
                 _tokenID,
                 msg.sender,
                 curWithdrawFee,
                 BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
-                // TODO:
-                0
-                // estRewardsNoMEV(_tokenID)
+                estRewardsNoMEV(_tokenID) // TODO: here is another function needed to get the correct rewards on-chain 
+            );
+        }
+    }
+
+    /**
+     *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
+     */
+    function withdrawFunds(uint256 _tokenID) external {
+        if (senderToTimestamp[msg.sender] + 7 days < block.timestamp) revert();
+        if (
+            BlockscapeStaking.tokenIDToExitReward[_tokenID] <
+            estRewardsNoMEV(_tokenID)
+        ) {
+            BlockscapeStaking.tokenIDToExitReward[_tokenID] = estRewardsNoMEV(
+                _tokenID
             );
         }
 
-        return curWithdrawFee;
+        safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
+
+        Address.sendValue(
+            payable(msg.sender),
+            BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH +
+                BlockscapeStaking.tokenIDToExitReward[_tokenID]
+        );
     }
 
     // functions for future maintainability
@@ -178,9 +190,10 @@ contract BlockscapeETHStakeNFT is
         @notice the withdraw fee might be changed in the future
         @param _amount the new fee in wei
      */
-    function setWithdrawFee(
+    function lowerWithdrawFee(
         uint256 _amount
-    ) external onlyRole(RP_BACKEND_ROLE) {
+    ) external onlyRole(ADJ_CONFIG_ROLE) {
+        if (_amount >= 20 * 1e18) revert();
         BlockscapeStaking.initWithdrawFee = _amount;
     }
 
@@ -200,24 +213,27 @@ contract BlockscapeETHStakeNFT is
         @param _tokenID which pool the staker wants to unstake
         @return _amount how much the user would pay on fees
      */
-    function viewuserRequestFullWithdraw(
-        uint256 _tokenID
+    function calcWithdrawFee(
+        // TODO: dispite the same name, we might need to change the func (&name, like calcWithdrawFeePool ) for the pool staking to be abple to calc the ETh rewards complety only on-chain... TBD 
+        uint256 _tokenID,
+        address _user
     ) public view returns (uint256 _amount) {
         uint256 curWithdrawFee = BlockscapeStaking.initWithdrawFee;
 
-        if (balanceOf(msg.sender, _tokenID) >= 1) {
+        if (balanceOf(_user, _tokenID) >= 1) {
             uint256 secFee = (BlockscapeStaking.initWithdrawFee / 365 days); // 20%
             uint256 timePassed = block.timestamp -
                 (BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
-
             if (timePassed >= maxTime05EthReached) {
-                curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 ether
+                curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 %
             } else {
                 curWithdrawFee = (BlockscapeStaking.initWithdrawFee -
                     (secFee * timePassed));
             }
+        } else {
+            curWithdrawFee = 0;
         }
         return curWithdrawFee;
     }
@@ -292,19 +308,6 @@ contract BlockscapeETHStakeNFT is
         BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
 
         _mint(msg.sender, _tokenID, 1, "");
-    }
-
-    /**
-        @notice compares two values and checks if there are equal
-        @dev hashes the stringified values and compares those hashes
-        @return are the bytes equal
-     */
-    function _compareBytes(
-        bytes memory a,
-        bytes memory b
-    ) internal pure returns (bool) {
-        return (keccak256(abi.encodePacked((a))) ==
-            keccak256(abi.encodePacked((b))));
     }
 
     /**

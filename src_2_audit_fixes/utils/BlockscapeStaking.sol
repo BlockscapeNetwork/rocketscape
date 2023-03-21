@@ -37,6 +37,7 @@ contract BlockscapeStaking {
 
     /// @dev Mappings of tokenID to the final exit reward for the staker
     mapping(uint256 => uint256) public tokenIDToExitReward;
+    
 
     /**
         @notice gets the metadata of a given pool
