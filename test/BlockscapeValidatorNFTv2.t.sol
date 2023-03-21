@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFTv2.sol";
+import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
 import {HelperContract} from "./BlockscapeValidatorNFT_utilsv2.sol";
 
 contract BlockscapeValidatorNFTTest is Test, HelperContract {
@@ -44,7 +44,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         _testInitRocketPoolSetup();
 
         // only owner should be able to call function
-        vm.expectRevert("AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e");
+        vm.expectRevert(
+            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
+        );
         vm.prank(singleStaker);
         blockscapeValidatorNFT.closeVault();
 
@@ -57,7 +59,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         // assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
 
         // only owner should be able to call function
-        vm.expectRevert("AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e");
+        vm.expectRevert(
+            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
+        );
         vm.prank(singleStaker);
         blockscapeValidatorNFT.closeVault();
 
@@ -271,7 +275,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         uint256 ethLimit = blockscapeValidatorNFT.getCurrentEthLimit();
         assertEq(ethLimit, curETHlimit);
 
-        vm.expectRevert("AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5");
+        vm.expectRevert(
+            "AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5"
+        );
         blockscapeValidatorNFT.changeETHLimit8();
 
         vm.prank(rp_backend);
@@ -282,7 +288,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     }
 
     function testSetWithdrawFee() public {
-        vm.expectRevert("AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5");
+        vm.expectRevert(
+            "AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5"
+        );
         blockscapeValidatorNFT.lowerWithdrawFee(1 ether);
 
         vm.prank(rp_backend);
@@ -290,7 +298,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     }
 
     function testSetBlockscapeRocketPoolNode() public {
-        vm.expectRevert("AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5");
+        vm.expectRevert(
+            "AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5"
+        );
         blockscapeValidatorNFT.setBlockscapeRocketPoolNode(address(0x1));
 
         vm.prank(rp_backend);

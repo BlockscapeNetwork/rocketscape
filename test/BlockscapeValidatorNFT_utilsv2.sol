@@ -3,11 +3,11 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFTv2.sol";
+import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
 
-import "../src/utils/RocketStorageInterface.sol";
-import "../src/utils/RocketNodeStakingInterface.sol";
-import "../src/utils/RocketNodeDepositInterface.sol";
+import "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol";
+import "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol";
+import "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol";
 
 abstract contract HelperContract is Test {
     uint256 curETHlimit = 16 ether; // blockscapeValidatorNFT.getCurrentEthLimit();
@@ -19,7 +19,6 @@ abstract contract HelperContract is Test {
 
     RocketStorageInterface constant rocketStorage =
         RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46); // mainnet: 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46
-        
 
     address rocketNodeStakingAddress =
         rocketStorage.getAddress(
@@ -193,7 +192,6 @@ abstract contract HelperContract is Test {
         );
         assertEq(minipoolLimit, 1);
     }
-
 
     function _depositSoloStaker() internal {
         vm.prank(singleStaker);

@@ -14,8 +14,7 @@ interface RocketNodeDepositInterface {
         address _expectedMinipoolAddress
     ) external payable;
 
-    function getDepositType(uint256 _amount)
-        external
-        view
-        returns (MinipoolDeposit);
+    function getDepositType(
+        uint256 _amount
+    ) external view returns (MinipoolDeposit);
 }

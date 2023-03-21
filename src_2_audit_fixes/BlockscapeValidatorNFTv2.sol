@@ -1,18 +1,18 @@
-// SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.16;
+
+// SPDX-License-Identifier: BUSL-1.1
 
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 //import "openzeppelin-contracts/access/Ownable.sol"; replaced by: AccessControl
 import "openzeppelin-contracts/access/AccessControl.sol";
-
-import "openzeppelin-contracts/utils/Address.sol";
-
 import "openzeppelin-contracts/utils/Strings.sol";
-import "./utils/RocketStorageInterface.sol";
-import "./utils/RocketNodeStakingInterface.sol";
-import "./utils/RocketMinipoolManagerInterface.sol";
+
+import "./utils/AccessRoles.sol";
+import "./utils/interfaces/IRocketStorage.sol";
+import "./utils/interfaces/IRocketNodeStaking.sol";
+import "./utils/interfaces/IRocketMinipoolManager.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -23,16 +23,17 @@ import "./utils/RocketMinipoolManagerInterface.sol";
 contract BlockscapeValidatorNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    AccessControl
+    AccessControl,
+    AccessRoles
 {
-    /// @dev using OZs sendValue implementation
-    using Address for address payable;
+    // /// @dev using OZs sendValue implementation
+    // using Address for address payable;
 
-    /// @dev role to adjust the config of the smart contract parameters
-    bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
+    // /// @dev role to adjust the config of the smart contract parameters
+    // bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
 
-    /// @dev role for the backendController executer
-    bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
+    // /// @dev role for the backendController executer
+    // bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
 
     /// @dev RocketStorageInterface of rocketpool
     RocketStorageInterface public constant ROCKET_STORAGE =
@@ -541,7 +542,6 @@ contract BlockscapeValidatorNFT is
         vaultOpen = false;
     }
 
-    
     function name() public pure returns (string memory) {
         return "Blockscape Validator NFTs";
     }

@@ -1,17 +1,18 @@
-// SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.16;
+
+// SPDX-License-Identifier: BUSL-1.1
 
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 //import "openzeppelin-contracts/access/Ownable.sol"; replaced by: AccessControl
 import "openzeppelin-contracts/access/AccessControl.sol";
-
 import "openzeppelin-contracts/utils/Strings.sol";
 
-import "./utils/RocketStorageInterface.sol";
-import "./utils/RocketNodeStakingInterface.sol";
-import "./utils/RocketMinipoolManagerInterface.sol";
+import "./utils/AccessRoles.sol";
+import "./utils/interfaces/IRocketStorage.sol";
+import "./utils/interfaces/IRocketNodeStaking.sol";
+import "./utils/interfaces/IRocketMinipoolManager.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -21,20 +22,21 @@ import "./utils/RocketMinipoolManagerInterface.sol";
 contract BlockscapeETHStakeNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    AccessControl
+    AccessControl,
+    AccessRoles
 {
     /// @dev RocketStorageInterface of rocketpool
     RocketStorageInterface constant ROCKET_STORAGE =
         RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46);
 
-    /// @dev using OZs sendValue implementation
-    using Address for address payable;
+    // /// @dev using OZs sendValue implementation
+    // using Address for address payable;
 
-    /// @dev role to adjust the config of the smart contract parameters
-    bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
+    // /// @dev role to adjust the config of the smart contract parameters
+    // bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
 
-    /// @dev role for the backendController executer
-    bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
+    // /// @dev role for the backendController executer
+    // bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
 
     /// @notice Current inital Withdraw Fee
     uint256 initWithdrawFee = 20 * 1e18;
@@ -105,8 +107,9 @@ contract BlockscapeETHStakeNFT is
         uint256 _tokenID,
         address _user,
         uint256 _fee,
-        uint256 _stakedETH,
-        uint256 _rewards
+        uint256 _stakedETH
+        // TODO
+        // uint256 _rewards
     );
 
     /// @dev event for when the RocketPool Node Address is changed
@@ -132,7 +135,7 @@ contract BlockscapeETHStakeNFT is
         )
     {}
 
-     /**
+    /**
      * @dev needed as the OZ ERC1155 && AccessControl does both implement the supportsInterface function
      */
     function supportsInterface(
@@ -152,7 +155,7 @@ contract BlockscapeETHStakeNFT is
         @param _amount the amount in wei to withdraw
      */
     function withdraw(uint256 _amount) external onlyRole(RP_BACKEND_ROLE) {
-        Address.sendValue(blockscapeRocketPoolNode, _amount);
+        Address.sendValue(payable(blockscapeRocketPoolNode), _amount);
     }
 
     /// @notice used when staking eth into the contract
@@ -232,8 +235,7 @@ contract BlockscapeETHStakeNFT is
                 msg.sender,
                 curWithdrawFee,
                 tokenIDtoMetadata[_tokenID].stakedETH
-                                estRewardsNoMEV(_tokenID)
-
+                // estRewardsNoMEV(_tokenID)
             );
         }
 
@@ -356,8 +358,7 @@ contract BlockscapeETHStakeNFT is
     /**
         @notice gets the metadata of a given pool
         @param _tokenID identifies the pool
-        @return Metadata of the pool 
-        @return the validator address
+        @return Metadata of the pool
      */
     function getMetadata(
         uint256 _tokenID
