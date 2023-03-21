@@ -12,6 +12,15 @@ import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeAccess.sol";
 import "./utils/RocketPoolVars.sol";
 
+/// @dev more RPL stake has to be done in order to open vault
+error NotEnoughRPLStake();
+
+/// @dev for a token the validator can only be set once otherwise revert
+error ValidatorAlreadySet(address _vali);
+
+/// @dev for a token the validator can only be set once otherwise revert
+error ErrorVaultState(bool _isOpen);
+
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
@@ -25,15 +34,8 @@ contract BlockscapeValidatorNFT is
     BlockscapeStaking,
     RocketPoolVars
 {
-    /// @notice Blockscape Rocket Pool Node Address
-    address payable public blockscapeRocketPoolNode =
-        payable(0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982); //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5;
-
     /// @notice Current initial RP commission for 8 ETH minipools
     uint256 public rpComm8 = 14;
-
-    /// @notice Current initial withdraw fee
-    uint256 public initWithdrawFee = 20 * 1e18;
 
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
@@ -62,36 +64,8 @@ contract BlockscapeValidatorNFT is
     /// @dev Mappings of tokenID to timestamp to track a request withdrawal
     mapping(address => uint256) public senderToTimestamp;
 
-    /// @dev Mappings of tokenID to the final exit reward for the staker
-    mapping(uint256 => uint256) public tokenIDToExitReward;
-
-    /// @dev event for when a batch is tried to withdrawn but not enough rpl
-    /// are available yet
-    event RPLStakeRequired(uint256 _availRPL, uint256 _requiredRPL);
-
-    /// @dev event for when a user requests a withdrawal
-    event UserRequestedWithdrawal(
-        uint256 _tokenID,
-        address _user,
-        uint256 _fee,
-        uint256 _stakedETH,
-        uint256 _rewards
-    );
-
     /// @dev event for when the ETH limit is changed
     event ETHLimitChanged(uint256 _newLimit);
-
-    /// @dev event for when the RocketPool Node Address is changed
-    event RocketPoolNodeAddressChanged(address _newAddress);
-
-    /// @dev more RPL stake has to be done in order to open vault
-    error NotEnoughRPLStake();
-
-    /// @dev for a token the validator can only be set once otherwise revert
-    error ValidatorAlreadySet(address _vali);
-
-    /// @dev for a token the validator can only be set once otherwise revert
-    error ErrorVaultState(bool _isOpen);
 
     /** 
         @notice each validator related vault gets its separate tokenID which depicts 
@@ -125,7 +99,7 @@ contract BlockscapeValidatorNFT is
     /// @notice makes the vault stakable again after it has been closed
     /// @dev is triggered when the vault can be staked at rocketpool
     function openVault() public onlyRole(RP_BACKEND_ROLE) {
-        if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
+        if (!RocketPoolVars.hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
         if (vaultOpen) revert();
 
@@ -198,7 +172,7 @@ contract BlockscapeValidatorNFT is
         if (balanceOf(msg.sender, _tokenID) >= 1) {
             // && signer == msg.sender
             senderToTimestamp[msg.sender] = block.timestamp;
-            emit UserRequestedWithdrawal(
+            emit BlockscapeStaking.UserRequestedWithdrawal(
                 _tokenID,
                 msg.sender,
                 curWithdrawFee,
@@ -214,7 +188,9 @@ contract BlockscapeValidatorNFT is
     function withdrawFunds(uint256 _tokenID) external {
         if (senderToTimestamp[msg.sender] + 7 days < block.timestamp) revert();
         if (estRewardsNoMEV(_tokenID) <= 0) {
-            tokenIDToExitReward[_tokenID] = estRewardsNoMEV(_tokenID);
+            BlockscapeStaking.tokenIDToExitReward[_tokenID] = estRewardsNoMEV(
+                _tokenID
+            );
         }
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
@@ -222,7 +198,7 @@ contract BlockscapeValidatorNFT is
         Address.sendValue(
             payable(msg.sender),
             BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH +
-                tokenIDToExitReward[_tokenID]
+                BlockscapeStaking.tokenIDToExitReward[_tokenID]
         );
     }
 
@@ -237,7 +213,7 @@ contract BlockscapeValidatorNFT is
         uint256 _tokenID,
         uint256 _calcReward
     ) public onlyRole(RP_BACKEND_ROLE) {
-        tokenIDToExitReward[_tokenID] = _calcReward;
+        BlockscapeStaking.tokenIDToExitReward[_tokenID] = _calcReward;
     }
 
     // functions for future maintainability
@@ -260,7 +236,7 @@ contract BlockscapeValidatorNFT is
         uint256 _amount
     ) external onlyRole(ADJ_CONFIG_ROLE) {
         if (_amount >= 20 * 1e18) revert();
-        initWithdrawFee = _amount;
+        BlockscapeStaking.initWithdrawFee = _amount;
     }
 
     function lowerRPCommFee8(
@@ -268,17 +244,6 @@ contract BlockscapeValidatorNFT is
     ) external onlyRole(ADJ_CONFIG_ROLE) {
         if (_amount >= 14) revert();
         rpComm8 = _amount;
-    }
-
-    /**
-        @notice gets used if blockscape changes the address of their rp node
-        @param _newBlockscapeRocketPoolNode the new address of the rocketpool node
-     */
-    function setBlockscapeRocketPoolNode(
-        address _newBlockscapeRocketPoolNode
-    ) external onlyRole(ADJ_CONFIG_ROLE) {
-        blockscapeRocketPoolNode = payable(_newBlockscapeRocketPoolNode);
-        emit RocketPoolNodeAddressChanged(_newBlockscapeRocketPoolNode);
     }
 
     // view / pure functions
@@ -302,62 +267,6 @@ contract BlockscapeValidatorNFT is
     }
 
     /**
-        @notice show the currently available RPL stake which is needed to create 
-        a pool on rocketscape
-        @return the current available RPL stake with already deducted minimum
-        stake
-     */
-    function getAvailableRPLStake() public view returns (uint256) {
-        uint256 nodeRPLStake = rocketNodeStaking.getNodeRPLStake(
-            blockscapeRocketPoolNode
-        );
-
-        return nodeRPLStake;
-    }
-
-    /**
-        @notice calculates the required RPL needed to stake according to 
-        poolsize
-        @dev if the minipoollimit is `0` then the required stake is also `0`!
-        @return the RPLs needed
-     */
-    function getReqRPLStake() public view returns (uint256) {
-        uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
-            blockscapeRocketPoolNode
-        );
-
-        uint256 minimumRPLStake = rocketNodeStaking.getNodeMinimumRPLStake(
-            blockscapeRocketPoolNode
-        );
-
-        if (minipoolLimit == 0) {
-            return 0;
-        }
-
-        return (minimumRPLStake / minipoolLimit);
-    }
-
-    /// @notice has the node enough RPL to stake another minipool
-    function hasNodeEnoughRPLStake() public view returns (bool) {
-        uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
-            blockscapeRocketPoolNode
-        );
-        if (minipoolLimit == 0) {
-            return false;
-        }
-
-        uint256 nodeRPLStake = rocketNodeStaking.getNodeRPLStake(
-            blockscapeRocketPoolNode
-        );
-        uint256 minimumReqRPL = getReqRPLStake();
-
-        if (minimumReqRPL > nodeRPLStake) {
-            return false;
-        }
-        return (nodeRPLStake - minimumReqRPL) >= 0;
-    }
-
-    /**
         @notice how much fees would the user has to pay if he would unstake now
         within the first year of staking the fee is starting at 20% & decreasing linearly, afterwards 0.5%
         @param _tokenID which pool the staker wants to unstake
@@ -367,10 +276,10 @@ contract BlockscapeValidatorNFT is
         uint256 _tokenID,
         address _user
     ) public view returns (uint256 _amount) {
-        uint256 curWithdrawFee = initWithdrawFee;
+        uint256 curWithdrawFee = BlockscapeStaking.initWithdrawFee;
 
         if (balanceOf(_user, _tokenID) >= 1) {
-            uint256 secFee = (initWithdrawFee / 365 days); // 20%
+            uint256 secFee = (BlockscapeStaking.initWithdrawFee / 365 days); // 20%
             uint256 timePassed = block.timestamp -
                 (BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
@@ -378,26 +287,13 @@ contract BlockscapeValidatorNFT is
             if (timePassed >= maxTime05EthReached) {
                 curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 %
             } else {
-                curWithdrawFee = (initWithdrawFee - (secFee * timePassed));
+                curWithdrawFee = (BlockscapeStaking.initWithdrawFee -
+                    (secFee * timePassed));
             }
         } else {
             curWithdrawFee = 0;
         }
         return curWithdrawFee;
-    }
-
-    /**
-        @notice gets the metadata of a given pool
-        @param _tokenID identifies the pool
-        @return a BlockscapeStaking.Metadata object and a dynamic bytes array
-     */
-    function getMetadata(
-        uint256 _tokenID
-    ) external view returns (BlockscapeStaking.Metadata memory, address) {
-        return (
-            BlockscapeStaking.tokenIDtoMetadata[_tokenID],
-            tokenIDtoValidator[_tokenID]
-        );
     }
 
     /**

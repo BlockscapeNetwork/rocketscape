@@ -99,10 +99,10 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         shouldBeM.stakedETH = curETHlimit;
         shouldBeM.stakedTimestamp = block.timestamp;
 
-        (
-            BlockscapeStaking.Metadata memory m,
-            address validator
-        ) = blockscapeValidatorNFT.getMetadata(1);
+        BlockscapeStaking.Metadata memory m = 
+        // TODO: is the vali as return needed?
+        // , address validator
+        blockscapeValidatorNFT.getMetadata(1);
 
         // TODO: Right test cases for other token ids that they return
         // default values == they are unset?
@@ -110,7 +110,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         assertEq(m.stakedETH, shouldBeM.stakedETH);
         assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
         // assertEq(staker, singleStaker);
-        assertEq(validator, address(0));
+        // assertEq(validator, address(0));
 
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
 

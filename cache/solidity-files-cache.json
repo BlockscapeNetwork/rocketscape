@@ -1463,8 +1463,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol": {
-      "lastModificationDate": 1679379240629,
-      "contentHash": "eda360457c11933efb0f144711179bf4",
+      "lastModificationDate": 1679381851023,
+      "contentHash": "71b765e383b5864a513c274ff897be68",
       "sourceName": "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol",
       "solcConfig": {
         "settings": {
@@ -1528,8 +1528,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol": {
-      "lastModificationDate": 1679379225453,
-      "contentHash": "e64adec29fafa8cb563a240fe9d99d73",
+      "lastModificationDate": 1679381846769,
+      "contentHash": "498b91801f146756fcad99b2fedcf246",
       "sourceName": "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
       "solcConfig": {
         "settings": {
@@ -1682,8 +1682,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeStaking.sol": {
-      "lastModificationDate": 1679378718372,
-      "contentHash": "b7826234b087fa6c847a2aececc45db3",
+      "lastModificationDate": 1679381972600,
+      "contentHash": "72feca631efc298bbb131cc3898c15cd",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeStaking.sol",
       "solcConfig": {
         "settings": {
@@ -1722,8 +1722,8 @@
       }
     },
     "src_2_audit_fixes/utils/RocketPoolVars.sol": {
-      "lastModificationDate": 1679377855579,
-      "contentHash": "eb206f0ab4c718c852327a528fb4d68d",
+      "lastModificationDate": 1679381988603,
+      "contentHash": "2ed1df452ab6afde12315dcb8ba08ae7",
       "sourceName": "src_2_audit_fixes/utils/RocketPoolVars.sol",
       "solcConfig": {
         "settings": {
@@ -1754,6 +1754,15 @@
         }
       },
       "imports": [
+        "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
+        "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
+        "src_2_audit_fixes/utils/BlockscapeAccess.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
@@ -2187,8 +2196,8 @@
       }
     },
     "test/BlockscapeValidatorNFTv2.t.sol": {
-      "lastModificationDate": 1679378675189,
-      "contentHash": "150eca13bc51e0961bcef27a5246b2a6",
+      "lastModificationDate": 1679381796293,
+      "contentHash": "81a0d02b833a7b046f5a6fbae462287d",
       "sourceName": "test/BlockscapeValidatorNFTv2.t.sol",
       "solcConfig": {
         "settings": {
