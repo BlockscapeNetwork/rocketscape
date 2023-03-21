@@ -7,6 +7,7 @@ import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 
+import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeAccess.sol";
 import "./utils/RocketPoolVars.sol";
 
@@ -19,6 +20,7 @@ contract BlockscapeETHStakeNFT is
     ERC1155Supply,
     ReentrancyGuard,
     BlockscapeAccess,
+    BlockscapeStaking,
     RocketPoolVars
 {
     /// @notice Current inital Withdraw Fee
@@ -42,18 +44,6 @@ contract BlockscapeETHStakeNFT is
         @dev the tokenID is used to identify the ETh Stake NFTs
     */
     uint256 tokenID = 1;
-
-    /// @dev Metadata struct
-    struct Metadata {
-        uint256 stakedETH;
-        uint256 stakedTimestamp;
-    }
-
-    /// @dev Mappings of tokenID to Metadata
-    mapping(uint256 => Metadata) tokenIDtoMetadata;
-
-    /// @dev Mappings of tokenID to timestamp to track a request withdrawal
-    mapping(address => uint256) public senderToTimestamp;
 
     /// @dev Mappings of tokenID to the final exit reward for the staker
     mapping(uint256 => uint256) public tokenIDToExitReward;
@@ -161,7 +151,8 @@ contract BlockscapeETHStakeNFT is
             }
 
             // update ETH value of the tokenID by adding the msg.value
-            tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
+            BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH += msg
+                .value;
 
             poolSupply += msg.value;
 
@@ -169,7 +160,7 @@ contract BlockscapeETHStakeNFT is
             emit StakeUpdated(
                 _tokenID,
                 msg.sender,
-                tokenIDtoMetadata[_tokenID].stakedETH
+                BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH
             );
         } else {
             revert("You do not own this NFT");
@@ -188,13 +179,16 @@ contract BlockscapeETHStakeNFT is
         uint256 curWithdrawFee = viewuserRequestFullWithdraw(_tokenID);
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
-            poolSupply -= tokenIDtoMetadata[_tokenID].stakedETH;
+            poolSupply -= BlockscapeStaking
+                .tokenIDtoMetadata[_tokenID]
+                .stakedETH;
 
             emit UserRequestedWithdrawal(
                 _tokenID,
                 msg.sender,
                 curWithdrawFee,
-                tokenIDtoMetadata[_tokenID].stakedETH
+                BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH
+                // TODO:
                 // estRewardsNoMEV(_tokenID)
             );
         }
@@ -302,7 +296,7 @@ contract BlockscapeETHStakeNFT is
         if (balanceOf(msg.sender, _tokenID) >= 1) {
             uint256 secFee = (initWithdrawFee / 365 days); // 20%
             uint256 timePassed = block.timestamp -
-                (tokenIDtoMetadata[_tokenID].stakedTimestamp);
+                (BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
 
@@ -318,12 +312,12 @@ contract BlockscapeETHStakeNFT is
     /**
         @notice gets the metadata of a given pool
         @param _tokenID identifies the pool
-        @return Metadata of the pool
+        @return BlockscapeStaking.Metadata of the pool
      */
     function getMetadata(
         uint256 _tokenID
-    ) external view returns (Metadata memory) {
-        return (tokenIDtoMetadata[_tokenID]);
+    ) external view returns (BlockscapeStaking.Metadata memory) {
+        return (BlockscapeStaking.tokenIDtoMetadata[_tokenID]);
     }
 
     /**
@@ -388,12 +382,12 @@ contract BlockscapeETHStakeNFT is
         uint256 _stakedETH,
         uint256 _tokenID
     ) internal {
-        Metadata memory metadata;
+        BlockscapeStaking.Metadata memory metadata;
 
         metadata.stakedETH = _stakedETH;
         metadata.stakedTimestamp = block.timestamp;
 
-        tokenIDtoMetadata[_tokenID] = metadata;
+        BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
 
         _mint(msg.sender, _tokenID, 1, "");
     }

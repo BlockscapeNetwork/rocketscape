@@ -8,9 +8,9 @@ import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 //import "openzeppelin-contracts/access/Ownable.sol"; replaced by: AccessControl
 import "openzeppelin-contracts/utils/Strings.sol";
 
+import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeAccess.sol";
 import "./utils/RocketPoolVars.sol";
-
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -22,6 +22,7 @@ contract BlockscapeValidatorNFT is
     ERC1155Supply,
     ReentrancyGuard,
     BlockscapeAccess,
+    BlockscapeStaking,
     RocketPoolVars
 {
     /// @notice Blockscape Rocket Pool Node Address
@@ -49,19 +50,11 @@ contract BlockscapeValidatorNFT is
     */
     uint256 public tokenID = 1;
 
+    // FIXME: Where does this natspec go? it was floating around
     /** 
         @notice array for storing the Validator Public Keys
         @dev the index is the tokenID of the NFT mapping to the validator public key
     */
-
-    /// @dev Metadata struct
-    struct Metadata {
-        uint256 stakedETH;
-        uint256 stakedTimestamp;
-    }
-
-    /// @dev Mappings of tokenID to Metadata
-    mapping(uint256 => Metadata) public tokenIDtoMetadata;
 
     /// @dev Mappings of tokenID to Validator public key
     mapping(uint256 => address) public tokenIDtoValidator;
@@ -209,7 +202,7 @@ contract BlockscapeValidatorNFT is
                 _tokenID,
                 msg.sender,
                 curWithdrawFee,
-                tokenIDtoMetadata[_tokenID].stakedETH,
+                BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
                 estRewardsNoMEV(_tokenID)
             );
         }
@@ -228,7 +221,7 @@ contract BlockscapeValidatorNFT is
 
         Address.sendValue(
             payable(msg.sender),
-            tokenIDtoMetadata[_tokenID].stakedETH +
+            BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH +
                 tokenIDToExitReward[_tokenID]
         );
     }
@@ -379,7 +372,7 @@ contract BlockscapeValidatorNFT is
         if (balanceOf(_user, _tokenID) >= 1) {
             uint256 secFee = (initWithdrawFee / 365 days); // 20%
             uint256 timePassed = block.timestamp -
-                (tokenIDtoMetadata[_tokenID].stakedTimestamp);
+                (BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
             if (timePassed >= maxTime05EthReached) {
@@ -396,12 +389,15 @@ contract BlockscapeValidatorNFT is
     /**
         @notice gets the metadata of a given pool
         @param _tokenID identifies the pool
-        @return a Metadata object and a dynamic bytes array
+        @return a BlockscapeStaking.Metadata object and a dynamic bytes array
      */
     function getMetadata(
         uint256 _tokenID
-    ) external view returns (Metadata memory, address) {
-        return (tokenIDtoMetadata[_tokenID], tokenIDtoValidator[_tokenID]);
+    ) external view returns (BlockscapeStaking.Metadata memory, address) {
+        return (
+            BlockscapeStaking.tokenIDtoMetadata[_tokenID],
+            tokenIDtoValidator[_tokenID]
+        );
     }
 
     /**
@@ -489,12 +485,12 @@ contract BlockscapeValidatorNFT is
         uint256 _stakedETH,
         uint256 _tokenID
     ) internal {
-        Metadata memory metadata;
+        BlockscapeStaking.Metadata memory metadata;
 
         metadata.stakedETH = _stakedETH;
         metadata.stakedTimestamp = block.timestamp;
 
-        tokenIDtoMetadata[_tokenID] = metadata;
+        BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
 
         _mint(msg.sender, _tokenID, 1, "");
     }

@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
 import {HelperContract} from "./BlockscapeValidatorNFT_utilsv2.sol";
+import {BlockscapeStaking} from "src_2_audit_fixes/utils/BlockscapeStaking.sol";
 
 contract BlockscapeValidatorNFTTest is Test, HelperContract {
     uint256 initWithdrawFee = 20 ether;
@@ -94,12 +95,12 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
 
         _depositSoloStaker();
 
-        BlockscapeValidatorNFT.Metadata memory shouldBeM;
+        BlockscapeStaking.Metadata memory shouldBeM;
         shouldBeM.stakedETH = curETHlimit;
         shouldBeM.stakedTimestamp = block.timestamp;
 
         (
-            BlockscapeValidatorNFT.Metadata memory m,
+            BlockscapeStaking.Metadata memory m,
             address validator
         ) = blockscapeValidatorNFT.getMetadata(1);
 
