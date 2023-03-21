@@ -6,13 +6,11 @@ import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 //import "openzeppelin-contracts/access/Ownable.sol"; replaced by: AccessControl
-import "openzeppelin-contracts/access/AccessControl.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 
-import "./utils/AccessRoles.sol";
-import "./utils/interfaces/IRocketStorage.sol";
-import "./utils/interfaces/IRocketNodeStaking.sol";
-import "./utils/interfaces/IRocketMinipoolManager.sol";
+import "./utils/BlockscapeAccess.sol";
+import "./utils/RocketPoolVars.sol";
+
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -23,45 +21,9 @@ import "./utils/interfaces/IRocketMinipoolManager.sol";
 contract BlockscapeValidatorNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    AccessControl,
-    AccessRoles
+    BlockscapeAccess,
+    RocketPoolVars
 {
-    // /// @dev using OZs sendValue implementation
-    // using Address for address payable;
-
-    // /// @dev role to adjust the config of the smart contract parameters
-    // bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
-
-    // /// @dev role for the backendController executer
-    // bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
-
-    /// @dev RocketStorageInterface of rocketpool
-    RocketStorageInterface public constant ROCKET_STORAGE =
-        RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46); // mainnet: 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46 // goerli :0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3
-
-    /// @dev rocketpool contract interface for interactions with the rocketNodeStaking contract
-    RocketNodeStakingInterface immutable rocketNodeStaking =
-        RocketNodeStakingInterface(
-            ROCKET_STORAGE.getAddress(
-                keccak256(
-                    abi.encodePacked("contract.address", "rocketNodeStaking")
-                )
-            )
-        );
-
-    /// @dev rocketpool contract interface for interactions with the rocketMinipoolManager contract
-    RocketMinipoolManagerInterface immutable rocketMinipoolManager =
-        RocketMinipoolManagerInterface(
-            ROCKET_STORAGE.getAddress(
-                keccak256(
-                    abi.encodePacked(
-                        "contract.address",
-                        "rocketMinipoolManager"
-                    )
-                )
-            )
-        );
-
     /// @notice Blockscape Rocket Pool Node Address
     address payable public blockscapeRocketPoolNode =
         payable(0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982); //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5;
