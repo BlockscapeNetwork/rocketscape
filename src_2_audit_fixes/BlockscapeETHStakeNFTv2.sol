@@ -10,6 +10,9 @@ import "openzeppelin-contracts/utils/Strings.sol";
 import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeVault.sol";
 
+/// @dev you first need to depositStakeNFT before you can updateStake
+error YouDontOwnThisNft(uint256 tokenID);
+
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
@@ -23,12 +26,6 @@ contract BlockscapeETHStakeNFT is
 {
     /// @notice Current ETH pool supply
     uint256 poolSupply;
-
-    /**
-        @notice state of the Solo Vault Pool
-        @dev is `false` when pool is full, will be reopened, as soon as 
-        the backend controller withdraws & transfers the stake
-    */
 
     /** 
         @notice initial tokenID
@@ -127,7 +124,7 @@ contract BlockscapeETHStakeNFT is
                 BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH
             );
         } else {
-            revert("You do not own this NFT");
+            revert YouDontOwnThisNft(_tokenID);
         }
     }
 

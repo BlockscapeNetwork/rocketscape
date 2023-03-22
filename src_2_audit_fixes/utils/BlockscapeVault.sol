@@ -5,7 +5,7 @@ pragma solidity 0.8.16;
 import "./BlockscapeAccess.sol";
 import "./RocketPoolVars.sol";
 
-/// @dev for a token the validator can only be set once otherwise revert
+/// @dev for a token the vault can be set only once otherwise revert
 error ErrorVaultState(bool _isOpen);
 
 // TODO: add all natspec
@@ -34,12 +34,23 @@ contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
         vaultOpen = true;
     }
 
+    /// @notice opens the vault after the recent Validator data has been updated
+    /// and is associated with the recent _tokenID
+    function _openVaultInternal() internal {
+        vaultOpen = true;
+    }
+
     /**
         @notice is triggered when the vault can be staked at rocketpool
         @dev future staking interactions are prevented afterwards
      */
     function closeVault() external onlyRole(RP_BACKEND_ROLE) {
         vaultOpen = false;
+    }
+
+    /// @notice closes the vault to temporarily prevent further depositing
+    function _closeVaultInternal() internal {
+        BlockscapeVault.vaultOpen = false;
     }
 
     /** 

@@ -11,6 +11,9 @@ import "openzeppelin-contracts/utils/Strings.sol";
 import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeVault.sol";
 
+/// @dev Deposit value needs to align with RP poolsizes as specified in `curETHlimit`
+error IncorrectDepositValueSent();
+
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
@@ -24,7 +27,7 @@ contract BlockscapeValidatorNFT is
     BlockscapeStaking
 {
     /// @notice Current initial RP commission for 8 ETH minipools
-    uint256 public rpComm8 = 14;
+    uint256 public rpComm8 = 14 wei;
 
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
@@ -33,12 +36,6 @@ contract BlockscapeValidatorNFT is
         @notice initial tokenID for the NFTs
     */
     uint256 public tokenID = 1;
-
-    // FIXME: Where does this natspec go? it was floating around
-    /** 
-        @notice array for storing the Validator Public Keys
-        @dev the index is the tokenID of the NFT mapping to the validator public key
-    */
 
     /// @dev Mappings of tokenID to Validator public key
     mapping(uint256 => address) public tokenIDtoValidator;
@@ -80,10 +77,10 @@ contract BlockscapeValidatorNFT is
 
         if (tokenIDtoValidator[tokenID] == address(0)) revert();
 
-        if (!BlockscapeVault.vaultOpen)
-            revert ErrorVaultState(BlockscapeVault.vaultOpen);
+        if (!BlockscapeVault.isVaultOpen())
+            revert ErrorVaultState(BlockscapeVault.isVaultOpen());
 
-        if (curETHlimit != msg.value) revert();
+        if (curETHlimit != msg.value) revert IncorrectDepositValueSent();
 
         // create metadata for the new tokenID
         _metadataValidatorNFTInternal(msg.value, tokenID);
@@ -118,8 +115,10 @@ contract BlockscapeValidatorNFT is
         }
         if (BlockscapeVault.vaultOpen == true)
             revert ErrorVaultState(BlockscapeVault.vaultOpen);
+
         tokenIDtoValidator[_tokenID] = _vali;
-        BlockscapeVault.vaultOpen = true;
+
+        _openVaultInternal();
     }
 
     /**
@@ -343,11 +342,6 @@ contract BlockscapeValidatorNFT is
         BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
 
         _mint(msg.sender, _tokenID, 1, "");
-    }
-
-    /// @notice closes the vault to temporarily prevent further depositing
-    function _closeVaultInternal() internal {
-        BlockscapeVault.vaultOpen = false;
     }
 
     function name() public pure returns (string memory) {
