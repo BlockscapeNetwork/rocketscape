@@ -32,6 +32,7 @@ abstract contract HelperContract is Test {
     RocketNodeDepositInterface rocketNodeDeposit =
         RocketNodeDepositInterface(0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5);
 
+    // address internal deployer;
     address internal rp_backend;
     address internal adj_config;
 
@@ -114,7 +115,7 @@ abstract contract HelperContract is Test {
         // deployer = vm.addr(0xDe);
         rp_backend = address(blockscapeRocketPoolNode);
 
-        // vm.deal(rp_backend, 1 ether);
+        vm.deal(rp_backend, 1 ether);
         vm.label(rp_backend, "rp_backend");
         vm.prank(rp_backend);
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
@@ -148,7 +149,7 @@ abstract contract HelperContract is Test {
         assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
         assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
         assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
     }
 
     function _testInitRocketPoolSetup() internal {

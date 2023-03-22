@@ -8,7 +8,7 @@ import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 
 import "./utils/BlockscapeStaking.sol";
-import "./utils/BlockscapeAccess.sol";
+import "./utils/BlockscapeVault.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -18,7 +18,7 @@ import "./utils/BlockscapeAccess.sol";
 contract BlockscapeETHStakeNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    BlockscapeAccess,
+    BlockscapeVault,
     BlockscapeStaking
 {
     /// @notice Current ETH pool supply
@@ -76,8 +76,8 @@ contract BlockscapeETHStakeNFT is
         // TODO: does it use _amount?
      */
     function withdrawForMinipool() external onlyRole(RP_BACKEND_ROLE) {
-        if (BlockscapeStaking.vaultOpen)
-            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
+        if (BlockscapeVault.vaultOpen)
+            revert ErrorVaultState(BlockscapeVault.vaultOpen);
         Address.sendValue(blockscapeRocketPoolNode, 8 ether);
     }
 

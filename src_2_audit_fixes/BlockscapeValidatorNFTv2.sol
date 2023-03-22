@@ -9,7 +9,7 @@ import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 
 import "./utils/BlockscapeStaking.sol";
-import "./utils/BlockscapeAccess.sol";
+import "./utils/BlockscapeVault.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -20,7 +20,7 @@ import "./utils/BlockscapeAccess.sol";
 contract BlockscapeValidatorNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    BlockscapeAccess,
+    BlockscapeVault,
     BlockscapeStaking
 {
     /// @notice Current initial RP commission for 8 ETH minipools
@@ -80,8 +80,8 @@ contract BlockscapeValidatorNFT is
 
         if (tokenIDtoValidator[tokenID] == address(0)) revert();
 
-        if (!BlockscapeStaking.vaultOpen)
-            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
+        if (!BlockscapeVault.vaultOpen)
+            revert ErrorVaultState(BlockscapeVault.vaultOpen);
 
         if (curETHlimit != msg.value) revert();
 
@@ -98,8 +98,8 @@ contract BlockscapeValidatorNFT is
         @notice this gets triggered by the backend controller when a new token is minted
      */
     function withdrawBatch() external onlyRole(RP_BACKEND_ROLE) {
-        if (BlockscapeStaking.vaultOpen)
-            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
+        if (BlockscapeVault.vaultOpen)
+            revert ErrorVaultState(BlockscapeVault.vaultOpen);
         Address.sendValue(blockscapeRocketPoolNode, curETHlimit);
     }
 
@@ -116,10 +116,10 @@ contract BlockscapeValidatorNFT is
         if (address(0) != tokenIDtoValidator[_tokenID]) {
             revert ValidatorAlreadySet(tokenIDtoValidator[_tokenID]);
         }
-        if (BlockscapeStaking.vaultOpen == true)
-            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
+        if (BlockscapeVault.vaultOpen == true)
+            revert ErrorVaultState(BlockscapeVault.vaultOpen);
         tokenIDtoValidator[_tokenID] = _vali;
-        BlockscapeStaking.vaultOpen = true;
+        BlockscapeVault.vaultOpen = true;
     }
 
     /**
@@ -347,7 +347,7 @@ contract BlockscapeValidatorNFT is
 
     /// @notice closes the vault to temporarily prevent further depositing
     function _closeVaultInternal() internal {
-        BlockscapeStaking.vaultOpen = false;
+        BlockscapeVault.vaultOpen = false;
     }
 
     function name() public pure returns (string memory) {

@@ -8,6 +8,9 @@ import "./interfaces/IRocketStorage.sol";
 import "./interfaces/IRocketNodeStaking.sol";
 import "./interfaces/IRocketMinipoolManager.sol";
 
+/// @dev more RPL stake has to be done in order to open vault
+error NotEnoughRPLStake();
+
 // TODO: add all natspec
 contract RocketPoolVars is BlockscapeAccess {
     /// @notice Blockscape Rocket Pool Node Address
