@@ -227,7 +227,7 @@ contract BlockscapeETHStakeNFT is
         @return rewards in wei
         // TODO: Implement or abstract me
      */
-    function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
+    function estRewardsOnChain(uint256 _tokenID) internal view returns (uint256) {
         uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * 0;
         return (0 - wfee);
     }
