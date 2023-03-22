@@ -71,6 +71,14 @@ contract BlockscapeStaking {
     }
 
     /**
+        @notice how much balance does this contract current have
+        @return amount in wei
+     */
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
+
+    /**
         @notice gets the metadata of a given pool
         @param _tokenID identifies the pool
         @return BlockscapeStaking.Metadata of the pool

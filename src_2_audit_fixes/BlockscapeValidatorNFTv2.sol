@@ -246,14 +246,6 @@ contract BlockscapeValidatorNFT is
     }
 
     /**
-        @notice how much balance does this vault current have
-        @return amount in wei
-     */
-    function getBalance() external view returns (uint256) {
-        return address(this).balance;
-    }
-
-    /**
         @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
         @param _tokenID tokenID of the NFT, the user wants to unstake
         @return rewards in wei

@@ -232,14 +232,6 @@ contract BlockscapeETHStakeNFT is
         return (0 - wfee);
     }
 
-    /**
-        @notice how much balance does this vault current have
-        @return amount in wei
-     */
-    function getBalance() external view returns (uint256) {
-        return address(this).balance;
-    }
-
     /// @notice how many staker are there totally
     /// @return total amount of staker
     function totalSupply() external view returns (uint256) {
