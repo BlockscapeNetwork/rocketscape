@@ -7,6 +7,12 @@ error ValidatorAlreadySet(address _vali);
 
 // TODO: add all natspec
 contract BlockscapeStaking {
+    /** 
+        @notice initial tokenID
+        @dev the tokenID is used to identify the ETH NFTs
+    */
+    uint256 tokenID = 1;
+
     /// @notice Current initial withdraw fee
     uint256 public initWithdrawFee = 20 * 1e18;
 
@@ -54,6 +60,14 @@ contract BlockscapeStaking {
         metadata.stakedTimestamp = block.timestamp;
 
         tokenIDtoMetadata[_tokenID] = metadata;
+    }
+
+    /**
+        @notice the tokenID is incremented with every pool
+        @return the current tokenID 
+     */
+    function getTokenID() public view returns (uint256) {
+        return tokenID;
     }
 
     /**

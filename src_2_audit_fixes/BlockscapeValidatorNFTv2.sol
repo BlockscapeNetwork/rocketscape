@@ -32,11 +32,6 @@ contract BlockscapeValidatorNFT is
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
 
-    /** 
-        @notice initial tokenID for the NFTs
-    */
-    uint256 public tokenID = 1;
-
     /// @dev Mappings of tokenID to Validator public key
     mapping(uint256 => address) public tokenIDtoValidator;
 
@@ -248,14 +243,6 @@ contract BlockscapeValidatorNFT is
             curWithdrawFee = 0;
         }
         return curWithdrawFee;
-    }
-
-    /**
-        @notice the tokenID is incremented with every pool
-        @return the current tokenID 
-     */
-    function getTokenID() public view returns (uint256) {
-        return tokenID;
     }
 
     /**

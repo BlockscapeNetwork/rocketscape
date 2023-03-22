@@ -1465,8 +1465,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol": {
-      "lastModificationDate": 1679473895580,
-      "contentHash": "b0c52ab1e19c1db8f0f6286e8b1e5ffb",
+      "lastModificationDate": 1679474137731,
+      "contentHash": "4cfab37f749223caf5d88e45a25c5ad3",
       "sourceName": "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol",
       "solcConfig": {
         "settings": {
@@ -1531,8 +1531,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol": {
-      "lastModificationDate": 1679473920766,
-      "contentHash": "a5ba107c2ddef6d083ac48eeae0db7ab",
+      "lastModificationDate": 1679474148356,
+      "contentHash": "7e5150789cc76f705e0514166e0dbfc4",
       "sourceName": "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
       "solcConfig": {
         "settings": {
@@ -1686,8 +1686,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeStaking.sol": {
-      "lastModificationDate": 1679473906127,
-      "contentHash": "17c562b653d84cc96748e94a812ee655",
+      "lastModificationDate": 1679474116760,
+      "contentHash": "a3993227bc49215a6cb98fb8b3698d48",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeStaking.sol",
       "solcConfig": {
         "settings": {
@@ -2259,8 +2259,8 @@
       }
     },
     "test/BlockscapeValidatorNFTv2.t.sol": {
-      "lastModificationDate": 1679470656644,
-      "contentHash": "477e1f5ff7f629dd5c7269d40f90dcec",
+      "lastModificationDate": 1679474160346,
+      "contentHash": "71bf268e120fb3daaa511800ac858733",
       "sourceName": "test/BlockscapeValidatorNFTv2.t.sol",
       "solcConfig": {
         "settings": {

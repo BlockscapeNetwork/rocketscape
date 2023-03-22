@@ -94,7 +94,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
             value: curETHlimit + 1 ether
         }();
 
-        _depositSoloStaker();
+        // _depositSoloStaker();
 
         //     BlockscapeStaking.Metadata memory shouldBeM;
         //     shouldBeM.stakedETH = curETHlimit;

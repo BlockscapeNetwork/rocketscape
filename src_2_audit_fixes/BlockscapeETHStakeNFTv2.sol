@@ -27,12 +27,6 @@ contract BlockscapeETHStakeNFT is
     /// @notice Current ETH pool supply
     uint256 poolSupply;
 
-    /** 
-        @notice initial tokenID
-        @dev the tokenID is used to identify the ETh Stake NFTs
-    */
-    uint256 tokenID = 1;
-
     /// @dev event for when the NFT stake is updated
     event StakeUpdated(uint256 _tokenID, address _owner, uint256 _newStake);
 
@@ -236,14 +230,6 @@ contract BlockscapeETHStakeNFT is
     function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
         uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * 0;
         return (0 - wfee);
-    }
-
-    /**
-        @notice the tokenID is incremented with every pool
-        @return the current tokenID 
-     */
-    function getTokenID() public view returns (uint256) {
-        return tokenID;
     }
 
     /**
