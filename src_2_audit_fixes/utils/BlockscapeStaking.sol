@@ -40,6 +40,23 @@ contract BlockscapeStaking {
     mapping(uint256 => uint256) public tokenIDToExitReward;
 
     /**
+        @notice creates and mints metadata for a given NFT tokenID
+        @param _stakedETH staked amount from the sender
+        @param _tokenID Identifier of the vault
+    */
+    function _setMetadataForStakeInternal(
+        uint256 _stakedETH,
+        uint256 _tokenID
+    ) internal {
+        Metadata memory metadata;
+
+        metadata.stakedETH = _stakedETH;
+        metadata.stakedTimestamp = block.timestamp;
+
+        tokenIDtoMetadata[_tokenID] = metadata;
+    }
+
+    /**
         @notice gets the metadata of a given pool
         @param _tokenID identifies the pool
         @return BlockscapeStaking.Metadata of the pool

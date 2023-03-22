@@ -92,7 +92,8 @@ contract BlockscapeETHStakeNFT is
         if (msg.value == 0) revert();
 
         // create metadata for the new tokenID
-        _metadataStakeNFTInternal(msg.value, tokenID);
+        _setMetadataForStakeInternal(msg.value, tokenID);
+        _mint(msg.sender, tokenID, 1, "");
 
         tokenID++;
         poolSupply += msg.value;
@@ -289,25 +290,6 @@ contract BlockscapeETHStakeNFT is
     }
 
     // internal functions
-
-    /**
-        @notice creates and mints metadata for a given NFT tokenID
-        @param _stakedETH staked amount from the sender
-        @param _tokenID Identifier of the vault
-    */
-    function _metadataStakeNFTInternal(
-        uint256 _stakedETH,
-        uint256 _tokenID
-    ) internal {
-        BlockscapeStaking.Metadata memory metadata;
-
-        metadata.stakedETH = _stakedETH;
-        metadata.stakedTimestamp = block.timestamp;
-
-        BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
-
-        _mint(msg.sender, _tokenID, 1, "");
-    }
 
     /**
      * @return name of the ERC-1155 token

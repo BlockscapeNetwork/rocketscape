@@ -1465,8 +1465,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol": {
-      "lastModificationDate": 1679460771753,
-      "contentHash": "f2f87ba7969f1a64d87587fe18d8c7d3",
+      "lastModificationDate": 1679473895580,
+      "contentHash": "b0c52ab1e19c1db8f0f6286e8b1e5ffb",
       "sourceName": "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol",
       "solcConfig": {
         "settings": {
@@ -1531,8 +1531,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol": {
-      "lastModificationDate": 1679460723577,
-      "contentHash": "1f74bf0d33b95406042abc3733eb6046",
+      "lastModificationDate": 1679473920766,
+      "contentHash": "a5ba107c2ddef6d083ac48eeae0db7ab",
       "sourceName": "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
       "solcConfig": {
         "settings": {
@@ -1686,8 +1686,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeStaking.sol": {
-      "lastModificationDate": 1679460788373,
-      "contentHash": "98adbb50bc0d0241f6a1d3c562c282fd",
+      "lastModificationDate": 1679473906127,
+      "contentHash": "17c562b653d84cc96748e94a812ee655",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeStaking.sol",
       "solcConfig": {
         "settings": {
@@ -1726,8 +1726,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeVault.sol": {
-      "lastModificationDate": 1679460764705,
-      "contentHash": "6a4ed8731cda7309035569bcb2df425b",
+      "lastModificationDate": 1679473257856,
+      "contentHash": "4dde4805437438fa98091d242e589f06",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeVault.sol",
       "solcConfig": {
         "settings": {
@@ -2176,8 +2176,8 @@
       }
     },
     "test/BlockscapeValidatorNFT_utilsv2.sol": {
-      "lastModificationDate": 1679458254801,
-      "contentHash": "37c0806e384baae064dfe911e9ab3531",
+      "lastModificationDate": 1679469480467,
+      "contentHash": "b07d2227ba85a1d77a85b92b4763ae3a",
       "sourceName": "test/BlockscapeValidatorNFT_utilsv2.sol",
       "solcConfig": {
         "settings": {
@@ -2259,8 +2259,8 @@
       }
     },
     "test/BlockscapeValidatorNFTv2.t.sol": {
-      "lastModificationDate": 1679458254801,
-      "contentHash": "d285d141405d370e073b9ed38dc32123",
+      "lastModificationDate": 1679470656644,
+      "contentHash": "477e1f5ff7f629dd5c7269d40f90dcec",
       "sourceName": "test/BlockscapeValidatorNFTv2.t.sol",
       "solcConfig": {
         "settings": {
@@ -2335,7 +2335,7 @@
         "src_2_audit_fixes/utils/types/MinipoolStatus.sol",
         "test/BlockscapeValidatorNFT_utilsv2.sol"
       ],
-      "versionRequirement": ">=0.8.0, <0.9.0",
+      "versionRequirement": "=0.8.16",
       "artifacts": {
         "BlockscapeValidatorNFTTest": {
           "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFTv2.t.sol/BlockscapeValidatorNFTTest.json"

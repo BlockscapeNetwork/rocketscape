@@ -83,7 +83,8 @@ contract BlockscapeValidatorNFT is
         if (curETHlimit != msg.value) revert IncorrectDepositValueSent();
 
         // create metadata for the new tokenID
-        _metadataValidatorNFTInternal(msg.value, tokenID);
+        _setMetadataForStakeInternal(msg.value, tokenID);
+        _mint(msg.sender, tokenID, 1, "");
 
         tokenID++;
 
@@ -324,25 +325,6 @@ contract BlockscapeValidatorNFT is
     }
 
     // internal functions
-
-    /**
-        @notice creates and mints metadata for a given pool and staker
-        @param _stakedETH staked amount from the sender
-        @param _tokenID Identifier of the vault
-    */
-    function _metadataValidatorNFTInternal(
-        uint256 _stakedETH,
-        uint256 _tokenID
-    ) internal {
-        BlockscapeStaking.Metadata memory metadata;
-
-        metadata.stakedETH = _stakedETH;
-        metadata.stakedTimestamp = block.timestamp;
-
-        BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
-
-        _mint(msg.sender, _tokenID, 1, "");
-    }
 
     function name() public pure returns (string memory) {
         return "Blockscape Validator NFTs";
