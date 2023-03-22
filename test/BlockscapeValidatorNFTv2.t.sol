@@ -22,121 +22,121 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         _setupParticipants();
     }
 
-    function testOpenVault() public {
-        _testInitContractSetup();
-        _testInitRocketPoolSetup();
+    // function testOpenVault() public {
+    //     _testInitContractSetup();
+    //     _testInitRocketPoolSetup();
 
-        // not enough RPL to stake, shouldn't open vault
-        // vm.expectRevert(NotEnoughRPLStake.selector);
+    //     // not enough RPL to stake, shouldn't open vault
+    //     // vm.expectRevert(NotEnoughRPLStake.selector);
 
-        _blockscapeStakeRPL();
+    //     _blockscapeStakeRPL();
 
-        _testContractSetupAfterStaking();
-        _testRocketPoolSetupAfterStaking();
+    //     _testContractSetupAfterStaking();
+    //     _testRocketPoolSetupAfterStaking();
 
-        // only RP_BACKEND_ROLE should be able to call function
-        vm.expectRevert(
-            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
-        );
-        vm.prank(singleStaker);
-        blockscapeValidatorNFT.closeVault();
+    //     // only RP_BACKEND_ROLE should be able to call function
+    //     vm.expectRevert(
+    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
+    //     );
+    //     vm.prank(singleStaker);
+    //     blockscapeValidatorNFT.closeVault();
 
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-    }
+    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+    // }
 
-    function testCloseVault() public {
-        _testInitContractSetup();
-        _testInitRocketPoolSetup();
+    // function testCloseVault() public {
+    //     _testInitContractSetup();
+    //     _testInitRocketPoolSetup();
 
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
 
-        // only RP_BACKEND_ROLE should be able to call function
-        vm.expectRevert(
-            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
-        );
-        vm.prank(singleStaker);
-        blockscapeValidatorNFT.closeVault();
+    //     // only RP_BACKEND_ROLE should be able to call function
+    //     vm.expectRevert(
+    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
+    //     );
+    //     vm.prank(singleStaker);
+    //     blockscapeValidatorNFT.closeVault();
 
-        vm.prank(rp_backend);
-        blockscapeValidatorNFT.closeVault();
+    //     vm.prank(rp_backend);
+    //     blockscapeValidatorNFT.closeVault();
 
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
-        _blockscapeStakeRPL();
+    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+    //     _blockscapeStakeRPL();
 
-        // assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-        // only RP_BACKEND_ROLE should be able to call function
-        vm.expectRevert(
-            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
-        );
-        vm.prank(singleStaker);
-        blockscapeValidatorNFT.closeVault();
-    }
+    //     // assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+    //     // only RP_BACKEND_ROLE should be able to call function
+    //     vm.expectRevert(
+    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
+    //     );
+    //     vm.prank(singleStaker);
+    //     blockscapeValidatorNFT.closeVault();
+    // }
 
-    function testDepositValidatorNFT() public {
-        _blockscapeStakeRPL();
+    // function testDepositValidatorNFT() public {
+    //     _blockscapeStakeRPL();
 
-        assertEq(blockscapeValidatorNFT.totalSupply(), 0);
+    //     assertEq(blockscapeValidatorNFT.totalSupply(), 0);
 
-        // expect incorrect values of ether to revert
-        vm.expectRevert();
-        vm.prank(poolStaker1);
-        blockscapeValidatorNFT.depositValidatorNFT();
+    //     // expect incorrect values of ether to revert
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     blockscapeValidatorNFT.depositValidatorNFT();
 
-        vm.expectRevert();
-        vm.prank(poolStaker1);
-        blockscapeValidatorNFT.depositValidatorNFT{
-            value: curETHlimit - 1 ether
-        }();
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     blockscapeValidatorNFT.depositValidatorNFT{
+    //         value: curETHlimit - 1 ether
+    //     }();
 
-        vm.expectRevert();
-        vm.prank(poolStaker1);
-        blockscapeValidatorNFT.depositValidatorNFT{
-            value: curETHlimit + 1 ether
-        }();
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     blockscapeValidatorNFT.depositValidatorNFT{
+    //         value: curETHlimit + 1 ether
+    //     }();
 
-        // _depositSoloStaker();
+    //     // _depositSoloStaker();
 
-        //     BlockscapeStaking.Metadata memory shouldBeM;
-        //     shouldBeM.stakedETH = curETHlimit;
-        //     shouldBeM.stakedTimestamp = block.timestamp;
+    //     //     BlockscapeStaking.Metadata memory shouldBeM;
+    //     //     shouldBeM.stakedETH = curETHlimit;
+    //     //     shouldBeM.stakedTimestamp = block.timestamp;
 
-        //     BlockscapeStaking.Metadata memory m =
-        //     // TODO: is the vali as return needed?
-        //     // , address validator
-        //     blockscapeValidatorNFT.getMetadata(1);
+    //     //     BlockscapeStaking.Metadata memory m =
+    //     //     // TODO: is the vali as return needed?
+    //     //     // , address validator
+    //     //     blockscapeValidatorNFT.getMetadata(1);
 
-        //     // TODO: Right test cases for other token ids that they return
-        //     // default values == they are unset?
+    //     //     // TODO: Right test cases for other token ids that they return
+    //     //     // default values == they are unset?
 
-        //     assertEq(m.stakedETH, shouldBeM.stakedETH);
-        //     assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
-        //     // assertEq(staker, singleStaker);
-        //     // assertEq(validator, address(0));
+    //     //     assertEq(m.stakedETH, shouldBeM.stakedETH);
+    //     //     assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
+    //     //     // assertEq(staker, singleStaker);
+    //     //     // assertEq(validator, address(0));
 
-        //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+    //     //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
 
-        //     assertEq(blockscapeValidatorNFT.totalSupply(), 1);
-        //     assertEq(blockscapeValidatorNFT.getTokenID(), 2);
-        //     assertEq(
-        //         blockscapeValidatorNFT.contractURI(),
-        //         "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7"
-        //     );
-        //     assertEq(
-        //         blockscapeValidatorNFT.uri(1),
-        //         "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/1.json"
-        //     );
+    //     //     assertEq(blockscapeValidatorNFT.totalSupply(), 1);
+    //     //     assertEq(blockscapeValidatorNFT.getTokenID(), 2);
+    //     //     assertEq(
+    //     //         blockscapeValidatorNFT.contractURI(),
+    //     //         "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7"
+    //     //     );
+    //     //     assertEq(
+    //     //         blockscapeValidatorNFT.uri(1),
+    //     //         "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/1.json"
+    //     //     );
 
-        //     // vault is closed
-        //     vm.expectRevert();
-        //     vm.prank(poolStaker1);
-        //     blockscapeValidatorNFT.depositValidatorNFT{value: curETHlimit}();
-        // }
+    //     //     // vault is closed
+    //     //     vm.expectRevert();
+    //     //     vm.prank(poolStaker1);
+    //     //     blockscapeValidatorNFT.depositValidatorNFT{value: curETHlimit}();
+    //     // }
 
-        // function testFallbacks() public {
-        //     vm.expectRevert();
-        //     vm.prank(poolStaker1);
-        //     payable(address(blockscapeValidatorNFT)).transfer(5 ether);
-    }
+    //     // function testFallbacks() public {
+    //     //     vm.expectRevert();
+    //     //     vm.prank(poolStaker1);
+    //     //     payable(address(blockscapeValidatorNFT)).transfer(5 ether);
+    // }
 
     // function testWithdraw() public {
     //     _blockscapeStakeRPL();

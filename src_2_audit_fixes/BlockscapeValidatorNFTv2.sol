@@ -26,8 +26,15 @@ contract BlockscapeValidatorNFT is
     BlockscapeVault,
     BlockscapeStaking
 {
+
+    /// @notice name constant used for blockexplorers
+    string public constant name = "Blockscape Validator NFTs";
+
+    /// @notice symbol constant used for blockexplorers
+    string public constant symbol = "BSV";
+
     /// @notice Current initial RP commission for 8 ETH minipools
-    uint256 public rpComm8 = 14 wei;
+    uint256 public rpComm8 = 14;
 
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
@@ -303,16 +310,4 @@ contract BlockscapeValidatorNFT is
             );
     }
 
-    // internal functions
-
-    function name() public pure returns (string memory) {
-        return "Blockscape Validator NFTs";
-    }
-
-    /**
-     * @return symbol of the ERC-1155 token
-     */
-    function symbol() public pure returns (string memory) {
-        return "BSV";
-    }
 }

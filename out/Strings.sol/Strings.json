@@ -1,17 +1,17 @@
 {
   "abi": [],
   "bytecode": {
-    "object": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212209ffc09b5724dfe865328a21a4e53e7678125e6aec97e9e2bd593aaa53c2cb89564736f6c63430008100033",
+    "object": "0x60566037600b82828239805160001a607314602a57634e487b7160e01b600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122046de94af5727ee89b603dfb078102b3c37204ef35408605cca53f24ff990179d64736f6c63430008100033",
     "sourceMap": "193:2065:25:-:0;;;;;;;;;;;;;;;-1:-1:-1;;;193:2065:25;;;;;;;;;;;;;;;;;",
     "linkReferences": {}
   },
   "deployedBytecode": {
-    "object": "0x73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212209ffc09b5724dfe865328a21a4e53e7678125e6aec97e9e2bd593aaa53c2cb89564736f6c63430008100033",
+    "object": "0x73000000000000000000000000000000000000000030146080604052600080fdfea264697066735822122046de94af5727ee89b603dfb078102b3c37204ef35408605cca53f24ff990179d64736f6c63430008100033",
     "sourceMap": "193:2065:25:-:0;;;;;;;;",
     "linkReferences": {}
   },
   "methodIdentifiers": {},
-  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"String operations.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"lib/openzeppelin-contracts/contracts/utils/Strings.sol\":\"Strings\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":10000000},\"remappings\":[\":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/utils/Strings.sol\":{\"keccak256\":\"0x9faea797c75b0190cdec513c03e37e56597699fc9370a6e4999112e6aaf4e516\",\"license\":\"BUSL-1.1\",\"urls\":[\"bzz-raw://9e269ac534eaf6ed7cae0d3a46172ca660eb421ba1be44f351d42eeb0b85c606\",\"dweb:/ipfs/QmYrmTSZWRHkSDoeAgxzVmAiHLbmGPQka81sPgp8kJp5wW\"]},\"lib/openzeppelin-contracts/contracts/utils/math/Math.sol\":{\"keccak256\":\"0x56e77dab42aa895fe63b560080ad0f42d1ecdff9c1348a491d32f6328c6bc8ac\",\"license\":\"BUSL-1.1\",\"urls\":[\"bzz-raw://d55b9b5ccbfa098416c1fe0814c40ea4b79c06ade0bd6f01ca62f1321b5b5d04\",\"dweb:/ipfs/QmfKmVX9rvCtb414z7YcUq23yVy829pTkx7CyH5WQdmERm\"]}},\"version\":1}",
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.16+commit.07a7930e\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"String operations.\",\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"lib/openzeppelin-contracts/contracts/utils/Strings.sol\":\"Strings\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":10000000},\"remappings\":[\":@prb/math/=lib/prb-math/src/\",\":@prb/test/=lib/prb-math/lib/prb-test/src/\",\":ds-test/=lib/prb-math/lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/\",\":prb-math/=lib/prb-math/src/\",\":prb-test/=lib/prb-math/lib/prb-test/src/\",\":src/=lib/prb-math/src/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/utils/Strings.sol\":{\"keccak256\":\"0x9faea797c75b0190cdec513c03e37e56597699fc9370a6e4999112e6aaf4e516\",\"license\":\"BUSL-1.1\",\"urls\":[\"bzz-raw://9e269ac534eaf6ed7cae0d3a46172ca660eb421ba1be44f351d42eeb0b85c606\",\"dweb:/ipfs/QmYrmTSZWRHkSDoeAgxzVmAiHLbmGPQka81sPgp8kJp5wW\"]},\"lib/openzeppelin-contracts/contracts/utils/math/Math.sol\":{\"keccak256\":\"0x56e77dab42aa895fe63b560080ad0f42d1ecdff9c1348a491d32f6328c6bc8ac\",\"license\":\"BUSL-1.1\",\"urls\":[\"bzz-raw://d55b9b5ccbfa098416c1fe0814c40ea4b79c06ade0bd6f01ca62f1321b5b5d04\",\"dweb:/ipfs/QmfKmVX9rvCtb414z7YcUq23yVy829pTkx7CyH5WQdmERm\"]}},\"version\":1}",
   "metadata": {
     "compiler": {
       "version": "0.8.16+commit.07a7930e"
@@ -32,9 +32,14 @@
     },
     "settings": {
       "remappings": [
-        ":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+        ":@prb/math/=lib/prb-math/src/",
+        ":@prb/test/=lib/prb-math/lib/prb-test/src/",
+        ":ds-test/=lib/prb-math/lib/forge-std/lib/ds-test/src/",
         ":forge-std/=lib/forge-std/src/",
-        ":openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/"
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/contracts/",
+        ":prb-math/=lib/prb-math/src/",
+        ":prb-test/=lib/prb-math/lib/prb-test/src/",
+        ":src/=lib/prb-math/src/"
       ],
       "optimizer": {
         "enabled": true,

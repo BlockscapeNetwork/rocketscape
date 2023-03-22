@@ -7,6 +7,9 @@ import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 
+import {UD60x18, sqrt, exp, ud, mul, div, intoUint256} from "@prb/math/UD60x18.sol";
+
+
 import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeVault.sol";
 
@@ -26,6 +29,12 @@ contract BlockscapeETHStakeNFT is
 {
     /// @notice Current ETH pool supply
     uint256 poolSupply;
+
+    /// @notice name constant used for blockexplorers
+    string public constant name = "Blockscape ETH Stake NFTs";
+
+    /// @notice symbol constant used for blockexplorers
+    string public constant symbol = "BSS";
 
     /// @dev event for when the NFT stake is updated
     event StakeUpdated(uint256 _tokenID, address _owner, uint256 _newStake);
@@ -124,7 +133,7 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-        @notice used when user wants to unstake
+        @notice used when user wants to u nstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
     function prepareWithdrawProcess(uint256 _tokenID) external {
@@ -225,11 +234,41 @@ contract BlockscapeETHStakeNFT is
         @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
         @param _tokenID tokenID of the NFT, the user wants to unstake
         @return rewards in wei
-        // TODO: Implement or abstract me
+        // TODO: Implement or abstract me -> DONE 
      */
-    function estRewardsOnChain(uint256 _tokenID) internal view returns (uint256) {
-        uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * 0;
-        return (0 - wfee);
+    function calcApr() public view returns (uint256) {
+        // deposit contract ETH balance
+        UD60x18 balanceStaked = ud(
+            address(0x00000000219ab540356cBB839Cbe05303d7705Fa).balance
+        );
+
+        // exp(((31556926 / 384) * 64) / 31622 / sqrt(balanceStaked)) - 1) * 100 - 0.5
+        // 31556926 = seconds per year
+        // 384 = seconds per epoch
+        // 31556926 / 384 = epochs per year
+        // 64 = BASE_REWARD_FACTOR
+        // 31622 = sqrt(gwei per ETH)
+        // 166.32368815e18 = ((31556926 / 384) * 64) / 31622
+        uint256 baseAPR = (intoUint256(exp(div(ud(166.32368815e18), sqrt(balanceStaked)))) - 1e18) * 100 - 5e17;
+        uint256 ethreturn = (baseAPR * 16) / 100;
+
+        uint256 mevreturn = 0.23e18; // estimated MEV return
+        uint256 feereturn = 0.23e18; // estimated fee return
+        uint256 commission = (15 * ethreturn) / 100; // rp commission
+
+        uint256 totalETHReturn = ethreturn + mevreturn + feereturn + commission;
+
+        return (totalETHReturn / 16) * 100;
+    }
+
+    function calcRewards(uint256 _tokenID) internal view returns (uint256) {
+        uint256 secRewards = calcApr() / 365 days;
+        uint256 secStaked = block.timestamp - tokenIDtoMetadata[_tokenID].stakedTimestamp; 
+        uint256 rewards = tokenIDtoMetadata[_tokenID].stakedETH * dailyRewards * secStaked;
+        uint256 balanceComm = (rpComm8 * (balance * 3)) / 100;
+
+        uint256 wFee = rewards * calcWithdrawFee(_tokenID, msg.sender);
+        return (rewards - wfee);
     }
 
     /// @notice how many staker are there totally
@@ -267,19 +306,4 @@ contract BlockscapeETHStakeNFT is
             );
     }
 
-    // internal functions
-
-    /**
-     * @return name of the ERC-1155 token
-     */
-    function name() public pure returns (string memory) {
-        return "Blockscape ETH Stake NFTs";
-    }
-
-    /**
-     * @return symbol of the ERC-1155 token
-     */
-    function symbol() public pure returns (string memory) {
-        return "BSS";
-    }
 }

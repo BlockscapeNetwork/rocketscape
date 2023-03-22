@@ -10,19 +10,19 @@
   },
   "ast": {
     "absolutePath": "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
-    "id": 32283,
+    "id": 38414,
     "exportedSymbols": {
       "MinipoolDeposit": [
-        32282
+        38413
       ]
     },
     "nodeType": "SourceUnit",
-    "src": "0:554:43",
+    "src": "0:554:65",
     "nodes": [
       {
-        "id": 32277,
+        "id": 38408,
         "nodeType": "PragmaDirective",
-        "src": "0:23:43",
+        "src": "0:23:65",
         "nodes": [],
         "literals": [
           "solidity",
@@ -31,46 +31,46 @@
         ]
       },
       {
-        "id": 32282,
+        "id": 38413,
         "nodeType": "EnumDefinition",
-        "src": "126:427:43",
+        "src": "126:427:65",
         "nodes": [],
         "canonicalName": "MinipoolDeposit",
         "members": [
           {
-            "id": 32278,
+            "id": 38409,
             "name": "None",
-            "nameLocation": "153:4:43",
+            "nameLocation": "153:4:65",
             "nodeType": "EnumValue",
-            "src": "153:4:43"
+            "src": "153:4:65"
           },
           {
-            "id": 32279,
+            "id": 38410,
             "name": "Full",
-            "nameLocation": "196:4:43",
+            "nameLocation": "196:4:65",
             "nodeType": "EnumValue",
-            "src": "196:4:43"
+            "src": "196:4:65"
           },
           {
-            "id": 32280,
+            "id": 38411,
             "name": "Half",
-            "nameLocation": "316:4:43",
+            "nameLocation": "316:4:65",
             "nodeType": "EnumValue",
-            "src": "316:4:43"
+            "src": "316:4:65"
           },
           {
-            "id": 32281,
+            "id": 38412,
             "name": "Empty",
-            "nameLocation": "426:5:43",
+            "nameLocation": "426:5:65",
             "nodeType": "EnumValue",
-            "src": "426:5:43"
+            "src": "426:5:65"
           }
         ],
         "name": "MinipoolDeposit",
-        "nameLocation": "131:15:43"
+        "nameLocation": "131:15:65"
       }
     ],
     "license": "GPL-3.0-only"
   },
-  "id": 43
+  "id": 65
 }
