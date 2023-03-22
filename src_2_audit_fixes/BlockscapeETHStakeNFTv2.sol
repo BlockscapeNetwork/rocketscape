@@ -9,7 +9,6 @@ import "openzeppelin-contracts/utils/Strings.sol";
 
 import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeAccess.sol";
-import "./utils/RocketPoolVars.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -20,8 +19,7 @@ contract BlockscapeETHStakeNFT is
     ERC1155Supply,
     ReentrancyGuard,
     BlockscapeAccess,
-    BlockscapeStaking,
-    RocketPoolVars
+    BlockscapeStaking
 {
     /// @notice Current ETH pool supply
     uint256 poolSupply;
@@ -54,11 +52,8 @@ contract BlockscapeETHStakeNFT is
             "TBD/"
             "{id}.json"
         )
-    {
-        // TODO: Also _grantRoles here? -> if yes then put in BlockscapeStaking constructor
-        _grantRole(ADJ_CONFIG_ROLE, msg.sender);
-        _grantRole(RP_BACKEND_ROLE, blockscapeRocketPoolNode);
-    }
+        BlockscapeStaking()
+    {}
 
     /**
      * @dev needed as the OZ ERC1155 && AccessControl does both implement the supportsInterface function
@@ -74,13 +69,15 @@ contract BlockscapeETHStakeNFT is
     // public & external functions
 
     /**
-        @notice withdraw the given amount to the backend, triggered when the acciount balance is above 16 ETH or 8 ETH (RPIP-8)
+        @notice withdraw the given amount to the backend, triggered when the account balance is above 16 ETH or 8 ETH (RPIP-8)
         @dev the withdraw function remains public as safety measurement to
         not lock-in client stakes in case of contract issues
-        @param _amount the amount in wei to withdraw
+        param _amount the amount in wei to withdraw
+        // TODO: does it use _amount?
      */
     function withdrawForMinipool() external onlyRole(RP_BACKEND_ROLE) {
-        if (vaultOpen) revert ErrorVaultState(vaultOpen);
+        if (BlockscapeStaking.vaultOpen)
+            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
         Address.sendValue(blockscapeRocketPoolNode, 8 ether);
     }
 
@@ -136,12 +133,6 @@ contract BlockscapeETHStakeNFT is
 
     /**
         @notice used when user wants to unstake
-        @param _tokenID is the tokenID of the NFT
-        @return _amount how much the user gets back
-     */
-
-    /**
-        @notice used when user wants to unstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
     function prepareWithdrawProcess(uint256 _tokenID) external {
@@ -156,7 +147,7 @@ contract BlockscapeETHStakeNFT is
                 msg.sender,
                 curWithdrawFee,
                 BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
-                estRewardsNoMEV(_tokenID) // TODO: here is another function needed to get the correct rewards on-chain 
+                estRewardsNoMEV(_tokenID) // TODO: here is another function needed to get the correct rewards on-chain
             );
         }
     }
@@ -214,7 +205,7 @@ contract BlockscapeETHStakeNFT is
         @return _amount how much the user would pay on fees
      */
     function calcWithdrawFee(
-        // TODO: dispite the same name, we might need to change the func (&name, like calcWithdrawFeePool ) for the pool staking to be abple to calc the ETh rewards complety only on-chain... TBD 
+        // TODO: dispite the same name, we might need to change the func (&name, like calcWithdrawFeePool ) for the pool staking to be abple to calc the ETh rewards complety only on-chain... TBD
         uint256 _tokenID,
         address _user
     ) public view returns (uint256 _amount) {
@@ -236,6 +227,17 @@ contract BlockscapeETHStakeNFT is
             curWithdrawFee = 0;
         }
         return curWithdrawFee;
+    }
+
+    /**
+        @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
+        @param _tokenID tokenID of the NFT, the user wants to unstake
+        @return rewards in wei
+        // TODO: Implement or abstract me
+     */
+    function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
+        uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * 0;
+        return (0 - wfee);
     }
 
     /**

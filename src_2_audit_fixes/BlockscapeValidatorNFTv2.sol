@@ -10,16 +10,6 @@ import "openzeppelin-contracts/utils/Strings.sol";
 
 import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeAccess.sol";
-import "./utils/RocketPoolVars.sol";
-
-/// @dev more RPL stake has to be done in order to open vault
-error NotEnoughRPLStake();
-
-/// @dev for a token the validator can only be set once otherwise revert
-error ValidatorAlreadySet(address _vali);
-
-/// @dev for a token the validator can only be set once otherwise revert
-error ErrorVaultState(bool _isOpen);
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -31,21 +21,13 @@ contract BlockscapeValidatorNFT is
     ERC1155Supply,
     ReentrancyGuard,
     BlockscapeAccess,
-    BlockscapeStaking,
-    RocketPoolVars
+    BlockscapeStaking
 {
     /// @notice Current initial RP commission for 8 ETH minipools
     uint256 public rpComm8 = 14;
 
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
-
-    /**
-        @notice state of the Validator Vault
-        @dev is `false` when validator is currently onboarding, will be reopened, as soon as 
-        the backend controller withdraws the ETH batch & stakes it
-    */
-    bool public vaultOpen = true;
 
     /** 
         @notice initial tokenID for the NFTs
@@ -60,9 +42,6 @@ contract BlockscapeValidatorNFT is
 
     /// @dev Mappings of tokenID to Validator public key
     mapping(uint256 => address) public tokenIDtoValidator;
-
-    /// @dev Mappings of tokenID to timestamp to track a request withdrawal
-    mapping(address => uint256) public senderToTimestamp;
 
     /// @dev event for when the ETH limit is changed
     event ETHLimitChanged(uint256 _newLimit);
@@ -79,10 +58,8 @@ contract BlockscapeValidatorNFT is
             "k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/"
             "{id}.json"
         )
-    {
-        _grantRole(ADJ_CONFIG_ROLE, msg.sender);
-        _grantRole(RP_BACKEND_ROLE, blockscapeRocketPoolNode);
-    }
+        BlockscapeStaking()
+    {}
 
     /**
      * @dev needed as the OZ ERC1155 && AccessControl does both implement the supportsInterface function
@@ -96,24 +73,6 @@ contract BlockscapeValidatorNFT is
     // functions
     // public & external functions
 
-    /// @notice makes the vault stakable again after it has been closed
-    /// @dev is triggered when the vault can be staked at rocketpool
-    function openVault() public onlyRole(RP_BACKEND_ROLE) {
-        if (!RocketPoolVars.hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
-
-        if (vaultOpen) revert();
-
-        vaultOpen = true;
-    }
-
-    /**
-        @notice is triggered when the vault can be staked at rocketpool
-        @dev future staking interactions are prevented afterwards
-     */
-    function closeVault() external onlyRole(RP_BACKEND_ROLE) {
-        vaultOpen = false;
-    }
-
     /// @notice used when staking eth into the contract
     /// @dev the vault must be open and equal the depositing amount
     function depositValidatorNFT() external payable {
@@ -121,7 +80,8 @@ contract BlockscapeValidatorNFT is
 
         if (tokenIDtoValidator[tokenID] == address(0)) revert();
 
-        if (!vaultOpen) revert ErrorVaultState(vaultOpen);
+        if (!BlockscapeStaking.vaultOpen)
+            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
 
         if (curETHlimit != msg.value) revert();
 
@@ -138,7 +98,8 @@ contract BlockscapeValidatorNFT is
         @notice this gets triggered by the backend controller when a new token is minted
      */
     function withdrawBatch() external onlyRole(RP_BACKEND_ROLE) {
-        if (vaultOpen) revert ErrorVaultState(vaultOpen);
+        if (BlockscapeStaking.vaultOpen)
+            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
         Address.sendValue(blockscapeRocketPoolNode, curETHlimit);
     }
 
@@ -155,9 +116,10 @@ contract BlockscapeValidatorNFT is
         if (address(0) != tokenIDtoValidator[_tokenID]) {
             revert ValidatorAlreadySet(tokenIDtoValidator[_tokenID]);
         }
-        if (vaultOpen == true) revert ErrorVaultState(vaultOpen);
+        if (BlockscapeStaking.vaultOpen == true)
+            revert ErrorVaultState(BlockscapeStaking.vaultOpen);
         tokenIDtoValidator[_tokenID] = _vali;
-        vaultOpen = true;
+        BlockscapeStaking.vaultOpen = true;
     }
 
     /**
@@ -249,16 +211,6 @@ contract BlockscapeValidatorNFT is
     }
 
     // view / pure functions
-
-    /** 
-        @notice does the vault currently allow depositing
-        @dev the backend controller will reopen then vault after the stake
-        have been transferred
-        @return is depositing enabled
-    */
-    function isVaultOpen() public view returns (bool) {
-        return vaultOpen;
-    }
 
     /**
         @notice the current depositing threshold
@@ -395,7 +347,7 @@ contract BlockscapeValidatorNFT is
 
     /// @notice closes the vault to temporarily prevent further depositing
     function _closeVaultInternal() internal {
-        vaultOpen = false;
+        BlockscapeStaking.vaultOpen = false;
     }
 
     function name() public pure returns (string memory) {
