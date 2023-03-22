@@ -8,8 +8,10 @@ import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 
 import "./utils/BlockscapeStaking.sol";
-import "./utils/BlockscapeAccess.sol";
-import "./utils/RocketPoolVars.sol";
+import "./utils/BlockscapeVault.sol";
+
+/// @dev you first need to depositStakeNFT before you can updateStake
+error YouDontOwnThisNft(uint256 tokenID);
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -19,24 +21,11 @@ import "./utils/RocketPoolVars.sol";
 contract BlockscapeETHStakeNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    BlockscapeAccess,
-    BlockscapeStaking,
-    RocketPoolVars
+    BlockscapeVault,
+    BlockscapeStaking
 {
     /// @notice Current ETH pool supply
     uint256 poolSupply;
-
-    /**
-        @notice state of the Solo Vault Pool
-        @dev is `false` when pool is full, will be reopened, as soon as 
-        the backend controller withdraws & transfers the stake
-    */
-
-    /** 
-        @notice initial tokenID
-        @dev the tokenID is used to identify the ETh Stake NFTs
-    */
-    uint256 tokenID = 1;
 
     /// @dev event for when the NFT stake is updated
     event StakeUpdated(uint256 _tokenID, address _owner, uint256 _newStake);
@@ -54,11 +43,8 @@ contract BlockscapeETHStakeNFT is
             "TBD/"
             "{id}.json"
         )
-    {
-        // TODO: Also _grantRoles here? -> if yes then put in BlockscapeStaking constructor
-        _grantRole(ADJ_CONFIG_ROLE, msg.sender);
-        _grantRole(RP_BACKEND_ROLE, blockscapeRocketPoolNode);
-    }
+        BlockscapeStaking()
+    {}
 
     /**
      * @dev needed as the OZ ERC1155 && AccessControl does both implement the supportsInterface function
@@ -74,13 +60,15 @@ contract BlockscapeETHStakeNFT is
     // public & external functions
 
     /**
-        @notice withdraw the given amount to the backend, triggered when the acciount balance is above 16 ETH or 8 ETH (RPIP-8)
+        @notice withdraw the given amount to the backend, triggered when the account balance is above 16 ETH or 8 ETH (RPIP-8)
         @dev the withdraw function remains public as safety measurement to
         not lock-in client stakes in case of contract issues
-        @param _amount the amount in wei to withdraw
+        param _amount the amount in wei to withdraw
+        // TODO: does it use _amount?
      */
     function withdrawForMinipool() external onlyRole(RP_BACKEND_ROLE) {
-        if (vaultOpen) revert ErrorVaultState(vaultOpen);
+        if (BlockscapeVault.vaultOpen)
+            revert ErrorVaultState(BlockscapeVault.vaultOpen);
         Address.sendValue(blockscapeRocketPoolNode, 8 ether);
     }
 
@@ -98,7 +86,8 @@ contract BlockscapeETHStakeNFT is
         if (msg.value == 0) revert();
 
         // create metadata for the new tokenID
-        _metadataStakeNFTInternal(msg.value, tokenID);
+        _setMetadataForStakeInternal(msg.value, tokenID);
+        _mint(msg.sender, tokenID, 1, "");
 
         tokenID++;
         poolSupply += msg.value;
@@ -130,15 +119,9 @@ contract BlockscapeETHStakeNFT is
                 BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH
             );
         } else {
-            revert("You do not own this NFT");
+            revert YouDontOwnThisNft(_tokenID);
         }
     }
-
-    /**
-        @notice used when user wants to unstake
-        @param _tokenID is the tokenID of the NFT
-        @return _amount how much the user gets back
-     */
 
     /**
         @notice used when user wants to unstake
@@ -156,7 +139,7 @@ contract BlockscapeETHStakeNFT is
                 msg.sender,
                 curWithdrawFee,
                 BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
-                estRewardsNoMEV(_tokenID) // TODO: here is another function needed to get the correct rewards on-chain 
+                estRewardsNoMEV(_tokenID) // TODO: here is another function needed to get the correct rewards on-chain
             );
         }
     }
@@ -214,7 +197,7 @@ contract BlockscapeETHStakeNFT is
         @return _amount how much the user would pay on fees
      */
     function calcWithdrawFee(
-        // TODO: dispite the same name, we might need to change the func (&name, like calcWithdrawFeePool ) for the pool staking to be abple to calc the ETh rewards complety only on-chain... TBD 
+        // TODO: dispite the same name, we might need to change the func (&name, like calcWithdrawFeePool ) for the pool staking to be abple to calc the ETh rewards complety only on-chain... TBD
         uint256 _tokenID,
         address _user
     ) public view returns (uint256 _amount) {
@@ -239,19 +222,14 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-        @notice the tokenID is incremented with every pool
-        @return the current tokenID 
+        @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
+        @param _tokenID tokenID of the NFT, the user wants to unstake
+        @return rewards in wei
+        // TODO: Implement or abstract me
      */
-    function getTokenID() public view returns (uint256) {
-        return tokenID;
-    }
-
-    /**
-        @notice how much balance does this vault current have
-        @return amount in wei
-     */
-    function getBalance() external view returns (uint256) {
-        return address(this).balance;
+    function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
+        uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * 0;
+        return (0 - wfee);
     }
 
     /// @notice how many staker are there totally
@@ -290,25 +268,6 @@ contract BlockscapeETHStakeNFT is
     }
 
     // internal functions
-
-    /**
-        @notice creates and mints metadata for a given NFT tokenID
-        @param _stakedETH staked amount from the sender
-        @param _tokenID Identifier of the vault
-    */
-    function _metadataStakeNFTInternal(
-        uint256 _stakedETH,
-        uint256 _tokenID
-    ) internal {
-        BlockscapeStaking.Metadata memory metadata;
-
-        metadata.stakedETH = _stakedETH;
-        metadata.stakedTimestamp = block.timestamp;
-
-        BlockscapeStaking.tokenIDtoMetadata[_tokenID] = metadata;
-
-        _mint(msg.sender, _tokenID, 1, "");
-    }
 
     /**
      * @return name of the ERC-1155 token

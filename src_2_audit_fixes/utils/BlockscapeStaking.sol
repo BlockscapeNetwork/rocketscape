@@ -2,15 +2,22 @@ pragma solidity 0.8.16;
 
 // SPDX-License-Identifier: BUSL-1.1
 
-/// @dev more RPL stake has to be done in order to open vault
-// TODO: Do we need this also for StakeNFT? -> if yes uncomment, if no delete here
-// TODO: Check also other error types in validator if can be shared
-// error NotEnoughRPLStake();
+/// @dev for a token the validator can only be set once otherwise revert
+error ValidatorAlreadySet(address _vali);
 
 // TODO: add all natspec
 contract BlockscapeStaking {
+    /** 
+        @notice initial tokenID
+        @dev the tokenID is used to identify the ETH NFTs
+    */
+    uint256 tokenID = 1;
+
     /// @notice Current initial withdraw fee
     uint256 public initWithdrawFee = 20 * 1e18;
+
+    /// @dev Mappings of tokenID to timestamp to track a request withdrawal
+    mapping(address => uint256) public senderToTimestamp;
 
     /// @dev Metadata struct
     struct Metadata {
@@ -37,7 +44,39 @@ contract BlockscapeStaking {
 
     /// @dev Mappings of tokenID to the final exit reward for the staker
     mapping(uint256 => uint256) public tokenIDToExitReward;
-    
+
+    /**
+        @notice creates and mints metadata for a given NFT tokenID
+        @param _stakedETH staked amount from the sender
+        @param _tokenID Identifier of the vault
+    */
+    function _setMetadataForStakeInternal(
+        uint256 _stakedETH,
+        uint256 _tokenID
+    ) internal {
+        Metadata memory metadata;
+
+        metadata.stakedETH = _stakedETH;
+        metadata.stakedTimestamp = block.timestamp;
+
+        tokenIDtoMetadata[_tokenID] = metadata;
+    }
+
+    /**
+        @notice the tokenID is incremented with every pool
+        @return the current tokenID 
+     */
+    function getTokenID() public view returns (uint256) {
+        return tokenID;
+    }
+
+    /**
+        @notice how much balance does this contract current have
+        @return amount in wei
+     */
+    function getBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
 
     /**
         @notice gets the metadata of a given pool

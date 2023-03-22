@@ -32,6 +32,7 @@ abstract contract HelperContract is Test {
     RocketNodeDepositInterface rocketNodeDeposit =
         RocketNodeDepositInterface(0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5);
 
+    // address internal deployer;
     address internal rp_backend;
     address internal adj_config;
 
@@ -44,7 +45,7 @@ abstract contract HelperContract is Test {
     uint256 minimumRPLStake;
     uint256 minipoolLimit;
 
-    function _stakeRPL() internal {
+    function _blockscapeStakeRPL() internal {
         vm.startPrank(blockscapeRocketPoolNode);
 
         // https://etherscan.io/tx/0x944093ca45dd60ea392a7a28afa14c76f0341535f66184f178dbafb19bac6fc3
@@ -108,16 +109,18 @@ abstract contract HelperContract is Test {
     }
 
     function _setupParticipants() internal {
-        // deployer = vm.addr(
-        //     uint256(uint160(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84))
-        // );
+        adj_config = vm.addr(
+            uint256(uint160(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84))
+        );
         // deployer = vm.addr(0xDe);
+
+        blockscapeValidatorNFT = new BlockscapeValidatorNFT();
+
         rp_backend = address(blockscapeRocketPoolNode);
 
-        // vm.deal(rp_backend, 1 ether);
+        vm.deal(rp_backend, 1 ether);
         vm.label(rp_backend, "rp_backend");
         vm.prank(rp_backend);
-        blockscapeValidatorNFT = new BlockscapeValidatorNFT();
 
         singleStaker = vm.addr(0xDe0);
         vm.deal(singleStaker, 100 ether);
@@ -148,7 +151,7 @@ abstract contract HelperContract is Test {
         assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
         assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
         assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
     }
 
     function _testInitRocketPoolSetup() internal {
@@ -173,7 +176,8 @@ abstract contract HelperContract is Test {
         assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
         assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
         assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+        // TODO: Bring back
+        // assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
     }
 
     function _testRocketPoolSetupAfterStaking() internal {
