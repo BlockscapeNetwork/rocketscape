@@ -5,3 +5,7 @@
 	path = lib/openzeppelin-contracts
 	url = https://github.com/Openzeppelin/openzeppelin-contracts
 
+[submodule "lib/prb-math"]
+	path = lib/prb-math
+	url = https://github.com/PaulRBerg/prb-math
+	branch = v3
