@@ -1,6 +1,7 @@
 pragma solidity 0.8.16;
 
 // SPDX-License-Identifier: BUSL-1.1
+import {console} from "forge-std/console.sol";
 
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
@@ -56,8 +57,12 @@ contract BlockscapeValidatorNFT is
             "k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/"
             "{id}.json"
         )
-        BlockscapeVault()
         BlockscapeStaking()
+        BlockscapeVault(
+            msg.sender,
+            RocketPoolVars.blockscapeRocketPoolNode,
+            msg.sender
+        )
     {}
 
     /**

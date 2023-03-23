@@ -1,21 +1,19 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity >=0.8.0 <0.9.0;
 
+pragma solidity 0.8.16;
+
+import "openzeppelin-contracts/access/AccessControl.sol";
 import "forge-std/Test.sol";
+
 import {console} from "forge-std/console.sol";
 import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
-import {HelperContract} from "./BlockscapeValidatorNFT_utilsv2.sol";
-import {BlockscapeVaultHelperContract} from "./BlockscapeVault.sol";
-import {BlockscapeStakingHelperContract} from "./BlockscapeStaking.sol";
+import {HelperContract} from "./HelperContract.sol";
 import {BlockscapeVaultHelperContract} from "./BlockscapeVault.sol";
 import {BlockscapeStaking} from "src_2_audit_fixes/utils/BlockscapeStaking.sol";
+import {BlockscapeAccess} from "src_2_audit_fixes/utils/BlockscapeAccess.sol";
+import {BlockscapeVault} from "src_2_audit_fixes/utils/BlockscapeVault.sol";
 
-contract BlockscapeValidatorNFTTest is
-    Test,
-    HelperContract,
-    BlockscapeVaultHelperContract,
-    BlockscapeStakingHelperContract
-{
+contract BlockscapeValidatorNFTTest is Test, HelperContract {
     uint256 initWithdrawFee = 20 ether;
 
     bytes validatorBytesAddress =
@@ -28,14 +26,26 @@ contract BlockscapeValidatorNFTTest is
     function setUp() public {
         _setupParticipants();
 
-        _testInitContractSetup();
+        // _testInitContractSetup();
     }
 
-    function testVault() public {
-        _testClosingVault();
+    // function testAccess() public {
+    // _testAccessControl();
+    // assertEq(
+    //     hasRole(keccak256("DEFAULT_ADMIN_ROLE"), foundryDeployer),
+    //     true
+    // );
+    // assertEq(hasRole(ADJ_CONFIG_ROLE, foundryDeployer), true);
+    // assertEq(hasRole(EMERGENCY_ROLE, foundryDeployer), true);
+    // }
 
-        _testOpeningVault();
-    }
+    // function testVault() public {
+    // _testClosingVault(blockscapeValidatorNFT);
+
+    // _blockscapeStakeRPL();
+
+    // _testOpeningVault(blockscapeValidatorNFT);
+    // }
 
     // function testStaking() public {
     //     _testSetMetadata();

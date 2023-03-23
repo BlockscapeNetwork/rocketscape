@@ -17,10 +17,14 @@ abstract contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
     */
     bool public vaultOpen = true;
 
-    constructor() {
-        _grantRole(ADJ_CONFIG_ROLE, msg.sender);
-        _grantRole(RP_BACKEND_ROLE, RocketPoolVars.blockscapeRocketPoolNode);
-        _grantRole(EMERGENCY_ROLE, msg.sender);
+    constructor(
+        address adj_config_role,
+        address rp_backend_role,
+        address emergency_role
+    ) {
+        _grantRole(ADJ_CONFIG_ROLE, adj_config_role);
+        _grantRole(RP_BACKEND_ROLE, rp_backend_role);
+        _grantRole(EMERGENCY_ROLE, emergency_role);
     }
 
     /// @notice makes the vault stakable again after it has been closed

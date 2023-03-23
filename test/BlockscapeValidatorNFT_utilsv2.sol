@@ -8,6 +8,8 @@ import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2
 import {RocketPoolHelperContract} from "./RocketPool.sol";
 
 abstract contract HelperContract is Test, RocketPoolHelperContract {
+    address foundryDeployer = 0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84;
+
     uint256 immutable curETHlimit = 16 ether;
 
     BlockscapeValidatorNFT blockscapeValidatorNFT;
@@ -26,19 +28,16 @@ abstract contract HelperContract is Test, RocketPoolHelperContract {
     uint256 minimumRPLStake;
     uint256 minipoolLimit;
 
-    constructor() {
+    constructor() {}
+
+    function _setupParticipants() internal {
+        vm.prank(foundryDeployer);
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
 
         blockscapeValidatorNFT.getCurrentEthLimit();
-    }
 
-    function _setupParticipants() internal {
-        adj_config_role = vm.addr(
-            uint256(uint160(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84))
-        );
-        emergency_role = vm.addr(
-            uint256(uint160(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84))
-        );
+        adj_config_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
+        emergency_role = vm.addr(uint256(uint160(foundryDeployer)));
         // deployer = vm.addr(0xDe);
 
         rp_backend_role = address(blockscapeRocketPoolNode);
