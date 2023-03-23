@@ -12,7 +12,10 @@ import "./interfaces/IRocketMinipoolManager.sol";
 error NotEnoughRPLStake();
 
 // TODO: add all natspec
-abstract contract RocketPoolVars is BlockscapeAccess {
+contract RocketPoolVars is BlockscapeAccess {
+    /// @notice Current initial RP commission for 8 ETH minipools
+    uint256 public rpComm8 = 14;
+
     /// @notice Blockscape Rocket Pool Node Address
     address payable public blockscapeRocketPoolNode =
         payable(0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982); //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5;

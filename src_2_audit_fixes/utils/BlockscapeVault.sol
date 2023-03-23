@@ -17,15 +17,20 @@ abstract contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
     */
     bool public vaultOpen = true;
 
-    constructor() {
-        _grantRole(ADJ_CONFIG_ROLE, msg.sender);
-        _grantRole(RP_BACKEND_ROLE, RocketPoolVars.blockscapeRocketPoolNode);
+    constructor(
+        address adj_config_role,
+        address rp_backend_role,
+        address emergency_role
+    ) {
+        _grantRole(ADJ_CONFIG_ROLE, adj_config_role);
+        _grantRole(RP_BACKEND_ROLE, rp_backend_role);
+        _grantRole(EMERGENCY_ROLE, emergency_role);
     }
 
     /// @notice makes the vault stakable again after it has been closed
     /// @dev is triggered when the vault can be staked at rocketpool
     // TODO: Is further visibility needed here?
-    function openVault() public onlyRole(RP_BACKEND_ROLE) {
+    function openVault() public onlyRole(EMERGENCY_ROLE) {
         if (!RocketPoolVars.hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
         // TODO: revert Error()?
@@ -44,7 +49,7 @@ abstract contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
         @notice is triggered when the vault can be staked at rocketpool
         @dev future staking interactions are prevented afterwards
      */
-    function closeVault() external onlyRole(RP_BACKEND_ROLE) {
+    function closeVault() external onlyRole(EMERGENCY_ROLE) {
         vaultOpen = false;
     }
 

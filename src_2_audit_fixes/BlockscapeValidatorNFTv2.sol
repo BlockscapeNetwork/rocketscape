@@ -1,6 +1,7 @@
 pragma solidity 0.8.16;
 
 // SPDX-License-Identifier: BUSL-1.1
+import {console} from "forge-std/console.sol";
 
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
@@ -14,6 +15,9 @@ import "./utils/BlockscapeVault.sol";
 /// @dev Deposit value needs to align with RP poolsizes as specified in `curETHlimit`
 error IncorrectDepositValueSent();
 
+// TODO: @dev
+error AlreadyPreparingForWithdrawal();
+
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
@@ -26,15 +30,11 @@ contract BlockscapeValidatorNFT is
     BlockscapeVault,
     BlockscapeStaking
 {
-
     /// @notice name constant used for blockexplorers
     string public constant name = "Blockscape Validator NFTs";
 
     /// @notice symbol constant used for blockexplorers
     string public constant symbol = "BSV";
-
-    /// @notice Current initial RP commission for 8 ETH minipools
-    uint256 public rpComm8 = 14;
 
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
@@ -58,6 +58,11 @@ contract BlockscapeValidatorNFT is
             "{id}.json"
         )
         BlockscapeStaking()
+        BlockscapeVault(
+            msg.sender,
+            RocketPoolVars.blockscapeRocketPoolNode,
+            msg.sender
+        )
     {}
 
     /**
@@ -129,7 +134,8 @@ contract BlockscapeValidatorNFT is
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
     function prepareWithdrawProcess(uint256 _tokenID) external {
-        if (senderToTimestamp[msg.sender] <= 0) revert();
+        if (senderToTimestamp[msg.sender] != 0)
+            revert AlreadyPreparingForWithdrawal();
 
         uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
 
@@ -309,5 +315,4 @@ contract BlockscapeValidatorNFT is
                 ".json"
             );
     }
-
 }
