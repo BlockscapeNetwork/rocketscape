@@ -10,17 +10,17 @@
   },
   "ast": {
     "absolutePath": "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
-    "id": 39080,
+    "id": 39118,
     "exportedSymbols": {
       "MinipoolDeposit": [
-        39079
+        39117
       ]
     },
     "nodeType": "SourceUnit",
     "src": "0:554:67",
     "nodes": [
       {
-        "id": 39074,
+        "id": 39112,
         "nodeType": "PragmaDirective",
         "src": "0:23:67",
         "nodes": [],
@@ -31,35 +31,35 @@
         ]
       },
       {
-        "id": 39079,
+        "id": 39117,
         "nodeType": "EnumDefinition",
         "src": "126:427:67",
         "nodes": [],
         "canonicalName": "MinipoolDeposit",
         "members": [
           {
-            "id": 39075,
+            "id": 39113,
             "name": "None",
             "nameLocation": "153:4:67",
             "nodeType": "EnumValue",
             "src": "153:4:67"
           },
           {
-            "id": 39076,
+            "id": 39114,
             "name": "Full",
             "nameLocation": "196:4:67",
             "nodeType": "EnumValue",
             "src": "196:4:67"
           },
           {
-            "id": 39077,
+            "id": 39115,
             "name": "Half",
             "nameLocation": "316:4:67",
             "nodeType": "EnumValue",
             "src": "316:4:67"
           },
           {
-            "id": 39078,
+            "id": 39116,
             "name": "Empty",
             "nameLocation": "426:5:67",
             "nodeType": "EnumValue",

@@ -15,4 +15,7 @@ abstract contract BlockscapeAccess is AccessControl {
 
     /// @dev role for the backendController executer
     bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
+
+    /// @dev role to open / close vault in cases of emergencies
+    bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 }
