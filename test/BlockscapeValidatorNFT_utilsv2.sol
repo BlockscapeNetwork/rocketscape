@@ -5,7 +5,7 @@ pragma solidity 0.8.16;
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
-import {RocketPoolHelperContract} from "./RocketPool_utils.sol";
+import {RocketPoolHelperContract} from "./RocketPool.sol";
 
 abstract contract HelperContract is Test, RocketPoolHelperContract {
     uint256 immutable curETHlimit = 16 ether;

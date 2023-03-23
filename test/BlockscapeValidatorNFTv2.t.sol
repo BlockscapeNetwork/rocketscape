@@ -5,9 +5,17 @@ import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
 import {HelperContract} from "./BlockscapeValidatorNFT_utilsv2.sol";
+import {BlockscapeVaultHelperContract} from "./BlockscapeVault.sol";
+import {BlockscapeStakingHelperContract} from "./BlockscapeStaking.sol";
+import {BlockscapeVaultHelperContract} from "./BlockscapeVault.sol";
 import {BlockscapeStaking} from "src_2_audit_fixes/utils/BlockscapeStaking.sol";
 
-contract BlockscapeValidatorNFTTest is Test, HelperContract {
+contract BlockscapeValidatorNFTTest is
+    Test,
+    HelperContract,
+    BlockscapeVaultHelperContract,
+    BlockscapeStakingHelperContract
+{
     uint256 initWithdrawFee = 20 ether;
 
     bytes validatorBytesAddress =
@@ -19,13 +27,19 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
 
     function setUp() public {
         _setupParticipants();
+
+        _testInitContractSetup();
     }
 
-    // function testOpenVault() public {
-    //     _testInitContractSetup();
+    function testVault() public {
+        _testClosingVault();
 
-    //     // not enough RPL to stake, shouldn't open vault
-    //     // vm.expectRevert(NotEnoughRPLStake.selector);
+        _testOpeningVault();
+    }
+
+    // function testStaking() public {
+    //     _testSetMetadata();
+    // }
 
     //     _blockscapeStakeRPL();
 
@@ -72,63 +86,63 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
     // }
 
-    function testDepositValidatorNFT() public {
-        _blockscapeStakeRPL();
+    // function testDepositValidatorNFT() public {
+    //     _blockscapeStakeRPL();
 
-        assertEq(blockscapeValidatorNFT.totalSupply(), 0);
+    //     assertEq(blockscapeValidatorNFT.totalSupply(), 0);
 
-        // expect incorrect values of ether to revert
-        vm.expectRevert();
-        vm.prank(poolStaker1);
-        blockscapeValidatorNFT.depositValidatorNFT();
+    //     // expect incorrect values of ether to revert
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     blockscapeValidatorNFT.depositValidatorNFT();
 
-        vm.expectRevert();
-        vm.prank(poolStaker1);
-        blockscapeValidatorNFT.depositValidatorNFT{
-            value: curETHlimit - 1 ether
-        }();
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     blockscapeValidatorNFT.depositValidatorNFT{
+    //         value: curETHlimit - 1 ether
+    //     }();
 
-        vm.expectRevert();
-        vm.prank(poolStaker1);
-        blockscapeValidatorNFT.depositValidatorNFT{
-            value: curETHlimit + 1 ether
-        }();
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     blockscapeValidatorNFT.depositValidatorNFT{
+    //         value: curETHlimit + 1 ether
+    //     }();
 
-        _depositSoloStaker();
+    //     _depositSoloStaker();
 
-        BlockscapeStaking.Metadata memory shouldBeM;
-        shouldBeM.stakedETH = curETHlimit;
-        shouldBeM.stakedTimestamp = block.timestamp;
+    //     BlockscapeStaking.Metadata memory shouldBeM;
+    //     shouldBeM.stakedETH = curETHlimit;
+    //     shouldBeM.stakedTimestamp = block.timestamp;
 
-        BlockscapeStaking.Metadata memory m = blockscapeValidatorNFT // , address validator // TODO: is the vali as return needed?
-            .getMetadata(1);
+    //     BlockscapeStaking.Metadata memory m = blockscapeValidatorNFT // , address validator // TODO: is the vali as return needed?
+    //         .getMetadata(1);
 
-        // TODO: Right test cases for other token ids that they return
-        // default values == they are unset?
+    //     // TODO: Right test cases for other token ids that they return
+    //     // default values == they are unset?
 
-        assertEq(m.stakedETH, shouldBeM.stakedETH);
-        assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
-        // assertEq(staker, singleStaker);
-        // assertEq(validator, address(0));
+    //     assertEq(m.stakedETH, shouldBeM.stakedETH);
+    //     assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
+    //     // assertEq(staker, singleStaker);
+    //     // assertEq(validator, address(0));
 
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
 
-        assertEq(blockscapeValidatorNFT.totalSupply(), 1);
-        assertEq(blockscapeValidatorNFT.getTokenID(), 2);
-        assertEq(
-            blockscapeValidatorNFT.contractURI(),
-            "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7"
-        );
-        assertEq(
-            blockscapeValidatorNFT.uri(1),
-            "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/1.json"
-        );
+    //     assertEq(blockscapeValidatorNFT.totalSupply(), 1);
+    //     assertEq(blockscapeValidatorNFT.getTokenID(), 2);
+    //     assertEq(
+    //         blockscapeValidatorNFT.contractURI(),
+    //         "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7"
+    //     );
+    //     assertEq(
+    //         blockscapeValidatorNFT.uri(1),
+    //         "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/1.json"
+    //     );
 
-        // vault is closed
-        vm.expectRevert();
-        vm.prank(poolStaker1);
-        blockscapeValidatorNFT.depositValidatorNFT{value: curETHlimit}();
-    }
+    //     // vault is closed
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     blockscapeValidatorNFT.depositValidatorNFT{value: curETHlimit}();
+    // }
 
     // function testFallbacks() public {
     //     vm.expectRevert();
