@@ -33,8 +33,9 @@ abstract contract HelperContract is Test {
         RocketNodeDepositInterface(0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5);
 
     // address internal deployer;
-    address internal rp_backend;
-    address internal adj_config;
+    address internal rp_backend_role;
+    address internal adj_config_role;
+    address internal emergency_role;
 
     address internal singleStaker;
     address internal poolStaker1;
@@ -115,16 +116,23 @@ abstract contract HelperContract is Test {
     }
 
     function _setupParticipants() internal {
-        adj_config = vm.addr(
+        adj_config_role = vm.addr(
+            uint256(uint160(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84))
+        );
+        emergency_role = vm.addr(
             uint256(uint160(0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84))
         );
         // deployer = vm.addr(0xDe);
 
-        rp_backend = address(blockscapeRocketPoolNode);
+        rp_backend_role = address(blockscapeRocketPoolNode);
 
-        vm.deal(rp_backend, 1 ether);
-        vm.label(rp_backend, "rp_backend");
-        vm.prank(rp_backend);
+        vm.deal(rp_backend_role, 1 ether);
+        vm.label(rp_backend_role, "rp_backend");
+
+        vm.deal(adj_config_role, 1 ether);
+        vm.label(adj_config_role, "adj_config");
+
+        vm.label(emergency_role, "emergency");
 
         singleStaker = vm.addr(0xDe0);
         vm.deal(singleStaker, 100 ether);
@@ -152,21 +160,18 @@ abstract contract HelperContract is Test {
     }
 
     function _testInitContractSetup() internal {
-        assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
-        assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
-        assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
-        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-
         assertEq(blockscapeValidatorNFT.name(), "Blockscape Validator NFTs");
         assertEq(blockscapeValidatorNFT.symbol(), "BSV");
+        assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
+
+        _testInitRocketPoolSetup();
+        _testInitBlockscapeVaultSetup();
+        _testInitBlockscapeStakingSetup();
     }
 
     function _testInitRocketPoolSetup() internal {
-        availableRPL = blockscapeValidatorNFT.getAvailableRPLStake();
-        assertEq(availableRPL, 0);
-
-        reqRPL = blockscapeValidatorNFT.getReqRPLStake();
-        assertEq(reqRPL, 0);
+        assertEq(blockscapeValidatorNFT.getAvailableRPLStake(), 0);
+        assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
 
         minimumRPLStake = rocketNodeStaking.getNodeMinimumRPLStake(
             blockscapeRocketPoolNode
@@ -177,6 +182,21 @@ abstract contract HelperContract is Test {
             blockscapeRocketPoolNode
         );
         assertEq(minipoolLimit, 0);
+
+        assertEq(blockscapeValidatorNFT.rpComm8(), 14);
+    }
+
+    function _testInitBlockscapeVaultSetup() internal {
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+    }
+
+    function _testInitBlockscapeStakingSetup() internal {
+        assertEq(blockscapeValidatorNFT.initWithdrawFee(), 20 * 1e18);
+        assertEq(blockscapeValidatorNFT.getTokenID(), 1);
+        assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
+
+        // blockscapeValidatorNFT.Metadata memory m;
+        // assertEq(blockscapeValidatorNFT.getMetadata(0, m), 0 ether);
     }
 
     function _testContractSetupAfterStaking() internal {

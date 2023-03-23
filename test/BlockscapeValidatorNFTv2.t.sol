@@ -23,7 +23,6 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
 
     function testOpenVault() public {
         _testInitContractSetup();
-        _testInitRocketPoolSetup();
 
         // not enough RPL to stake, shouldn't open vault
         // vm.expectRevert(NotEnoughRPLStake.selector);
