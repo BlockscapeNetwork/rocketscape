@@ -3604,8 +3604,8 @@
       }
     },
     "test/BlockscapeValidatorNFT_utilsv2.sol": {
-      "lastModificationDate": 1679565491560,
-      "contentHash": "b07d2227ba85a1d77a85b92b4763ae3a",
+      "lastModificationDate": 1679565703818,
+      "contentHash": "bae3e07a15d9b9152fba64487faf890c",
       "sourceName": "test/BlockscapeValidatorNFT_utilsv2.sol",
       "solcConfig": {
         "settings": {
@@ -3677,7 +3677,8 @@
         "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol",
         "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
         "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
-        "src_2_audit_fixes/utils/types/MinipoolStatus.sol"
+        "src_2_audit_fixes/utils/types/MinipoolStatus.sol",
+        "test/RocketPool_utils.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -3687,8 +3688,8 @@
       }
     },
     "test/BlockscapeValidatorNFTv2.t.sol": {
-      "lastModificationDate": 1679565670182,
-      "contentHash": "91e00e9aa1cd40893892410d1456ffc1",
+      "lastModificationDate": 1679565860650,
+      "contentHash": "0005aef0e11b841a5ce490e95faf92ea",
       "sourceName": "test/BlockscapeValidatorNFTv2.t.sol",
       "solcConfig": {
         "settings": {
@@ -3761,12 +3762,73 @@
         "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
         "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
         "src_2_audit_fixes/utils/types/MinipoolStatus.sol",
-        "test/BlockscapeValidatorNFT_utilsv2.sol"
+        "test/BlockscapeValidatorNFT_utilsv2.sol",
+        "test/RocketPool_utils.sol"
       ],
       "versionRequirement": ">=0.8.0, <0.9.0",
       "artifacts": {
         "BlockscapeValidatorNFTTest": {
           "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFTv2.t.sol/BlockscapeValidatorNFTTest.json"
+        }
+      }
+    },
+    "test/RocketPool_utils.sol": {
+      "lastModificationDate": 1679565703818,
+      "contentHash": "625cff4a03270ae08f3d3a01b26eba05",
+      "sourceName": "test/RocketPool_utils.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000000
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/forge-std/src/Base.sol",
+        "lib/forge-std/src/StdAssertions.sol",
+        "lib/forge-std/src/StdChains.sol",
+        "lib/forge-std/src/StdCheats.sol",
+        "lib/forge-std/src/StdError.sol",
+        "lib/forge-std/src/StdJson.sol",
+        "lib/forge-std/src/StdMath.sol",
+        "lib/forge-std/src/StdStorage.sol",
+        "lib/forge-std/src/StdUtils.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/forge-std/src/interfaces/IMulticall3.sol",
+        "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol",
+        "src_2_audit_fixes/utils/types/MinipoolDeposit.sol"
+      ],
+      "versionRequirement": "=0.8.16",
+      "artifacts": {
+        "RocketPoolHelperContract": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "RocketPool_utils.sol/RocketPoolHelperContract.json"
         }
       }
     }
