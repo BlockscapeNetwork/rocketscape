@@ -25,7 +25,7 @@ abstract contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
     /// @notice makes the vault stakable again after it has been closed
     /// @dev is triggered when the vault can be staked at rocketpool
     // TODO: Is further visibility needed here?
-    function openVault() public onlyRole(RP_BACKEND_ROLE) {
+    function openVault() public onlyRole(EMERGENCY_ROLE) {
         if (!RocketPoolVars.hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
         // TODO: revert Error()?
@@ -44,7 +44,7 @@ abstract contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
         @notice is triggered when the vault can be staked at rocketpool
         @dev future staking interactions are prevented afterwards
      */
-    function closeVault() external onlyRole(RP_BACKEND_ROLE) {
+    function closeVault() external onlyRole(EMERGENCY_ROLE) {
         vaultOpen = false;
     }
 

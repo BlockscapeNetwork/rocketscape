@@ -146,7 +146,7 @@ contract BlockscapeETHStakeNFT is
                 _tokenID,
                 msg.sender,
                 BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
-                calcRewards(_tokenID) 
+                calcRewards(_tokenID)
             );
         }
     }
@@ -155,7 +155,8 @@ contract BlockscapeETHStakeNFT is
      *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
     function withdrawFunds(uint256 _tokenID) external {
-        if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp) revert();
+        if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
+            revert();
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
 

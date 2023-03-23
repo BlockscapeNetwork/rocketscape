@@ -14,6 +14,9 @@ import "./utils/BlockscapeVault.sol";
 /// @dev Deposit value needs to align with RP poolsizes as specified in `curETHlimit`
 error IncorrectDepositValueSent();
 
+// TODO: @dev
+error AlreadyPreparingForWithdrawal();
+
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
@@ -26,15 +29,11 @@ contract BlockscapeValidatorNFT is
     BlockscapeVault,
     BlockscapeStaking
 {
-
     /// @notice name constant used for blockexplorers
     string public constant name = "Blockscape Validator NFTs";
 
     /// @notice symbol constant used for blockexplorers
     string public constant symbol = "BSV";
-
-    /// @notice Current initial RP commission for 8 ETH minipools
-    uint256 public rpComm8 = 14;
 
     /// @notice Current Rocketpool Minipool Limit
     uint256 public curETHlimit = 16 ether;
@@ -129,7 +128,8 @@ contract BlockscapeValidatorNFT is
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
     function prepareWithdrawProcess(uint256 _tokenID) external {
-        if (senderToTimestamp[msg.sender] <= 0) revert();
+        if (senderToTimestamp[msg.sender] != 0)
+            revert AlreadyPreparingForWithdrawal();
 
         uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
 
@@ -309,5 +309,4 @@ contract BlockscapeValidatorNFT is
                 ".json"
             );
     }
-
 }

@@ -28,7 +28,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     // not enough RPL to stake, shouldn't open vault
     //     vm.expectRevert(NotEnoughRPLStake.selector);
 
-    //     _stakeRPL();
+    //     _blockscapeStakeRPL();
 
     //     _testContractSetupAfterStaking();
     //     _testRocketPoolSetupAfterStaking();
@@ -55,7 +55,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         blockscapeValidatorNFT.closeVault();
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
 
-        _stakeRPL();
+        _blockscapeStakeRPL();
 
         // assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
 
@@ -72,7 +72,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     }
 
     function testDepositValidatorNFT() public {
-        _stakeRPL();
+        _blockscapeStakeRPL();
 
         assertEq(blockscapeValidatorNFT.totalSupply(), 0);
 
@@ -138,7 +138,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     // }
 
     // function testWithdraw() public {
-    //     _stakeRPL();
+    //     _blockscapeStakeRPL();
     //     _openValidatorNFT();
     //     _depositSoloStaker();
 
@@ -159,7 +159,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     // }
 
     function testWithdrawBatch() public {
-        _stakeRPL();
+        _blockscapeStakeRPL();
 
         // nothing deposited yet
         vm.expectRevert();
@@ -204,7 +204,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     }
 
     // function testUpdateValidator() public {
-    //     _stakeRPL();
+    //     _blockscapeStakeRPL();
     //     _openValidatorNFT();
     //     _depositSoloStaker();
 
@@ -234,7 +234,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     // }
 
     function testUserRequestWithdraw() public {
-        _stakeRPL();
+        _blockscapeStakeRPL();
         _depositSoloStaker();
 
         uint256 amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
@@ -309,7 +309,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     }
 
     function testDepositWithdrawalMulti() public {
-        _stakeRPL();
+        _blockscapeStakeRPL();
         _depositSoloStaker();
 
         vm.prank(rp_backend);
