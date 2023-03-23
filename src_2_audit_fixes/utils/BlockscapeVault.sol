@@ -9,7 +9,7 @@ import "./RocketPoolVars.sol";
 error ErrorVaultState(bool _isOpen);
 
 // TODO: add all natspec
-contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
+abstract contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
     /**
         @notice state of the Validator Vault
         @dev is `false` when validator is currently onboarding, will be reopened, as soon as 

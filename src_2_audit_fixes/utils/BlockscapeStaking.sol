@@ -13,6 +13,9 @@ abstract contract BlockscapeStaking {
     */
     uint256 tokenID = 1;
 
+    // TODO: implement change function
+    uint256 timelockWithdraw = 7 days;
+
     /// @notice Current initial withdraw fee
     uint256 public initWithdrawFee = 20 * 1e18;
 
