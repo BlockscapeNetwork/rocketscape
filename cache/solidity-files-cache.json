@@ -3,7 +3,7 @@
   "paths": {
     "artifacts": "out",
     "build_infos": "out/build-info",
-    "sources": "tet",
+    "sources": "src_2_audit_fixes",
     "tests": "test",
     "scripts": "script",
     "libraries": [
@@ -2869,9 +2869,98 @@
         }
       }
     },
+    "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol": {
+      "lastModificationDate": 1679555119727,
+      "contentHash": "f2e28c8a8786e8b02147304467e8ec2c",
+      "sourceName": "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000000
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
+        "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
+        "lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/extensions/ERC1155Supply.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
+        "lib/prb-math/src/Common.sol",
+        "lib/prb-math/src/UD60x18.sol",
+        "lib/prb-math/src/sd1x18/Casting.sol",
+        "lib/prb-math/src/sd1x18/Constants.sol",
+        "lib/prb-math/src/sd1x18/Errors.sol",
+        "lib/prb-math/src/sd1x18/ValueType.sol",
+        "lib/prb-math/src/sd59x18/Casting.sol",
+        "lib/prb-math/src/sd59x18/Constants.sol",
+        "lib/prb-math/src/sd59x18/Errors.sol",
+        "lib/prb-math/src/sd59x18/Helpers.sol",
+        "lib/prb-math/src/sd59x18/Math.sol",
+        "lib/prb-math/src/sd59x18/ValueType.sol",
+        "lib/prb-math/src/ud2x18/Casting.sol",
+        "lib/prb-math/src/ud2x18/Constants.sol",
+        "lib/prb-math/src/ud2x18/Errors.sol",
+        "lib/prb-math/src/ud2x18/ValueType.sol",
+        "lib/prb-math/src/ud60x18/Casting.sol",
+        "lib/prb-math/src/ud60x18/Constants.sol",
+        "lib/prb-math/src/ud60x18/Conversions.sol",
+        "lib/prb-math/src/ud60x18/Errors.sol",
+        "lib/prb-math/src/ud60x18/Helpers.sol",
+        "lib/prb-math/src/ud60x18/Math.sol",
+        "lib/prb-math/src/ud60x18/ValueType.sol",
+        "src_2_audit_fixes/utils/BlockscapeAccess.sol",
+        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
+        "src_2_audit_fixes/utils/BlockscapeVault.sol",
+        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol",
+        "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
+        "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
+        "src_2_audit_fixes/utils/types/MinipoolStatus.sol"
+      ],
+      "versionRequirement": "=0.8.16",
+      "artifacts": {
+        "BlockscapeETHStakeNFT": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeETHStakeNFTv2.sol/BlockscapeETHStakeNFT.json"
+        }
+      }
+    },
     "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol": {
-      "lastModificationDate": 1679484042113,
-      "contentHash": "e2a229981c2779bacf25a2e0bd0599a8",
+      "lastModificationDate": 1679554940205,
+      "contentHash": "b4693e0b0ec716851e457062b92a5158",
       "sourceName": "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
       "solcConfig": {
         "settings": {
@@ -2935,9 +3024,49 @@
         }
       }
     },
-    "src_2_audit_fixes/utils/BlockscapeAccess.sol": {
+    "src_2_audit_fixes/lib/Calculations.sol": {
       "lastModificationDate": 1679399840881,
-      "contentHash": "8b6e3c23a2b83ae21641ea324f6e3ec1",
+      "contentHash": "36cf531ce54f9cefa330c8b23f13671a",
+      "sourceName": "src_2_audit_fixes/lib/Calculations.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000000
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.16",
+      "artifacts": {
+        "Calculations": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "Calculations.sol/Calculations.json"
+        }
+      }
+    },
+    "src_2_audit_fixes/utils/BlockscapeAccess.sol": {
+      "lastModificationDate": 1679554985388,
+      "contentHash": "952f166141a41a54fe103748bc62ebaa",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeAccess.sol",
       "solcConfig": {
         "settings": {
@@ -2985,8 +3114,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeStaking.sol": {
-      "lastModificationDate": 1679484042113,
-      "contentHash": "7f8549b21842c4578f9ff7a73dd4cf56",
+      "lastModificationDate": 1679554963478,
+      "contentHash": "4babacc0b65b3e7067cc1a33d168245b",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeStaking.sol",
       "solcConfig": {
         "settings": {
@@ -3638,150 +3767,6 @@
       "artifacts": {
         "BlockscapeValidatorNFTTest": {
           "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFTv2.t.sol/BlockscapeValidatorNFTTest.json"
-        }
-      }
-    },
-    "testtest/test.sol": {
-      "lastModificationDate": 1679494667901,
-      "contentHash": "e1b2d6ab082f4acbd387ebc381b10c30",
-      "sourceName": "testtest/test.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "lib/prb-math/src/Common.sol",
-        "lib/prb-math/src/UD60x18.sol",
-        "lib/prb-math/src/sd1x18/Casting.sol",
-        "lib/prb-math/src/sd1x18/Constants.sol",
-        "lib/prb-math/src/sd1x18/Errors.sol",
-        "lib/prb-math/src/sd1x18/ValueType.sol",
-        "lib/prb-math/src/sd59x18/Casting.sol",
-        "lib/prb-math/src/sd59x18/Constants.sol",
-        "lib/prb-math/src/sd59x18/Errors.sol",
-        "lib/prb-math/src/sd59x18/Helpers.sol",
-        "lib/prb-math/src/sd59x18/Math.sol",
-        "lib/prb-math/src/sd59x18/ValueType.sol",
-        "lib/prb-math/src/ud2x18/Casting.sol",
-        "lib/prb-math/src/ud2x18/Constants.sol",
-        "lib/prb-math/src/ud2x18/Errors.sol",
-        "lib/prb-math/src/ud2x18/ValueType.sol",
-        "lib/prb-math/src/ud60x18/Casting.sol",
-        "lib/prb-math/src/ud60x18/Constants.sol",
-        "lib/prb-math/src/ud60x18/Conversions.sol",
-        "lib/prb-math/src/ud60x18/Errors.sol",
-        "lib/prb-math/src/ud60x18/Helpers.sol",
-        "lib/prb-math/src/ud60x18/Math.sol",
-        "lib/prb-math/src/ud60x18/ValueType.sol"
-      ],
-      "versionRequirement": "=0.8.16",
-      "artifacts": {
-        "APRtest": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "test.sol/APRtest.json"
-        }
-      }
-    },
-    "tet/tet.t.sol": {
-      "lastModificationDate": 1679486761751,
-      "contentHash": "73b00ee0c3920c76e1efeae589d284db",
-      "sourceName": "tet/tet.t.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "lib/forge-std/src/Base.sol",
-        "lib/forge-std/src/StdAssertions.sol",
-        "lib/forge-std/src/StdChains.sol",
-        "lib/forge-std/src/StdCheats.sol",
-        "lib/forge-std/src/StdError.sol",
-        "lib/forge-std/src/StdJson.sol",
-        "lib/forge-std/src/StdMath.sol",
-        "lib/forge-std/src/StdStorage.sol",
-        "lib/forge-std/src/StdUtils.sol",
-        "lib/forge-std/src/Test.sol",
-        "lib/forge-std/src/Vm.sol",
-        "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol",
-        "lib/forge-std/src/interfaces/IMulticall3.sol",
-        "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol",
-        "lib/prb-math/src/Common.sol",
-        "lib/prb-math/src/UD60x18.sol",
-        "lib/prb-math/src/sd1x18/Casting.sol",
-        "lib/prb-math/src/sd1x18/Constants.sol",
-        "lib/prb-math/src/sd1x18/Errors.sol",
-        "lib/prb-math/src/sd1x18/ValueType.sol",
-        "lib/prb-math/src/sd59x18/Casting.sol",
-        "lib/prb-math/src/sd59x18/Constants.sol",
-        "lib/prb-math/src/sd59x18/Errors.sol",
-        "lib/prb-math/src/sd59x18/Helpers.sol",
-        "lib/prb-math/src/sd59x18/Math.sol",
-        "lib/prb-math/src/sd59x18/ValueType.sol",
-        "lib/prb-math/src/ud2x18/Casting.sol",
-        "lib/prb-math/src/ud2x18/Constants.sol",
-        "lib/prb-math/src/ud2x18/Errors.sol",
-        "lib/prb-math/src/ud2x18/ValueType.sol",
-        "lib/prb-math/src/ud60x18/Casting.sol",
-        "lib/prb-math/src/ud60x18/Constants.sol",
-        "lib/prb-math/src/ud60x18/Conversions.sol",
-        "lib/prb-math/src/ud60x18/Errors.sol",
-        "lib/prb-math/src/ud60x18/Helpers.sol",
-        "lib/prb-math/src/ud60x18/Math.sol",
-        "lib/prb-math/src/ud60x18/ValueType.sol",
-        "testtest/test.sol"
-      ],
-      "versionRequirement": "=0.8.16",
-      "artifacts": {
-        "TTest": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "tet.t.sol/TTest.json"
         }
       }
     }

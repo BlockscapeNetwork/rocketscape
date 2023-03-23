@@ -6,7 +6,7 @@ pragma solidity 0.8.16;
 error ValidatorAlreadySet(address _vali);
 
 // TODO: add all natspec
-contract BlockscapeStaking {
+abstract contract BlockscapeStaking {
     /** 
         @notice initial tokenID
         @dev the tokenID is used to identify the ETH NFTs
@@ -30,11 +30,19 @@ contract BlockscapeStaking {
     // TODO: Not used??
     // event RPLStakeRequired(uint256 _availRPL, uint256 _requiredRPL);
 
-    /// @dev event for when a user requests a withdrawal
-    event UserRequestedWithdrawal(
+    /// @dev event for when a user requests a withdrawal for a Validator NFT
+    event UserRequestedWithdrawalVali(
         uint256 _tokenID,
         address _user,
         uint256 _fee,
+        uint256 _stakedETH,
+        uint256 _rewards
+    );
+
+    /// @dev event for when a user requests a withdrawal for a Stake ETH NFT
+    event UserRequestedWithdrawalStake(
+        uint256 _tokenID,
+        address _user,
         uint256 _stakedETH,
         uint256 _rewards
     );

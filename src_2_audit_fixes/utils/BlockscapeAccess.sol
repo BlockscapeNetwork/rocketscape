@@ -6,7 +6,7 @@ import "openzeppelin-contracts/utils/Address.sol";
 import "openzeppelin-contracts/access/AccessControl.sol";
 
 // TODO: add all natspec
-contract BlockscapeAccess is AccessControl {
+abstract contract BlockscapeAccess is AccessControl {
     /// @dev using OZs sendValue implementation
     using Address for address payable;
 

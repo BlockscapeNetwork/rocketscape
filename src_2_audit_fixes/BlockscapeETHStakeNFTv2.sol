@@ -9,7 +9,6 @@ import "openzeppelin-contracts/utils/Strings.sol";
 
 import {UD60x18, sqrt, exp, ud, mul, div, intoUint256} from "@prb/math/UD60x18.sol";
 
-
 import "./utils/BlockscapeStaking.sol";
 import "./utils/BlockscapeVault.sol";
 
@@ -139,16 +138,15 @@ contract BlockscapeETHStakeNFT is
     function prepareWithdrawProcess(uint256 _tokenID) external {
         if (senderToTimestamp[msg.sender] <= 0) revert();
 
-        uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
+        BlockscapeStaking.tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
             senderToTimestamp[msg.sender] = block.timestamp;
-            emit BlockscapeStaking.UserRequestedWithdrawal(
+            emit BlockscapeStaking.UserRequestedWithdrawalStake(
                 _tokenID,
                 msg.sender,
-                curWithdrawFee,
                 BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
-                estRewardsNoMEV(_tokenID) // TODO: here is another function needed to get the correct rewards on-chain
+                calcRewards(_tokenID) 
             );
         }
     }
@@ -158,14 +156,6 @@ contract BlockscapeETHStakeNFT is
      */
     function withdrawFunds(uint256 _tokenID) external {
         if (senderToTimestamp[msg.sender] + 7 days < block.timestamp) revert();
-        if (
-            BlockscapeStaking.tokenIDToExitReward[_tokenID] <
-            estRewardsNoMEV(_tokenID)
-        ) {
-            BlockscapeStaking.tokenIDToExitReward[_tokenID] = estRewardsNoMEV(
-                _tokenID
-            );
-        }
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
 
@@ -206,7 +196,6 @@ contract BlockscapeETHStakeNFT is
         @return _amount how much the user would pay on fees
      */
     function calcWithdrawFee(
-        // TODO: dispite the same name, we might need to change the func (&name, like calcWithdrawFeePool ) for the pool staking to be abple to calc the ETh rewards complety only on-chain... TBD
         uint256 _tokenID,
         address _user
     ) public view returns (uint256 _amount) {
@@ -232,7 +221,6 @@ contract BlockscapeETHStakeNFT is
 
     /**
         @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
-        @param _tokenID tokenID of the NFT, the user wants to unstake
         @return rewards in wei
         // TODO: Implement or abstract me -> DONE 
      */
@@ -249,7 +237,11 @@ contract BlockscapeETHStakeNFT is
         // 64 = BASE_REWARD_FACTOR
         // 31622 = sqrt(gwei per ETH)
         // 166.32368815e18 = ((31556926 / 384) * 64) / 31622
-        uint256 baseAPR = (intoUint256(exp(div(ud(166.32368815e18), sqrt(balanceStaked)))) - 1e18) * 100 - 5e17;
+        uint256 baseAPR = (intoUint256(
+            exp(div(ud(166.32368815e18), sqrt(balanceStaked)))
+        ) - 1e18) *
+            100 -
+            5e17;
         uint256 ethreturn = (baseAPR * 16) / 100;
 
         uint256 mevreturn = 0.23e18; // estimated MEV return
@@ -263,12 +255,13 @@ contract BlockscapeETHStakeNFT is
 
     function calcRewards(uint256 _tokenID) internal view returns (uint256) {
         uint256 secRewards = calcApr() / 365 days;
-        uint256 secStaked = block.timestamp - tokenIDtoMetadata[_tokenID].stakedTimestamp; 
-        uint256 rewards = tokenIDtoMetadata[_tokenID].stakedETH * dailyRewards * secStaked;
-        uint256 balanceComm = (rpComm8 * (balance * 3)) / 100;
-
+        uint256 secStaked = block.timestamp -
+            tokenIDtoMetadata[_tokenID].stakedTimestamp;
+        uint256 rewards = tokenIDtoMetadata[_tokenID].stakedETH *
+            secRewards *
+            secStaked;
         uint256 wFee = rewards * calcWithdrawFee(_tokenID, msg.sender);
-        return (rewards - wfee);
+        return (rewards - wFee);
     }
 
     /// @notice how many staker are there totally
@@ -305,5 +298,4 @@ contract BlockscapeETHStakeNFT is
                 ".json"
             );
     }
-
 }

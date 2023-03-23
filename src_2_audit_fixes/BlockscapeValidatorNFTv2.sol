@@ -135,7 +135,7 @@ contract BlockscapeValidatorNFT is
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
             senderToTimestamp[msg.sender] = block.timestamp;
-            emit BlockscapeStaking.UserRequestedWithdrawal(
+            emit BlockscapeStaking.UserRequestedWithdrawalVali(
                 _tokenID,
                 msg.sender,
                 curWithdrawFee,
