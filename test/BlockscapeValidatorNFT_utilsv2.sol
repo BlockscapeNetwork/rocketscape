@@ -10,7 +10,7 @@ import "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol";
 import "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol";
 import "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol";
 
-abstract contract HelperContract is Test {
+contract HelperContract is Test {
     uint256 curETHlimit = 16 ether; // blockscapeValidatorNFT.getCurrentEthLimit();
 
     BlockscapeValidatorNFT blockscapeValidatorNFT;
