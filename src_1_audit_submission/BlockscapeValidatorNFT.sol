@@ -85,11 +85,7 @@ contract BlockscapeValidatorNFT is ERC1155Supply, ReentrancyGuard, Ownable {
         uint256 _stakedETH
     );
 
-    /// @dev event for when the ETH limit is changed
-    event ETHLimitChanged(uint256 _newLimit);
-
-    /// @dev event for when the RocketPool Node Address is changed
-    event RocketPoolNodeAddressChanged(address _newAddress);
+   
 
     /// @dev more RPL stake has to be done in order to open vault
     error NotEnoughRPLStake();

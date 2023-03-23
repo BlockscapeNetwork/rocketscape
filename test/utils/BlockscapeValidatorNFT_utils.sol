@@ -4,11 +4,15 @@ pragma solidity 0.8.16;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
+import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFT.sol";
+import "openzeppelin-contracts/access/AccessControl.sol";
 import {RocketPoolHelperContract} from "./RocketPool.sol";
 
-
-contract HelperContract is Test, RocketPoolHelperContract {
+abstract contract HelperContract is
+    Test,
+    AccessControl,
+    RocketPoolHelperContract
+{
     address foundryDeployer = 0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84;
 
     uint256 curETHlimit = 16 ether; // blockscapeValidatorNFT.getCurrentEthLimit();

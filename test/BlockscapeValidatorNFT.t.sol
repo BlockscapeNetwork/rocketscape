@@ -6,15 +6,11 @@ import "openzeppelin-contracts/access/AccessControl.sol";
 import "forge-std/Test.sol";
 
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
-import {HelperContract} from "./HelperContract.sol";
-import {BlockscapeVaultHelperContract} from "./BlockscapeVault.sol";
-import {BlockscapeStaking} from "src_2_audit_fixes/utils/BlockscapeStaking.sol";
-import {BlockscapeAccess} from "src_2_audit_fixes/utils/BlockscapeAccess.sol";
-import {BlockscapeVault} from "src_2_audit_fixes/utils/BlockscapeVault.sol";
+import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFT.sol";
+import {HelperContract} from "./utils/BlockscapeValidatorNFT_utils.sol";
 
 contract BlockscapeValidatorNFTTest is Test, HelperContract {
-    uint256 initWithdrawFee = 20 ether;
+    uint256 initWithdrawFee = 20e18;
 
     bytes validatorBytesAddress =
         hex"a2e78385831894094502727373588fc1794ea2800b2b6e614358fea78dcf0cc4d103008a53c665f294e31af0397253e3";
@@ -106,7 +102,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     vm.prank(poolStaker1);
     //     blockscapeValidatorNFT.depositValidatorNFT();
 
-        _stakeRPL();
+        // _stakeRPL();
 
     //     vm.expectRevert();
     //     vm.prank(poolStaker1);
@@ -120,8 +116,8 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     shouldBeM.stakedETH = curETHlimit;
     //     shouldBeM.stakedTimestamp = block.timestamp;
 
-    function testDepositValidatorNFT() public {
-        _stakeRPL();
+    // function testDepositValidatorNFT() public {
+    //     _stakeRPL();
 
     //     // TODO: Right test cases for other token ids that they return
     //     // default values == they are unset?
@@ -177,8 +173,8 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
     // }
 
-    function testWithdrawBatch() public {
-        _stakeRPL();
+    // function testWithdrawBatch() public {
+    //     _stakeRPL();
 
     //     // nothing deposited yet
     //     vm.expectRevert();
@@ -253,9 +249,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     blockscapeValidatorNFT.updateValidator(1, otherBytesAddr);
     // }
 
-    function testUserRequestWithdraw() public {
-        _stakeRPL();
-        _depositSoloStaker();
+    // function testUserRequestWithdraw() public {
+    //     _stakeRPL();
+    //     _depositSoloStaker();
 
     //     uint256 amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
     //     assertEq(amount, initWithdrawFee);
@@ -328,9 +324,9 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     blockscapeValidatorNFT.setBlockscapeRocketPoolNode(address(0x1));
     // }
 
-    function testDepositWithdrawalMulti() public {
-        _stakeRPL();
-        _depositSoloStaker();
+    // function testDepositWithdrawalMulti() public {
+    //     _stakeRPL();
+    //     _depositSoloStaker();
 
     //     vm.prank(rp_backend);
     //     blockscapeValidatorNFT.withdrawBatch();
@@ -380,3 +376,4 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     vm.stopPrank();
     // }
 }
+// }

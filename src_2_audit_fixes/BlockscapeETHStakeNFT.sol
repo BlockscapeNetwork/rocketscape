@@ -1,19 +1,14 @@
-pragma solidity 0.8.16;
-
 // SPDX-License-Identifier: BUSL-1.1
+pragma solidity 0.8.16;
 
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
-
 import {UD60x18, sqrt, exp, ud, mul, div, intoUint256} from "@prb/math/UD60x18.sol";
 
-import "./utils/BlockscapeStaking.sol";
-import "./utils/BlockscapeVault.sol";
-
-/// @dev you first need to depositStakeNFT before you can updateStake
-error YouDontOwnThisNft(uint256 tokenID);
+import "./utils/BlockscapeAccess.sol";
+import "./utils/BlockscapeShared.sol";
 
 /** 
     @title Rocketpool Staking Allocation Contract
@@ -23,20 +18,17 @@ error YouDontOwnThisNft(uint256 tokenID);
 contract BlockscapeETHStakeNFT is
     ERC1155Supply,
     ReentrancyGuard,
-    BlockscapeVault,
-    BlockscapeStaking
+    BlockscapeAccess,
+    BlockscapeShared
 {
-    /// @notice Current ETH pool supply
+    /// @notice tracks the ETH pool supply
     uint256 poolSupply;
 
-    /// @notice name constant used for blockexplorers
+    /// @notice constant used for blockexplorers to display the name of the token
     string public constant name = "Blockscape ETH Stake NFTs";
 
-    /// @notice symbol constant used for blockexplorers
+    /// @notice constant used for blockexplorers to display the symbol of the token
     string public constant symbol = "BSS";
-
-    /// @dev event for when the NFT stake is updated
-    event StakeUpdated(uint256 _tokenID, address _owner, uint256 _newStake);
 
     /** 
         @notice each pool related vault gets its separate tokenID which depicts 
@@ -44,17 +36,15 @@ contract BlockscapeETHStakeNFT is
         @dev the IPNS makes sure the nfts stay reachable via this link while 
         new nfts get added to the underlying ipfs folder
      */
-
     constructor()
         ERC1155(
             "https://ipfs.blockscape.network/ipns/"
             "TBD/"
             "{id}.json"
         )
-        BlockscapeStaking()
-        BlockscapeVault(
+        BlockscapeAccess(
             msg.sender,
-            RocketPoolVars.blockscapeRocketPoolNode,
+            BlockscapeShared.blockscapeRocketPoolNode,
             msg.sender
         )
     {}
@@ -68,29 +58,26 @@ contract BlockscapeETHStakeNFT is
         return super.supportsInterface(interfaceId);
     }
 
-    // functions
+    //TODO: maybe not needed
+    // /**
+    //     @notice withdraw the given amount to the backend, externaly triggered when the smart contract balance is eqal or above 8 ETH
+    //  */
+    // function withdrawForMinipool() external onlyRole(RP_BACKEND_ROLE) {
+    //     if (vaultOpen)
+    //         revert ErrorVaultState(vaultOpen);
+    //     Address.sendValue(blockscapeRocketPoolNode, 8 ether);
+    // }
 
-    // public & external functions
-
-    /**
-        @notice withdraw the given amount to the backend, triggered when the account balance is above 16 ETH or 8 ETH (RPIP-8)
-        @dev the withdraw function remains public as safety measurement to
-        not lock-in client stakes in case of contract issues
-        param _amount the amount in wei to withdraw
-        // TODO: does it use _amount?
-     */
-    function withdrawForMinipool() external onlyRole(RP_BACKEND_ROLE) {
-        if (BlockscapeVault.vaultOpen)
-            revert ErrorVaultState(BlockscapeVault.vaultOpen);
-        Address.sendValue(blockscapeRocketPoolNode, 8 ether);
-    }
-
-    function internalWithdrawForMinipools() internal {
-        Address.sendValue(blockscapeRocketPoolNode, address(this).balance);
-    }
-
+    
     /// @notice used when staking eth into the contract
     /// @dev the vault must be open and equal the depositing amount
+
+    /**
+     * @notice used when staking eth into the contract
+     * @dev the vault must be open and equal the depositing amount
+     * @dev the staker must have enough RPL staked in the Rocketpool
+     * 
+     */
     function depositStakeNFT() external payable {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
@@ -120,8 +107,7 @@ contract BlockscapeETHStakeNFT is
             if (msg.value == 0) revert();
 
             // update ETH value of the tokenID by adding the msg.value
-            BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH += msg
-                .value;
+            tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
 
             poolSupply += msg.value;
 
@@ -129,7 +115,7 @@ contract BlockscapeETHStakeNFT is
             emit StakeUpdated(
                 _tokenID,
                 msg.sender,
-                BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH
+                tokenIDtoMetadata[_tokenID].stakedETH
             );
         } else {
             revert YouDontOwnThisNft(_tokenID);
@@ -140,17 +126,17 @@ contract BlockscapeETHStakeNFT is
         @notice used when user wants to u nstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
-    function prepareWithdrawProcess(uint256 _tokenID) external {
+    function prepareWithdrawProcess(uint256 _tokenID) external override {
         if (senderToTimestamp[msg.sender] <= 0) revert();
 
-        BlockscapeStaking.tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);
+        tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);
 
         if (balanceOf(msg.sender, _tokenID) >= 1) {
             senderToTimestamp[msg.sender] = block.timestamp;
-            emit BlockscapeStaking.UserRequestedWithdrawalStake(
+            emit UserRequestedWithdrawalStake(
                 _tokenID,
                 msg.sender,
-                BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH,
+                tokenIDtoMetadata[_tokenID].stakedETH,
                 calcRewards(_tokenID)
             );
         }
@@ -159,7 +145,7 @@ contract BlockscapeETHStakeNFT is
     /**
      *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
-    function withdrawFunds(uint256 _tokenID) external {
+    function withdrawFunds(uint256 _tokenID) external override {
         if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
             revert();
 
@@ -167,22 +153,9 @@ contract BlockscapeETHStakeNFT is
 
         Address.sendValue(
             payable(msg.sender),
-            BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedETH +
-                BlockscapeStaking.tokenIDToExitReward[_tokenID]
+            tokenIDtoMetadata[_tokenID].stakedETH +
+                tokenIDToExitReward[_tokenID]
         );
-    }
-
-    // functions for future maintainability
-
-    /**
-        @notice the withdraw fee might be changed in the future
-        @param _amount the new fee in wei
-     */
-    function lowerWithdrawFee(
-        uint256 _amount
-    ) external onlyRole(ADJ_CONFIG_ROLE) {
-        if (_amount >= 20 * 1e18) revert();
-        BlockscapeStaking.initWithdrawFee = _amount;
     }
 
     // view / pure functions
@@ -204,20 +177,19 @@ contract BlockscapeETHStakeNFT is
     function calcWithdrawFee(
         uint256 _tokenID,
         address _user
-    ) public view returns (uint256 _amount) {
-        uint256 curWithdrawFee = BlockscapeStaking.initWithdrawFee;
+    ) public view override returns (uint256 _amount) {
+        uint256 curWithdrawFee = initWithdrawFee;
 
         if (balanceOf(_user, _tokenID) >= 1) {
-            uint256 secFee = (BlockscapeStaking.initWithdrawFee / 365 days); // 20%
+            uint256 secFee = (initWithdrawFee / 365 days); // 20%
             uint256 timePassed = block.timestamp -
-                (BlockscapeStaking.tokenIDtoMetadata[_tokenID].stakedTimestamp);
+                (tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
             if (timePassed >= maxTime05EthReached) {
                 curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 %
             } else {
-                curWithdrawFee = (BlockscapeStaking.initWithdrawFee -
-                    (secFee * timePassed));
+                curWithdrawFee = (initWithdrawFee - (secFee * timePassed));
             }
         } else {
             curWithdrawFee = 0;

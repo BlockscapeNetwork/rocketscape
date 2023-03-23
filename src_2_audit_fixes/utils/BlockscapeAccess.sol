@@ -1,15 +1,10 @@
+// SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.16;
 
-// SPDX-License-Identifier: BUSL-1.1
-
-import "openzeppelin-contracts/utils/Address.sol";
 import "openzeppelin-contracts/access/AccessControl.sol";
 
 // TODO: add all natspec
 abstract contract BlockscapeAccess is AccessControl {
-    /// @dev using OZs sendValue implementation
-    using Address for address payable;
-
     /// @dev role to adjust the config of the smart contract parameters
     bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
 
@@ -18,4 +13,14 @@ abstract contract BlockscapeAccess is AccessControl {
 
     /// @dev role to open / close vault in cases of emergencies
     bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
+
+    constructor(
+        address adj_config_role,
+        address rp_backend_role,
+        address emergency_role
+    ) {
+        _grantRole(ADJ_CONFIG_ROLE, adj_config_role);
+        _grantRole(RP_BACKEND_ROLE, rp_backend_role);
+        _grantRole(EMERGENCY_ROLE, emergency_role);
+    }
 }

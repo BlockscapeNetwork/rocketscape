@@ -2712,8 +2712,8 @@
       }
     },
     "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol": {
-      "lastModificationDate": 1679458252947,
-      "contentHash": "1e444b0e2a7c45cd128da7bb888edc59",
+      "lastModificationDate": 1679583661239,
+      "contentHash": "a8ac9f51da84de2dd1c3074df0699053",
       "sourceName": "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol",
       "solcConfig": {
         "settings": {
@@ -2770,11 +2770,11 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
-        "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
+        "src_2_audit_fixes/BlockscapeValidatorNFT.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
@@ -2791,8 +2791,8 @@
       }
     },
     "script/DeployMainnet_BlockscapeValidatorNFT.s.sol": {
-      "lastModificationDate": 1679458252948,
-      "contentHash": "64f6c8c41cc332ee2179eb26974cd6e7",
+      "lastModificationDate": 1679583657746,
+      "contentHash": "cdb4d0779b39e7478b6499be2be5edfa",
       "sourceName": "script/DeployMainnet_BlockscapeValidatorNFT.s.sol",
       "solcConfig": {
         "settings": {
@@ -2849,11 +2849,11 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
-        "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
+        "src_2_audit_fixes/BlockscapeValidatorNFT.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
@@ -2869,10 +2869,10 @@
         }
       }
     },
-    "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol": {
-      "lastModificationDate": 1679566148991,
-      "contentHash": "9936e6b25580b980a2b0541690c0a3fb",
-      "sourceName": "src_2_audit_fixes/BlockscapeETHStakeNFTv2.sol",
+    "src_2_audit_fixes/BlockscapeETHStakeNFT.sol": {
+      "lastModificationDate": 1679584601022,
+      "contentHash": "7c84685b76179fd401cbdac8a8c688c0",
+      "sourceName": "src_2_audit_fixes/BlockscapeETHStakeNFT.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -2940,9 +2940,9 @@
         "lib/prb-math/src/ud60x18/Math.sol",
         "lib/prb-math/src/ud60x18/ValueType.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
@@ -2954,14 +2954,14 @@
       "versionRequirement": "=0.8.16",
       "artifacts": {
         "BlockscapeETHStakeNFT": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeETHStakeNFTv2.sol/BlockscapeETHStakeNFT.json"
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeETHStakeNFT.sol/BlockscapeETHStakeNFT.json"
         }
       }
     },
-    "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol": {
-      "lastModificationDate": 1679566148992,
-      "contentHash": "c75ec1f08bf74c74c0e8dda773c94a41",
-      "sourceName": "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
+    "src_2_audit_fixes/BlockscapeValidatorNFT.sol": {
+      "lastModificationDate": 1679584607925,
+      "contentHash": "e92dc2767a3658ba3b59f429076bbe44",
+      "sourceName": "src_2_audit_fixes/BlockscapeValidatorNFT.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -2991,7 +2991,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
         "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
         "lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol",
@@ -3007,9 +3006,9 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
@@ -3021,7 +3020,7 @@
       "versionRequirement": "=0.8.16",
       "artifacts": {
         "BlockscapeValidatorNFT": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFTv2.sol/BlockscapeValidatorNFT.json"
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFT.sol/BlockscapeValidatorNFT.json"
         }
       }
     },
@@ -3066,8 +3065,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeAccess.sol": {
-      "lastModificationDate": 1679565491588,
-      "contentHash": "e69226baa5d3f52af24f7a50b73508ea",
+      "lastModificationDate": 1679573175802,
+      "contentHash": "bd38e1f647a933527811c802a7acfa0b",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeAccess.sol",
       "solcConfig": {
         "settings": {
@@ -3100,7 +3099,6 @@
       "imports": [
         "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
         "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
-        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
         "lib/openzeppelin-contracts/contracts/utils/Context.sol",
         "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
@@ -3114,10 +3112,10 @@
         }
       }
     },
-    "src_2_audit_fixes/utils/BlockscapeStaking.sol": {
-      "lastModificationDate": 1679565491559,
-      "contentHash": "b63173d93821b2928dee4b9ea828c001",
-      "sourceName": "src_2_audit_fixes/utils/BlockscapeStaking.sol",
+    "src_2_audit_fixes/utils/BlockscapeErrors.sol": {
+      "lastModificationDate": 1679573762895,
+      "contentHash": "3c4fd5994dc5470148c87bacc7013773",
+      "sourceName": "src_2_audit_fixes/utils/BlockscapeErrors.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -3149,15 +3147,55 @@
       "imports": [],
       "versionRequirement": "=0.8.16",
       "artifacts": {
-        "BlockscapeStaking": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeStaking.sol/BlockscapeStaking.json"
+        "BlockscapeErrors": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeErrors.sol/BlockscapeErrors.json"
         }
       }
     },
-    "src_2_audit_fixes/utils/BlockscapeVault.sol": {
-      "lastModificationDate": 1679566148992,
-      "contentHash": "ac08b53c841997288d0fcfd677930b93",
-      "sourceName": "src_2_audit_fixes/utils/BlockscapeVault.sol",
+    "src_2_audit_fixes/utils/BlockscapeEvents.sol": {
+      "lastModificationDate": 1679573483533,
+      "contentHash": "5b9520a31a6437feba442dc0ae342e98",
+      "sourceName": "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 10000000
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs",
+            "appendCBOR": true
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "=0.8.16",
+      "artifacts": {
+        "BlockscapeEvents": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeEvents.sol/BlockscapeEvents.json"
+        }
+      }
+    },
+    "src_2_audit_fixes/utils/BlockscapeShared.sol": {
+      "lastModificationDate": 1679581803450,
+      "contentHash": "bf120c9db026d770c9bafb0f3d218656",
+      "sourceName": "src_2_audit_fixes/utils/BlockscapeShared.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -3196,7 +3234,8 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
@@ -3207,65 +3246,8 @@
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
-        "BlockscapeVault": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeVault.sol/BlockscapeVault.json"
-        }
-      }
-    },
-    "src_2_audit_fixes/utils/RocketPoolVars.sol": {
-      "lastModificationDate": 1679565575789,
-      "contentHash": "b567f346e81a297a371ff88dbee6698e",
-      "sourceName": "src_2_audit_fixes/utils/RocketPoolVars.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
-        "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
-        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
-        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
-        "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
-        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
-        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
-        "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
-        "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
-        "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
-        "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
-        "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol",
-        "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
-        "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
-        "src_2_audit_fixes/utils/types/MinipoolStatus.sol"
-      ],
-      "versionRequirement": "=0.8.16",
-      "artifacts": {
-        "RocketPoolVars": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "RocketPoolVars.sol/RocketPoolVars.json"
+        "BlockscapeShared": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeShared.sol/BlockscapeShared.json"
         }
       }
     },
@@ -3604,66 +3586,10 @@
         }
       }
     },
-    "test/BlockscapeStaking.sol": {
-      "lastModificationDate": 1679566217587,
-      "contentHash": "5bd50f6acf86e795aee8ae7edaa287e9",
-      "sourceName": "test/BlockscapeStaking.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "lib/forge-std/src/Base.sol",
-        "lib/forge-std/src/StdAssertions.sol",
-        "lib/forge-std/src/StdChains.sol",
-        "lib/forge-std/src/StdCheats.sol",
-        "lib/forge-std/src/StdError.sol",
-        "lib/forge-std/src/StdJson.sol",
-        "lib/forge-std/src/StdMath.sol",
-        "lib/forge-std/src/StdStorage.sol",
-        "lib/forge-std/src/StdUtils.sol",
-        "lib/forge-std/src/Test.sol",
-        "lib/forge-std/src/Vm.sol",
-        "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol",
-        "lib/forge-std/src/interfaces/IMulticall3.sol",
-        "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol"
-      ],
-      "versionRequirement": "=0.8.16",
-      "artifacts": {
-        "BlockscapeStakingHelperContract": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeStaking.sol/BlockscapeStakingHelperContract.json"
-        }
-      }
-    },
-    "test/BlockscapeValidatorNFT_utilsv2.sol": {
-      "lastModificationDate": 1679566322282,
-      "contentHash": "d155a6d4c5fac89002652668ae728877",
-      "sourceName": "test/BlockscapeValidatorNFT_utilsv2.sol",
+    "test/BlockscapeETHStakeNFT.t.sol": {
+      "lastModificationDate": 1679591208673,
+      "contentHash": "f7e1c57b766d6fb6bf52d2436c216e5e",
+      "sourceName": "test/BlockscapeETHStakeNFT.t.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -3722,11 +3648,34 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
         "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol",
-        "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
+        "lib/prb-math/src/Common.sol",
+        "lib/prb-math/src/UD60x18.sol",
+        "lib/prb-math/src/sd1x18/Casting.sol",
+        "lib/prb-math/src/sd1x18/Constants.sol",
+        "lib/prb-math/src/sd1x18/Errors.sol",
+        "lib/prb-math/src/sd1x18/ValueType.sol",
+        "lib/prb-math/src/sd59x18/Casting.sol",
+        "lib/prb-math/src/sd59x18/Constants.sol",
+        "lib/prb-math/src/sd59x18/Errors.sol",
+        "lib/prb-math/src/sd59x18/Helpers.sol",
+        "lib/prb-math/src/sd59x18/Math.sol",
+        "lib/prb-math/src/sd59x18/ValueType.sol",
+        "lib/prb-math/src/ud2x18/Casting.sol",
+        "lib/prb-math/src/ud2x18/Constants.sol",
+        "lib/prb-math/src/ud2x18/Errors.sol",
+        "lib/prb-math/src/ud2x18/ValueType.sol",
+        "lib/prb-math/src/ud60x18/Casting.sol",
+        "lib/prb-math/src/ud60x18/Constants.sol",
+        "lib/prb-math/src/ud60x18/Conversions.sol",
+        "lib/prb-math/src/ud60x18/Errors.sol",
+        "lib/prb-math/src/ud60x18/Helpers.sol",
+        "lib/prb-math/src/ud60x18/Math.sol",
+        "lib/prb-math/src/ud60x18/ValueType.sol",
+        "src_2_audit_fixes/BlockscapeETHStakeNFT.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol",
@@ -3735,19 +3684,20 @@
         "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
         "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
         "src_2_audit_fixes/utils/types/MinipoolStatus.sol",
-        "test/RocketPool.sol"
+        "test/utils/BlockscapeETHStakeNFT_utils.sol",
+        "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
-        "HelperContract": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFT_utilsv2.sol/HelperContract.json"
+        "BlockscapeETHStakeNFTTest": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeETHStakeNFT.t.sol/BlockscapeETHStakeNFTTest.json"
         }
       }
     },
-    "test/BlockscapeValidatorNFTv2.t.sol": {
-      "lastModificationDate": 1679566305988,
-      "contentHash": "cfb935f2eefd6d4df5748df845c98200",
-      "sourceName": "test/BlockscapeValidatorNFTv2.t.sol",
+    "test/BlockscapeValidatorNFT.t.sol": {
+      "lastModificationDate": 1679590768253,
+      "contentHash": "1f606ca0d2442fa11ef235be2bbf18bf",
+      "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -3806,11 +3756,11 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
         "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol",
-        "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
+        "src_2_audit_fixes/BlockscapeValidatorNFT.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol",
@@ -3819,22 +3769,20 @@
         "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
         "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
         "src_2_audit_fixes/utils/types/MinipoolStatus.sol",
-        "test/BlockscapeValidatorNFT_utilsv2.sol",
-        "test/BlockscapeVault.sol",
-        "test/HelperContract.sol",
-        "test/RocketPool.sol"
+        "test/utils/BlockscapeValidatorNFT_utils.sol",
+        "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
         "BlockscapeValidatorNFTTest": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFTv2.t.sol/BlockscapeValidatorNFTTest.json"
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFT.t.sol/BlockscapeValidatorNFTTest.json"
         }
       }
     },
-    "test/BlockscapeVault.sol": {
-      "lastModificationDate": 1679566335758,
-      "contentHash": "8b10d5f8f49ec41089db6e87ea38548e",
-      "sourceName": "test/BlockscapeVault.sol",
+    "test/utils/BlockscapeETHStakeNFT_utils.sol": {
+      "lastModificationDate": 1679591706098,
+      "contentHash": "3f2a1ec54ac149d83fe76879c201d27c",
+      "sourceName": "test/utils/BlockscapeETHStakeNFT_utils.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -3893,11 +3841,34 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
         "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol",
-        "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
+        "lib/prb-math/src/Common.sol",
+        "lib/prb-math/src/UD60x18.sol",
+        "lib/prb-math/src/sd1x18/Casting.sol",
+        "lib/prb-math/src/sd1x18/Constants.sol",
+        "lib/prb-math/src/sd1x18/Errors.sol",
+        "lib/prb-math/src/sd1x18/ValueType.sol",
+        "lib/prb-math/src/sd59x18/Casting.sol",
+        "lib/prb-math/src/sd59x18/Constants.sol",
+        "lib/prb-math/src/sd59x18/Errors.sol",
+        "lib/prb-math/src/sd59x18/Helpers.sol",
+        "lib/prb-math/src/sd59x18/Math.sol",
+        "lib/prb-math/src/sd59x18/ValueType.sol",
+        "lib/prb-math/src/ud2x18/Casting.sol",
+        "lib/prb-math/src/ud2x18/Constants.sol",
+        "lib/prb-math/src/ud2x18/Errors.sol",
+        "lib/prb-math/src/ud2x18/ValueType.sol",
+        "lib/prb-math/src/ud60x18/Casting.sol",
+        "lib/prb-math/src/ud60x18/Constants.sol",
+        "lib/prb-math/src/ud60x18/Conversions.sol",
+        "lib/prb-math/src/ud60x18/Errors.sol",
+        "lib/prb-math/src/ud60x18/Helpers.sol",
+        "lib/prb-math/src/ud60x18/Math.sol",
+        "lib/prb-math/src/ud60x18/ValueType.sol",
+        "src_2_audit_fixes/BlockscapeETHStakeNFT.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol",
@@ -3906,20 +3877,19 @@
         "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
         "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
         "src_2_audit_fixes/utils/types/MinipoolStatus.sol",
-        "test/BlockscapeValidatorNFT_utilsv2.sol",
-        "test/RocketPool.sol"
+        "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
-        "BlockscapeVaultHelperContract": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeVault.sol/BlockscapeVaultHelperContract.json"
+        "HelperContract": {
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeETHStakeNFT_utils.sol/HelperContract.json"
         }
       }
     },
-    "test/HelperContract.sol": {
-      "lastModificationDate": 1679566148993,
-      "contentHash": "14feeda4adbfdbe80c6de1c1b304b077",
-      "sourceName": "test/HelperContract.sol",
+    "test/utils/BlockscapeValidatorNFT_utils.sol": {
+      "lastModificationDate": 1679591176417,
+      "contentHash": "8f9756a8ed7f2ededafe8540138f24f7",
+      "sourceName": "test/utils/BlockscapeValidatorNFT_utils.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -3978,30 +3948,32 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
         "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol",
-        "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol",
+        "src_2_audit_fixes/BlockscapeValidatorNFT.sol",
         "src_2_audit_fixes/utils/BlockscapeAccess.sol",
-        "src_2_audit_fixes/utils/BlockscapeStaking.sol",
-        "src_2_audit_fixes/utils/BlockscapeVault.sol",
-        "src_2_audit_fixes/utils/RocketPoolVars.sol",
+        "src_2_audit_fixes/utils/BlockscapeErrors.sol",
+        "src_2_audit_fixes/utils/BlockscapeEvents.sol",
+        "src_2_audit_fixes/utils/BlockscapeShared.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipool.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketMinipoolManager.sol",
+        "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol",
         "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol",
         "src_2_audit_fixes/utils/types/MinipoolDeposit.sol",
         "src_2_audit_fixes/utils/types/MinipoolDetails.sol",
-        "src_2_audit_fixes/utils/types/MinipoolStatus.sol"
+        "src_2_audit_fixes/utils/types/MinipoolStatus.sol",
+        "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
         "HelperContract": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "HelperContract.sol/HelperContract.json"
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeValidatorNFT_utils.sol/HelperContract.json"
         }
       }
     },
-    "test/RocketPool.sol": {
-      "lastModificationDate": 1679565885727,
+    "test/utils/RocketPool.sol": {
+      "lastModificationDate": 1679566423044,
       "contentHash": "625cff4a03270ae08f3d3a01b26eba05",
-      "sourceName": "test/RocketPool.sol",
+      "sourceName": "test/utils/RocketPool.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
