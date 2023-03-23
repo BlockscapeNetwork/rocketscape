@@ -11,7 +11,7 @@ import "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol";
 import "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol";
 
 abstract contract HelperContract is Test {
-    uint256 curETHlimit = 16 ether; // blockscapeValidatorNFT.getCurrentEthLimit();
+    uint256 immutable curETHlimit = 16 ether;
 
     BlockscapeValidatorNFT blockscapeValidatorNFT;
 
@@ -44,6 +44,12 @@ abstract contract HelperContract is Test {
     uint256 reqRPL;
     uint256 minimumRPLStake;
     uint256 minipoolLimit;
+
+    constructor() {
+        blockscapeValidatorNFT = new BlockscapeValidatorNFT();
+
+        blockscapeValidatorNFT.getCurrentEthLimit();
+    }
 
     function _blockscapeStakeRPL() internal {
         vm.startPrank(blockscapeRocketPoolNode);
@@ -114,8 +120,6 @@ abstract contract HelperContract is Test {
         );
         // deployer = vm.addr(0xDe);
 
-        blockscapeValidatorNFT = new BlockscapeValidatorNFT();
-
         rp_backend = address(blockscapeRocketPoolNode);
 
         vm.deal(rp_backend, 1 ether);
@@ -152,6 +156,9 @@ abstract contract HelperContract is Test {
         assertEq(blockscapeValidatorNFT.getCurrentEthLimit(), curETHlimit);
         assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
         assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+
+        assertEq(blockscapeValidatorNFT.name(), "Blockscape Validator NFTs");
+        assertEq(blockscapeValidatorNFT.symbol(), "BSV");
     }
 
     function _testInitRocketPoolSetup() internal {
