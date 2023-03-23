@@ -56,6 +56,7 @@ contract BlockscapeValidatorNFT is
             "k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/"
             "{id}.json"
         )
+        BlockscapeVault()
         BlockscapeStaking()
     {}
 

@@ -51,6 +51,7 @@ contract BlockscapeETHStakeNFT is
             "TBD/"
             "{id}.json"
         )
+        BlockscapeVault()
         BlockscapeStaking()
     {}
 

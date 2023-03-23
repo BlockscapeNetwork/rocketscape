@@ -20,6 +20,7 @@ abstract contract BlockscapeVault is BlockscapeAccess, RocketPoolVars {
     constructor() {
         _grantRole(ADJ_CONFIG_ROLE, msg.sender);
         _grantRole(RP_BACKEND_ROLE, RocketPoolVars.blockscapeRocketPoolNode);
+        _grantRole(EMERGENCY_ROLE, msg.sender);
     }
 
     /// @notice makes the vault stakable again after it has been closed

@@ -21,24 +21,27 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         _setupParticipants();
     }
 
-    // function testOpenVault() public {
-    //     _testInitContractSetup();
-    //     _testInitRocketPoolSetup();
+    function testOpenVault() public {
+        _testInitContractSetup();
+        _testInitRocketPoolSetup();
 
-    //     // not enough RPL to stake, shouldn't open vault
-    //     vm.expectRevert(NotEnoughRPLStake.selector);
+        // not enough RPL to stake, shouldn't open vault
+        // vm.expectRevert(NotEnoughRPLStake.selector);
 
-    //     _blockscapeStakeRPL();
+        _blockscapeStakeRPL();
 
-    //     _testContractSetupAfterStaking();
-    //     _testRocketPoolSetupAfterStaking();
+        _testContractSetupAfterStaking();
+        _testRocketPoolSetupAfterStaking();
 
-    //     // only owner should be able to call function
-    //     vm.expectRevert("Ownable: caller is not the owner");
-    //     vm.prank(singleStaker);
+        // only RP_BACKEND_ROLE should be able to call function
+        vm.expectRevert(
+            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+        );
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.closeVault();
 
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-    // }
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+    }
 
     function testCloseVault() public {
         _testInitContractSetup();
@@ -99,10 +102,10 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         shouldBeM.stakedETH = curETHlimit;
         shouldBeM.stakedTimestamp = block.timestamp;
 
-        BlockscapeStaking.Metadata memory m = 
-        // TODO: is the vali as return needed?
-        // , address validator
-        blockscapeValidatorNFT.getMetadata(1);
+        BlockscapeStaking.Metadata
+            memory m = // TODO: is the vali as return needed?
+            // , address validator
+            blockscapeValidatorNFT.getMetadata(1);
 
         // TODO: Right test cases for other token ids that they return
         // default values == they are unset?
