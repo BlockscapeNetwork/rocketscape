@@ -75,16 +75,21 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
     function _testAccessControl() internal {
         assertEq(
-            hasRole(keccak256("DEFAULT_ADMIN_ROLE"), foundryDeployer),
+            blockscapeETHStakeNFT.hasRole(ADJ_CONFIG_ROLE, foundryDeployer),
             true
         );
 
-        console.log("foundryDeployer", foundryDeployer);
-        console.log("blockscapeRocketPoolNode", blockscapeRocketPoolNode);
-
-        assertEq(hasRole(ADJ_CONFIG_ROLE, foundryDeployer), true);
-        assertEq(hasRole(RP_BACKEND_ROLE, blockscapeRocketPoolNode), true);
-        assertEq(hasRole(EMERGENCY_ROLE, foundryDeployer), true);
+        assertEq(
+            blockscapeETHStakeNFT.hasRole(
+                RP_BACKEND_ROLE,
+                blockscapeRocketPoolNode
+            ),
+            true
+        );
+        assertEq(
+            blockscapeETHStakeNFT.hasRole(EMERGENCY_ROLE, foundryDeployer),
+            true
+        );
     }
 
     function _testClosingVault() internal {
@@ -148,4 +153,109 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
     }
+
+    function _testSetMetadata() internal {}
+
+    function _testDepositStakeNFT(uint256 _value) internal {
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.depositStakeNFT{value: _value}();
+        assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
+        assertEq(blockscapeETHStakeNFT.getPoolSupply(), 1 ether);
+    }
+
+    function _testUpdateStake(uint256 _tokenID) internal {
+        vm.expectRevert();
+        blockscapeETHStakeNFT.updateStake(_tokenID);
+
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 1 ether}();
+        assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
+        assertEq(blockscapeETHStakeNFT.getPoolSupply(), 1 ether);
+
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.updateStake(1);
+
+        assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
+        assertEq(blockscapeETHStakeNFT.getPoolSupply(), 2 ether);
+    }
+
+    function _testPrepareWithdrawProcess(uint256 _tokenID) internal {
+        blockscapeETHStakeNFT.prepareWithdrawProcess(_tokenID);
+    }
+
+    function _testWithdrawFunds(uint256 _tokenID) internal {
+        blockscapeETHStakeNFT.withdrawFunds(_tokenID);
+    }
+
+    function _testGetPoolSupply() internal {
+        blockscapeETHStakeNFT.getPoolSupply();
+    }
+
+    function _testCalcWithdrawFee(uint256 _tokenID) internal {
+        blockscapeETHStakeNFT.calcWithdrawFee(_tokenID, msg.sender);
+    }
+
+    function _testCalcApr() internal {
+        blockscapeETHStakeNFT.calcApr();
+    }
+
+    function _testTotalSupply() internal {
+        blockscapeETHStakeNFT.totalSupply();
+    }
+
+    function _testContractURI() internal {
+        blockscapeETHStakeNFT.contractURI();
+    }
+
+    function _testUri() internal {
+        blockscapeETHStakeNFT.uri(1);
+    }
+
+    function _testGetAvailableRPLStake() internal {
+        blockscapeETHStakeNFT.getAvailableRPLStake();
+    }
+
+    function _testGetReqRPLStake() internal {
+        blockscapeETHStakeNFT.getReqRPLStake();
+    }
+
+    function _testHasNodeEnoughRPLStake() internal {
+        blockscapeETHStakeNFT.hasNodeEnoughRPLStake();
+    }
+
+    function _testSetBlockscapeRocketPoolNode() internal {
+        blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(
+            0x9C838949427022610ab4D4fbe6EDC9e6dD83b2D8
+        );
+    }
+
+    function _testGetTokenID() internal {
+        blockscapeETHStakeNFT.getTokenID();
+    }
+
+    function _testGetBalance() internal {
+        blockscapeETHStakeNFT.getBalance();
+    }
+
+    function _testGetMetadata(uint256 _tokenID) internal {
+        blockscapeETHStakeNFT.getMetadata(_tokenID);
+    }
+
+    function _testOpenVault() internal {
+        blockscapeETHStakeNFT.openVault();
+    }
+
+    function _testCloseVault() internal {
+        blockscapeETHStakeNFT.closeVault();
+    }
+
+    function _textIsVaultOpen() internal {
+        blockscapeETHStakeNFT.isVaultOpen();
+    }
+
+    function _textLowerWithdrawFee(uint256 _newLimit) internal {
+        blockscapeETHStakeNFT.lowerWithdrawFee(_newLimit);
+    }
+
+    function _textReceive() internal {}
 }

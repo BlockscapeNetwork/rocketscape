@@ -17,22 +17,7 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
     }
 
     function testAccess() public {
-        assertEq(
-            blockscapeETHStakeNFT.hasRole(ADJ_CONFIG_ROLE, foundryDeployer),
-            true
-        );
-
-        assertEq(
-            blockscapeETHStakeNFT.hasRole(
-                RP_BACKEND_ROLE,
-                blockscapeRocketPoolNode
-            ),
-            true
-        );
-        assertEq(
-            blockscapeETHStakeNFT.hasRole(EMERGENCY_ROLE, foundryDeployer),
-            true
-        );
+        _testAccessControl();
     }
 
     function testVault() public {
@@ -41,19 +26,19 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
         _testOpeningVault();
     }
 
-    // function testStaking() public {
-    //     _testSetMetadata();
+    function testStaking() public {
+        _testSetMetadata();
 
-    //     _blockscapeStakeRPL();
-    //     _testContractSetupAfterRPLStaking();
-    //     // only RP_BACKEND_ROLE should be able to call function
-    //     vm.expectRevert(
-    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
-    //     );
-    //     vm.prank(singleStaker);
-    //     blockscapeETHStakeNFT.closeVault();
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
-    // }
+        _blockscapeStakeRPL();
+        //_testContractSetupAfterRPLStaking();
+        // only RP_BACKEND_ROLE should be able to call function
+        vm.expectRevert(
+            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+        );
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.closeVault();
+        assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
+    }
 
     // function testCloseVault() public {
     //     _testInitContractSetup();
