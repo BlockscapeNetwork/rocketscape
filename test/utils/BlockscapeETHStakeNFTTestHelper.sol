@@ -8,7 +8,7 @@ import {BlockscapeETHStakeNFT} from "src/BlockscapeETHStakeNFT.sol";
 import "openzeppelin-contracts/access/AccessControl.sol";
 import "./RocketPool.sol";
 
-//import "src/utils/BlockscapeShared.sol";
+//import "src_2_audit_fixes/utils/BlockscapeShared.sol";
 
 // //import {RocketPoolHelperContract} from "./RocketPool.sol";
 

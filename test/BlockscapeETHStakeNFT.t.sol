@@ -4,7 +4,7 @@ pragma solidity 0.8.16;
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import {BlockscapeETHStakeNFT} from "src/BlockscapeETHStakeNFT.sol";
-import {HelperContract} from "./utils/BlockscapeETHStakeNFT_utils.sol";
+import {HelperContract} from "./utils/BlockscapeETHStakeNFTTestHelper.sol";
 
 contract BlockscapeETHStakeNFTTest is Test, HelperContract {
     bytes validatorBytesAddress =
