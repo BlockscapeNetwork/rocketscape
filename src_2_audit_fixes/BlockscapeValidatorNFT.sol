@@ -73,9 +73,6 @@ contract BlockscapeValidatorNFT is
     function depositValidatorNFT() external payable {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
-        // TODO: Bring back?
-        // if (tokenIDtoValidator[tokenID] == address(0)) revert();
-
         if (!isVaultOpen()) revert ErrorVaultState(isVaultOpen());
 
         if (curETHlimit != msg.value) revert IncorrectDepositValueSent();
@@ -96,6 +93,7 @@ contract BlockscapeValidatorNFT is
      */
     function withdrawBatch() external onlyRole(RP_BACKEND_ROLE) {
         if (vaultOpen) revert ErrorVaultState(vaultOpen);
+
         Address.sendValue(blockscapeRocketPoolNode, curETHlimit);
     }
 
@@ -123,22 +121,23 @@ contract BlockscapeValidatorNFT is
         @notice used when user wants to unstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
-    function prepareWithdrawProcess(uint256 _tokenID) external override {
+    function prepareWithdrawalProcess(uint256 _tokenID) external override {
+        if (balanceOf(msg.sender, _tokenID) == 0)
+            revert YouDontOwnThisNft(_tokenID);
+
         if (senderToTimestamp[msg.sender] != 0)
             revert AlreadyPreparingForWithdrawal();
 
         uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
 
-        if (balanceOf(msg.sender, _tokenID) >= 1) {
-            senderToTimestamp[msg.sender] = block.timestamp;
-            emit UserRequestedWithdrawalVali(
-                _tokenID,
-                msg.sender,
-                curWithdrawFee,
-                tokenIDtoMetadata[_tokenID].stakedETH,
-                estRewardsNoMEV(_tokenID)
-            );
-        }
+        senderToTimestamp[msg.sender] = block.timestamp;
+        emit UserRequestedWithdrawalVali(
+            _tokenID,
+            msg.sender,
+            curWithdrawFee,
+            tokenIDtoMetadata[_tokenID].stakedETH,
+            estRewardsNoMEV(_tokenID)
+        );
     }
 
     /**
@@ -153,6 +152,7 @@ contract BlockscapeValidatorNFT is
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
 
+        senderToTimestamp[msg.sender] = 0;
         Address.sendValue(
             payable(msg.sender),
             tokenIDtoMetadata[_tokenID].stakedETH +

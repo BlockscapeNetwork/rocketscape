@@ -126,7 +126,7 @@ contract BlockscapeETHStakeNFT is
         @notice used when user wants to u nstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
-    function prepareWithdrawProcess(uint256 _tokenID) external override {
+    function prepareWithdrawalProcess(uint256 _tokenID) external override {
         if (senderToTimestamp[msg.sender] <= 0) revert();
 
         tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);

@@ -111,32 +111,32 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         assertEq(m.stakedTimestamp, 0);
     }
 
-    // function testFallbacks() public {
-    //     vm.expectRevert();
-    //     vm.prank(poolStaker1);
-    //     payable(address(blockscapeValidatorNFT)).transfer(5 ether);
-    // }
+    function testWithdrawal() public {
+        _testInitAndDeposit();
 
-    // function testWithdraw() public {
-    //     _blockscapeStakeRPL();
-    //     _openValidatorNFT();
-    //     _depositSoloStaker();
+        assertEq(
+            blockscapeValidatorNFT.getBalance(),
+            blockscapeValidatorNFT.curETHlimit()
+        );
 
-    //     assertEq(blockscapeValidatorNFT.getBalance(), curETHlimit);
+        // only owner should be able to call function
+        // vm.expectRevert(YouDontOwnThisNft.selector); //"Ownable: caller is not the owner");
+        // vm.prank(poolStaker1);
+        // blockscapeValidatorNFT.prepareWithdrawalProcess(
+        //     blockscapeValidatorNFT.curETHlimit()
+        // );
 
-    //     // only owner should be able to call function
-    //     vm.expectRevert("Ownable: caller is not the owner");
-    //     //vm.prank(singleStaker);
-    //     //blockscapeValidatorNFT.withdraw(curETHlimit);
+        // uint256 deployerBalance = rp_backend_role.balance;
 
-    //     uint256 deployerBalance = rp_backend.balance;
+        // vm.prank(rp_backend);
+        // blockscapeValidatorNFT.withdraw(curETHlimit);
 
-    //     // vm.prank(rp_backend);
-    //     // blockscapeValidatorNFT.withdraw(curETHlimit);
-
-    //     assertEq(rp_backend.balance - deployerBalance, curETHlimit);
-    //     assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
-    // }
+        // assertEq(
+        //     rp_backend_role.balance - deployerBalance,
+        //     blockscapeValidatorNFT.curETHlimit()
+        // );
+        // assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
+    }
 
     // function testWithdrawBatch() public {
     //     _stakeRPL();
@@ -340,5 +340,10 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
 
     //     vm.stopPrank();
     // }
+
+    // function testFallbacks() public {
+    //     vm.expectRevert();
+    //     vm.prank(poolStaker1);
+    //     payable(address(blockscapeValidatorNFT)).transfer(5 ether);
+    // }
 }
-// }

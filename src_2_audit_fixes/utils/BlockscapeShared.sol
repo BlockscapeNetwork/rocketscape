@@ -249,7 +249,7 @@ abstract contract BlockscapeShared is
     // Allow contract to receive ETH without making a delegated call
     receive() external payable {}
 
-    function prepareWithdrawProcess(uint256 _tokenID) external virtual {}
+    function prepareWithdrawalProcess(uint256 _tokenID) external virtual {}
 
     function withdrawFunds(uint256 _tokenID) external virtual {}
 

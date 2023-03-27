@@ -2870,8 +2870,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeETHStakeNFT.sol": {
-      "lastModificationDate": 1679715663358,
-      "contentHash": "5d31627e7c444a84560de04ab6030120",
+      "lastModificationDate": 1679902858839,
+      "contentHash": "e5de96eb8f12b71b037545012e4124ca",
       "sourceName": "src_2_audit_fixes/BlockscapeETHStakeNFT.sol",
       "solcConfig": {
         "settings": {
@@ -2959,8 +2959,8 @@
       }
     },
     "src_2_audit_fixes/BlockscapeValidatorNFT.sol": {
-      "lastModificationDate": 1679899701212,
-      "contentHash": "315cbb6e7a5ba29acaf2ea9a6a62bf57",
+      "lastModificationDate": 1679904794290,
+      "contentHash": "54049b5191bf810c3fb05c67aaa90a56",
       "sourceName": "src_2_audit_fixes/BlockscapeValidatorNFT.sol",
       "solcConfig": {
         "settings": {
@@ -3193,8 +3193,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeShared.sol": {
-      "lastModificationDate": 1679901546844,
-      "contentHash": "65508024fa30d8a47b98ed49d19edf42",
+      "lastModificationDate": 1679902835353,
+      "contentHash": "a12f4161b3c964fefccda48aec551aa4",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeShared.sol",
       "solcConfig": {
         "settings": {
@@ -3695,8 +3695,8 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
-      "lastModificationDate": 1679901735730,
-      "contentHash": "c82d1592c8248aae46b2126ff39ab7c9",
+      "lastModificationDate": 1679904818318,
+      "contentHash": "1b619a2e66d0a21c16c81d211794fbb3",
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3780,8 +3780,8 @@
       }
     },
     "test/utils/BlockscapeETHStakeNFT_utils.sol": {
-      "lastModificationDate": 1679889614978,
-      "contentHash": "d20db519b6d81cff6aafce0f47508fd3",
+      "lastModificationDate": 1679902866576,
+      "contentHash": "c874aa59fbe3577573ebabc13d559551",
       "sourceName": "test/utils/BlockscapeETHStakeNFT_utils.sol",
       "solcConfig": {
         "settings": {
