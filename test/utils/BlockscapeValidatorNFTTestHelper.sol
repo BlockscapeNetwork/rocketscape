@@ -125,8 +125,23 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         assertEq(blockscapeValidatorNFT.rpComm8(), 14);
     }
 
-    function _openVaultDepositAndTestInitSetup() internal {
+    function _testInitStakeRPLReadyForStaking() internal {
         _testInitContractSetup();
+        _testInitRocketPoolSetup();
+
+        _blockscapeStakeRPL();
+
+        _testContractSetupAfterRPLStaking();
+    }
+
+    function _depositSoloStaker() internal {
+        uint256 value = blockscapeValidatorNFT.curETHlimit();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.depositValidatorNFT{value: value}();
+    }
+
+    function _testInitAndDeposit() internal {
+        _testInitStakeRPLReadyForStaking();
 
         _depositSoloStaker();
 
@@ -135,12 +150,20 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
             blockscapeValidatorNFT.getBalance(),
             blockscapeValidatorNFT.curETHlimit()
         );
+        assertEq(blockscapeValidatorNFT.getTokenID(), 2);
     }
 
-    function _depositSoloStaker() internal {
-        vm.prank(singleStaker);
-        blockscapeValidatorNFT.depositValidatorNFT{value: 16 ether}();
-    }
+    // function _openVaultDepositAndTestInitSetup() internal {
+    //     _testInitContractSetup();
+
+    //     _depositSoloStaker();
+
+    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+    //     assertEq(
+    //         blockscapeValidatorNFT.getBalance(),
+    //         blockscapeValidatorNFT.curETHlimit()
+    //     );
+    // }
 
     function _testAccessControl() internal {
         // assertEq(
@@ -244,4 +267,6 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         blockscapeValidatorNFT.openVault();
         assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
     }
+
+    function _testSetMetadata() internal {}
 }
