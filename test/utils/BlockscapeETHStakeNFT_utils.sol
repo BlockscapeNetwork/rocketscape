@@ -42,7 +42,6 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     /// @dev role to open / close vault in cases of emergencies
     bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 
-    constructor() {}
 
     function _setupParticipants() internal {
         vm.prank(foundryDeployer);
