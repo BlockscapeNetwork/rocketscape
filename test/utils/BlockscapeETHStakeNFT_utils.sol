@@ -115,7 +115,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
 
-        console.log("emergency_role", foundryDeployer);
+        // console.log("emergency_role", foundryDeployer);
 
         vm.prank(foundryDeployer);
         blockscapeETHStakeNFT.closeVault();
@@ -179,7 +179,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     }
 
     function _testPrepareWithdrawProcess(uint256 _tokenID) internal {
-        blockscapeETHStakeNFT.prepareWithdrawProcess(_tokenID);
+        blockscapeETHStakeNFT.prepareWithdrawalProcess(_tokenID);
     }
 
     function _testWithdrawFunds(uint256 _tokenID) internal {

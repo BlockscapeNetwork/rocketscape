@@ -12,14 +12,12 @@ import "./utils/BlockscapeShared.sol";
 
 error ValidatorAlreadySet(address _vali);
 
-
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
     @notice collects staking, mints NFT in return for staker and let's backend controller 
     transfer the stake when the pool is full (currently 16 ETH) and enough RPL are available
 */
-
 
 contract BlockscapeValidatorNFT is
     ERC1155Supply,
@@ -75,15 +73,13 @@ contract BlockscapeValidatorNFT is
     function depositValidatorNFT() external payable {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
-        if (tokenIDtoValidator[tokenID] == address(0)) revert();
-
-        if (!isVaultOpen())
-            revert ErrorVaultState(isVaultOpen());
+        if (!isVaultOpen()) revert ErrorVaultState(isVaultOpen());
 
         if (curETHlimit != msg.value) revert IncorrectDepositValueSent();
 
         // create metadata for the new tokenID
         _setMetadataForStakeInternal(msg.value, tokenID);
+
         _mint(msg.sender, tokenID, 1, "");
 
         tokenID++;
@@ -96,8 +92,8 @@ contract BlockscapeValidatorNFT is
         @notice this gets triggered by the backend controller when a new token is minted
      */
     function withdrawBatch() external onlyRole(RP_BACKEND_ROLE) {
-        if (vaultOpen)
-            revert ErrorVaultState(vaultOpen);
+        if (vaultOpen) revert ErrorVaultState(vaultOpen);
+
         Address.sendValue(blockscapeRocketPoolNode, curETHlimit);
     }
 
@@ -114,8 +110,7 @@ contract BlockscapeValidatorNFT is
         if (address(0) != tokenIDtoValidator[_tokenID]) {
             revert ValidatorAlreadySet(tokenIDtoValidator[_tokenID]);
         }
-        if (vaultOpen == true)
-            revert ErrorVaultState(vaultOpen);
+        if (vaultOpen == true) revert ErrorVaultState(vaultOpen);
 
         tokenIDtoValidator[_tokenID] = _vali;
 
@@ -126,41 +121,38 @@ contract BlockscapeValidatorNFT is
         @notice used when user wants to unstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
-    function prepareWithdrawProcess(uint256 _tokenID) override external {
+    function prepareWithdrawalProcess(uint256 _tokenID) external override {
+        if (balanceOf(msg.sender, _tokenID) == 0)
+            revert YouDontOwnThisNft(_tokenID);
+
         if (senderToTimestamp[msg.sender] != 0)
             revert AlreadyPreparingForWithdrawal();
 
         uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
 
-        if (balanceOf(msg.sender, _tokenID) >= 1) {
-            senderToTimestamp[msg.sender] = block.timestamp;
-            emit UserRequestedWithdrawalVali(
-                _tokenID,
-                msg.sender,
-                curWithdrawFee,
-                tokenIDtoMetadata[_tokenID].stakedETH,
-                estRewardsNoMEV(_tokenID)
-            );
-        }
+        senderToTimestamp[msg.sender] = block.timestamp;
+        emit UserRequestedWithdrawalVali(
+            _tokenID,
+            msg.sender,
+            curWithdrawFee,
+            tokenIDtoMetadata[_tokenID].stakedETH,
+            estRewardsNoMEV(_tokenID)
+        );
     }
 
     /**
      *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
-    function withdrawFunds(uint256 _tokenID) override external {
+    function withdrawFunds(uint256 _tokenID) external override {
         if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
             revert();
-        if (
-            tokenIDToExitReward[_tokenID] <
-            estRewardsNoMEV(_tokenID)
-        ) {
-            tokenIDToExitReward[_tokenID] = estRewardsNoMEV(
-                _tokenID
-            );
+        if (tokenIDToExitReward[_tokenID] < estRewardsNoMEV(_tokenID)) {
+            tokenIDToExitReward[_tokenID] = estRewardsNoMEV(_tokenID);
         }
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
 
+        senderToTimestamp[msg.sender] = 0;
         Address.sendValue(
             payable(msg.sender),
             tokenIDtoMetadata[_tokenID].stakedETH +
@@ -193,9 +185,6 @@ contract BlockscapeValidatorNFT is
         curETHlimit = 8 ether;
         emit ETHLimitChanged(8 ether);
     }
-
-    
-    
 
     function lowerRPCommFee8(
         uint256 _amount
@@ -235,8 +224,7 @@ contract BlockscapeValidatorNFT is
             if (timePassed >= maxTime05EthReached) {
                 curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 %
             } else {
-                curWithdrawFee = (initWithdrawFee -
-                    (secFee * timePassed));
+                curWithdrawFee = (initWithdrawFee - (secFee * timePassed));
             }
         } else {
             curWithdrawFee = 0;
@@ -283,7 +271,6 @@ contract BlockscapeValidatorNFT is
             "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7";
     }
 
-    
     /**
         @notice gets the url to the metadata of a given pool
         @param _tokenID the pool
