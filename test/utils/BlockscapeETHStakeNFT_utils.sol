@@ -4,11 +4,11 @@ pragma solidity 0.8.16;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeETHStakeNFT} from "src_2_audit_fixes/BlockscapeETHStakeNFT.sol";
+import {BlockscapeETHStakeNFT} from "src/BlockscapeETHStakeNFT.sol";
 import "openzeppelin-contracts/access/AccessControl.sol";
 import "./RocketPool.sol";
 
-//import "src_2_audit_fixes/utils/BlockscapeShared.sol";
+//import "src/utils/BlockscapeShared.sol";
 
 // //import {RocketPoolHelperContract} from "./RocketPool.sol";
 

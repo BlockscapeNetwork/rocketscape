@@ -3,7 +3,7 @@ pragma solidity 0.8.16;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeETHStakeNFT} from "src_2_audit_fixes/BlockscapeETHStakeNFT.sol";
+import {BlockscapeETHStakeNFT} from "src/BlockscapeETHStakeNFT.sol";
 import {HelperContract} from "./utils/BlockscapeETHStakeNFT_utils.sol";
 
 contract BlockscapeETHStakeNFTTest is Test, HelperContract {
