@@ -116,7 +116,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
 
-        console.log("emergency_role", foundryDeployer);
+        // console.log("emergency_role", foundryDeployer);
 
         vm.prank(foundryDeployer);
         blockscapeETHStakeNFT.closeVault();

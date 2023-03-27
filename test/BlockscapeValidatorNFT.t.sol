@@ -2,15 +2,15 @@
 
 pragma solidity 0.8.16;
 
-import "openzeppelin-contracts/access/AccessControl.sol";
 import "forge-std/Test.sol";
 
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFT.sol";
-import {HelperContract} from "./utils/BlockscapeValidatorNFT_utils.sol";
 
-contract BlockscapeValidatorNFTTest is Test, HelperContract {
-    uint256 initWithdrawFee = 20e18;
+import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFT.sol";
+import {BlockscapeValidatorNFTTestHelper} from "./utils/BlockscapeValidatorNFTTestHelper.sol";
+
+contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
+    // uint256 initWithdrawFee = 20 ether;
 
     bytes validatorBytesAddress =
         hex"a2e78385831894094502727373588fc1794ea2800b2b6e614358fea78dcf0cc4d103008a53c665f294e31af0397253e3";
@@ -19,21 +19,45 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
 
     error NotEnoughRPLStake();
 
+    constructor() BlockscapeValidatorNFTTestHelper(blockscapeValidatorNFT) {}
+
     function setUp() public {
         _setupParticipants();
 
-        // _testInitContractSetup();
+        _testInitContractSetup();
     }
 
-    // function testAccess() public {
-    // _testAccessControl();
-    // assertEq(
-    //     hasRole(keccak256("DEFAULT_ADMIN_ROLE"), foundryDeployer),
-    //     true
-    // );
-    // assertEq(hasRole(ADJ_CONFIG_ROLE, foundryDeployer), true);
-    // assertEq(hasRole(EMERGENCY_ROLE, foundryDeployer), true);
-    // }
+    function testAccess() public {
+        // _testAccessControl();
+        // assertEq(
+        //     blockscapeValidatorNFT.hasRole(
+        //         blockscapeValidatorNFT.DEFAULT_ADMIN_ROLE(),
+        //         foundryDeployer
+        //     ),
+        //     true
+        // );
+        assertEq(
+            blockscapeValidatorNFT.hasRole(
+                blockscapeValidatorNFT.ADJ_CONFIG_ROLE(),
+                foundryDeployer
+            ),
+            true
+        );
+        assertEq(
+            blockscapeValidatorNFT.hasRole(
+                blockscapeValidatorNFT.RP_BACKEND_ROLE(),
+                blockscapeValidatorNFT.blockscapeRocketPoolNode()
+            ),
+            true
+        );
+        assertEq(
+            blockscapeValidatorNFT.hasRole(
+                blockscapeValidatorNFT.EMERGENCY_ROLE(),
+                foundryDeployer
+            ),
+            true
+        );
+    }
 
     // function testVault() public {
     // _testClosingVault(blockscapeValidatorNFT);
@@ -102,7 +126,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
     //     vm.prank(poolStaker1);
     //     blockscapeValidatorNFT.depositValidatorNFT();
 
-        // _stakeRPL();
+    // _stakeRPL();
 
     //     vm.expectRevert();
     //     vm.prank(poolStaker1);
