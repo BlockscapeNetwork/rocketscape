@@ -28,15 +28,21 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     }
 
     function testAccess() public {
+        _testInitContractSetup();
+        _testInitRocketPoolSetup();
+
         _testAccessControl();
     }
 
     function testVault() public {
+        _testInitContractSetup();
+        _testInitRocketPoolSetup();
+
         _testClosingVault();
 
-        // _blockscapeStakeRPL();
+        _blockscapeStakeRPL();
 
-        // _testOpeningVault();
+        _testOpeningVault();
     }
 
     // function testStaking() public {

@@ -174,9 +174,6 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
     }
 
     function _testClosingVault() internal {
-        _testInitContractSetup();
-        _testInitRocketPoolSetup();
-
         // only owner should be able to call function
         string memory firstPart = "AccessControl: account ";
         string
@@ -211,5 +208,40 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         vm.prank(emergency_role);
         blockscapeValidatorNFT.closeVault();
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+    }
+
+    function _testOpeningVault() internal {
+        // only owner should be able to call function
+        string memory firstPart = "AccessControl: account ";
+        string
+            memory roleMissing = " is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26";
+
+        string memory revertString = string.concat(
+            string.concat(
+                firstPart,
+                "0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5"
+            ),
+            roleMissing
+        );
+
+        vm.expectRevert(abi.encodePacked(revertString));
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.openVault();
+
+        revertString = string.concat(
+            string.concat(
+                firstPart,
+                "0xf6132f532abc3902ea2dcae7f8d7fccdf7ba4982"
+            ),
+            roleMissing
+        );
+
+        vm.expectRevert(abi.encodePacked(revertString));
+        vm.prank(rp_backend_role);
+        blockscapeValidatorNFT.openVault();
+
+        vm.prank(emergency_role);
+        blockscapeValidatorNFT.openVault();
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
     }
 }
