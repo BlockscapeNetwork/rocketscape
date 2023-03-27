@@ -5,16 +5,11 @@ pragma solidity 0.8.16;
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 
-import {HelperContract} from "./BlockscapeValidatorNFT_utilsv2.sol";
-import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFTv2.sol";
-import {BlockscapeAccess} from "src_2_audit_fixes/utils/BlockscapeAccess.sol";
+import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFTv2.sol";
+import {BlockscapeAccess} from "src/utils/BlockscapeAccess.sol";
 import {AccessControl} from "openzeppelin-contracts/access/AccessControl.sol";
 
-abstract contract BlockscapeVaultHelperContract is
-    Test,
-    HelperContract,
-    BlockscapeAccess
-{
+abstract contract BlockscapeVaultHelperContract is Test {
     // function _testAccessControl() internal {
     // console.log("ADJ_CONFIG_ROLE", string(keccak256("ADJ_CONFIG_ROLE")));
     // console.log("RP_BACKEND_ROLE", RP_BACKEND_ROLE);
@@ -71,8 +66,6 @@ abstract contract BlockscapeVaultHelperContract is
         blockscapeValidatorNFT.closeVault();
 
         assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-
-        console.log("emergency_role", emergency_role);
 
         // vm.prank(emergency_role);
         // blockscapeValidatorNFT.closeVault();

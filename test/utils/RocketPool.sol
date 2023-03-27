@@ -3,9 +3,9 @@ pragma solidity 0.8.16;
 // SPDX-License-Identifier: BUSL-1.1
 
 import "forge-std/Test.sol";
-import "src_2_audit_fixes/utils/interfaces/IRocketStorage.sol";
-import "src_2_audit_fixes/utils/interfaces/IRocketNodeStaking.sol";
-import "src_2_audit_fixes/utils/interfaces/IRocketNodeDeposit.sol";
+import "src/utils/interfaces/IRocketStorage.sol";
+import "src/utils/interfaces/IRocketNodeStaking.sol";
+import "src/utils/interfaces/IRocketNodeDeposit.sol";
 
 abstract contract RocketPoolHelperContract is Test {
     uint256 rplStakeAsPerTx = 84061696117349943401;
