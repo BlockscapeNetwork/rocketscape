@@ -3193,8 +3193,8 @@
       }
     },
     "src_2_audit_fixes/utils/BlockscapeShared.sol": {
-      "lastModificationDate": 1679715663359,
-      "contentHash": "bf120c9db026d770c9bafb0f3d218656",
+      "lastModificationDate": 1679901546844,
+      "contentHash": "65508024fa30d8a47b98ed49d19edf42",
       "sourceName": "src_2_audit_fixes/utils/BlockscapeShared.sol",
       "solcConfig": {
         "settings": {
@@ -3695,8 +3695,8 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
-      "lastModificationDate": 1679900122271,
-      "contentHash": "696307e4a6aba97feab4f319998a9da7",
+      "lastModificationDate": 1679901735730,
+      "contentHash": "c82d1592c8248aae46b2126ff39ab7c9",
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3887,8 +3887,8 @@
       }
     },
     "test/utils/BlockscapeValidatorNFTTestHelper.sol": {
-      "lastModificationDate": 1679900123283,
-      "contentHash": "b87f229c3c546e6c38a47f44eb2f0130",
+      "lastModificationDate": 1679900273970,
+      "contentHash": "1ba8edaae62ce1145866fa80fe8c2b4a",
       "sourceName": "test/utils/BlockscapeValidatorNFTTestHelper.sol",
       "solcConfig": {
         "settings": {

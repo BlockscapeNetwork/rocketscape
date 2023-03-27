@@ -64,6 +64,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
     function _testInitContractSetup() internal {
         assertEq(blockscapeValidatorNFT.name(), "Blockscape Validator NFTs");
         assertEq(blockscapeValidatorNFT.symbol(), "BSV");
+        assertEq(blockscapeValidatorNFT.totalSupply(), 0);
         assertEq(
             blockscapeValidatorNFT.getCurrentEthLimit(),
             blockscapeValidatorNFT.curETHlimit()
@@ -103,6 +104,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
 
     function _testContractSetupAfterRPLStaking() internal {
         assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
+        assertEq(blockscapeValidatorNFT.totalSupply(), 0);
         assertEq(
             blockscapeValidatorNFT.getCurrentEthLimit(),
             blockscapeValidatorNFT.curETHlimit()
@@ -151,6 +153,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
             blockscapeValidatorNFT.curETHlimit()
         );
         assertEq(blockscapeValidatorNFT.getTokenID(), 2);
+        assertEq(blockscapeValidatorNFT.totalSupply(), 1);
     }
 
     // function _openVaultDepositAndTestInitSetup() internal {

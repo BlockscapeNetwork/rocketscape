@@ -46,62 +46,70 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     }
 
     function testStaking() public {
-        _testInitAndDeposit();
+        _testInitStakeRPLReadyForStaking();
+
+        uint256 ethDeposit = blockscapeValidatorNFT.curETHlimit();
+
+        vm.expectRevert();
+        vm.prank(poolStaker1);
+        blockscapeValidatorNFT.depositValidatorNFT();
+
+        // too much deposit
+        vm.expectRevert();
+        vm.prank(poolStaker1);
+        blockscapeValidatorNFT.depositValidatorNFT{
+            value: ethDeposit + 1 ether
+        }();
+
+        // too little deposit
+        vm.expectRevert();
+        vm.prank(poolStaker1);
+        blockscapeValidatorNFT.depositValidatorNFT{
+            value: ethDeposit - 1 ether
+        }();
+
+        _depositSoloStaker();
+
+        // cannot deposit when pool is full
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.depositValidatorNFT{value: ethDeposit}();
+
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+        assertEq(
+            blockscapeValidatorNFT.getBalance(),
+            blockscapeValidatorNFT.curETHlimit()
+        );
+        assertEq(blockscapeValidatorNFT.getTokenID(), 2);
+        assertEq(blockscapeValidatorNFT.totalSupply(), 1);
+
+        // check metadata
+        BlockscapeValidatorNFT.Metadata memory m = blockscapeValidatorNFT
+            .getMetadata(1);
+
+        BlockscapeValidatorNFT.Metadata memory shouldBeM;
+        shouldBeM.stakedETH = ethDeposit;
+        shouldBeM.stakedTimestamp = block.timestamp;
+        assertEq(
+            blockscapeValidatorNFT.contractURI(),
+            "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7"
+        );
+        assertEq(
+            blockscapeValidatorNFT.uri(1),
+            "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/1.json"
+        );
+
+        assertEq(m.stakedETH, shouldBeM.stakedETH);
+        assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
+
+        // only current tokenID has been changed
+        m = blockscapeValidatorNFT.getMetadata(0);
+        assertEq(m.stakedETH, 0);
+        assertEq(m.stakedTimestamp, 0);
+        m = blockscapeValidatorNFT.getMetadata(2);
+        assertEq(m.stakedETH, 0);
+        assertEq(m.stakedTimestamp, 0);
     }
-
-    // function testDepositValidatorNFT() public {
-    //     _blockscapeStakeRPL();
-
-    //     assertEq(blockscapeValidatorNFT.totalSupply(), 0);
-
-    //     // expect incorrect values of ether to revert
-    //     vm.expectRevert();
-    //     vm.prank(poolStaker1);
-    //     blockscapeValidatorNFT.depositValidatorNFT();
-
-    // _stakeRPL();
-
-    //     vm.expectRevert();
-    //     vm.prank(poolStaker1);
-    //     blockscapeValidatorNFT.depositValidatorNFT{
-    //         value: curETHlimit + 1 ether
-    //     }();
-
-    //     _depositSoloStaker();
-
-    //     BlockscapeStaking.Metadata memory shouldBeM;
-    //     shouldBeM.stakedETH = curETHlimit;
-    //     shouldBeM.stakedTimestamp = block.timestamp;
-
-    // function testDepositValidatorNFT() public {
-    //     _stakeRPL();
-
-    //     // TODO: Right test cases for other token ids that they return
-    //     // default values == they are unset?
-
-    //     assertEq(m.stakedETH, shouldBeM.stakedETH);
-    //     assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
-    //     // assertEq(staker, singleStaker);
-    //     // assertEq(validator, address(0));
-
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
-
-    //     assertEq(blockscapeValidatorNFT.totalSupply(), 1);
-    //     assertEq(blockscapeValidatorNFT.getTokenID(), 2);
-    //     assertEq(
-    //         blockscapeValidatorNFT.contractURI(),
-    //         "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7"
-    //     );
-    //     assertEq(
-    //         blockscapeValidatorNFT.uri(1),
-    //         "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/1.json"
-    //     );
-
-    //     // vault is closed
-    //     vm.expectRevert();
-    //     vm.prank(poolStaker1);
-    //     blockscapeValidatorNFT.depositValidatorNFT{value: curETHlimit}();
-    // }
 
     // function testFallbacks() public {
     //     vm.expectRevert();

@@ -42,7 +42,7 @@ abstract contract BlockscapeShared is
     /// @notice Current initial withdraw fee
     uint256 public initWithdrawFee = 20 * 1e18;
 
-    /// @dev Mappings of tokenID to timestamp to track a request withdrawal
+    /// @dev Mapping withdrawal requester to timestamp of request to keep record
     mapping(address => uint256) public senderToTimestamp;
 
     /// @dev Metadata struct
@@ -249,13 +249,12 @@ abstract contract BlockscapeShared is
     // Allow contract to receive ETH without making a delegated call
     receive() external payable {}
 
-    function prepareWithdrawProcess(uint256 _tokenID) virtual external {}
+    function prepareWithdrawProcess(uint256 _tokenID) external virtual {}
 
-    function withdrawFunds(uint256 _tokenID) virtual external {}
+    function withdrawFunds(uint256 _tokenID) external virtual {}
 
     function calcWithdrawFee(
         uint256 _tokenID,
         address _user
-    ) virtual public view returns (uint256 _amount) {}
-    
+    ) public view virtual returns (uint256 _amount) {}
 }
