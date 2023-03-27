@@ -40,6 +40,10 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
     }
 
+    function testDeposit() public {
+        _testDepositStakeNFT(1);
+    }
+
     // function testCloseVault() public {
     //     _testInitContractSetup();
     //     _testInitRocketPoolSetup();
