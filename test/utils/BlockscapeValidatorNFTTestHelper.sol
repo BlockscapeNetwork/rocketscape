@@ -35,7 +35,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
 
         adj_config_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
-        emergency_role = vm.addr(uint256(uint160(foundryDeployer)));
+        emergency_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
         // deployer = vm.addr(0xDe);
 
         rp_backend_role = address(blockscapeRocketPoolNode);
@@ -142,5 +142,74 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         blockscapeValidatorNFT.depositValidatorNFT{value: 16 ether}();
     }
 
-    function _testAccessControl() internal {}
+    function _testAccessControl() internal {
+        // assertEq(
+        //     blockscapeValidatorNFT.hasRole(
+        //         blockscapeValidatorNFT.DEFAULT_ADMIN_ROLE(),
+        //         foundryDeployer
+        //     ),
+        //     true
+        // );
+        assertEq(
+            blockscapeValidatorNFT.hasRole(
+                blockscapeValidatorNFT.ADJ_CONFIG_ROLE(),
+                foundryDeployer
+            ),
+            true
+        );
+        assertEq(
+            blockscapeValidatorNFT.hasRole(
+                blockscapeValidatorNFT.RP_BACKEND_ROLE(),
+                blockscapeValidatorNFT.blockscapeRocketPoolNode()
+            ),
+            true
+        );
+        assertEq(
+            blockscapeValidatorNFT.hasRole(
+                blockscapeValidatorNFT.EMERGENCY_ROLE(),
+                foundryDeployer
+            ),
+            true
+        );
+    }
+
+    function _testClosingVault() internal {
+        _testInitContractSetup();
+        _testInitRocketPoolSetup();
+
+        // only owner should be able to call function
+        string memory firstPart = "AccessControl: account ";
+        string
+            memory roleMissing = " is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26";
+
+        // string memory addressString = abi.encodePacked(singleStaker);
+        string memory revertString = string.concat(
+            string.concat(
+                firstPart,
+                // addressString
+                "0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5"
+            ),
+            roleMissing
+        );
+
+        vm.expectRevert(abi.encodePacked(revertString));
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.closeVault();
+
+        revertString = string.concat(
+            string.concat(
+                firstPart,
+                "0xf6132f532abc3902ea2dcae7f8d7fccdf7ba4982"
+            ),
+            roleMissing
+        );
+
+        vm.expectRevert(abi.encodePacked(revertString));
+        vm.prank(rp_backend_role);
+        blockscapeValidatorNFT.closeVault();
+
+        vm.prank(emergency_role);
+        blockscapeValidatorNFT.closeVault();
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+    }
 }

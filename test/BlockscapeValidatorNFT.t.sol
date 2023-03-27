@@ -28,44 +28,16 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     }
 
     function testAccess() public {
-        // _testAccessControl();
-        // assertEq(
-        //     blockscapeValidatorNFT.hasRole(
-        //         blockscapeValidatorNFT.DEFAULT_ADMIN_ROLE(),
-        //         foundryDeployer
-        //     ),
-        //     true
-        // );
-        assertEq(
-            blockscapeValidatorNFT.hasRole(
-                blockscapeValidatorNFT.ADJ_CONFIG_ROLE(),
-                foundryDeployer
-            ),
-            true
-        );
-        assertEq(
-            blockscapeValidatorNFT.hasRole(
-                blockscapeValidatorNFT.RP_BACKEND_ROLE(),
-                blockscapeValidatorNFT.blockscapeRocketPoolNode()
-            ),
-            true
-        );
-        assertEq(
-            blockscapeValidatorNFT.hasRole(
-                blockscapeValidatorNFT.EMERGENCY_ROLE(),
-                foundryDeployer
-            ),
-            true
-        );
+        _testAccessControl();
     }
 
-    // function testVault() public {
-    // _testClosingVault(blockscapeValidatorNFT);
+    function testVault() public {
+        _testClosingVault();
 
-    // _blockscapeStakeRPL();
+        // _blockscapeStakeRPL();
 
-    // _testOpeningVault(blockscapeValidatorNFT);
-    // }
+        // _testOpeningVault();
+    }
 
     // function testStaking() public {
     //     _testSetMetadata();
@@ -83,37 +55,6 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     //     blockscapeValidatorNFT.closeVault();
 
     //     assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-    // }
-
-    // function testCloseVault() public {
-    //     _testInitContractSetup();
-    //     _testInitRocketPoolSetup();
-
-    //     // only owner should be able to call function
-    //     vm.expectRevert(
-    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
-    //     );
-    //     vm.prank(singleStaker);
-    //     blockscapeValidatorNFT.closeVault();
-
-    //     vm.prank(rp_backend);
-    //     blockscapeValidatorNFT.closeVault();
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
-
-    //     _blockscapeStakeRPL();
-
-    //     // assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
-
-    //     // only owner should be able to call function
-    //     vm.expectRevert(
-    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
-    //     );
-    //     vm.prank(singleStaker);
-    //     blockscapeValidatorNFT.closeVault();
-
-    //     vm.prank(rp_backend);
-    //     blockscapeValidatorNFT.closeVault();
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
     // }
 
     // function testDepositValidatorNFT() public {
