@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
-import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFT.sol";
+import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
 import {HelperContract} from "./BlockscapeValidatorNFT_utils.sol";
 
 contract BlockscapeValidatorNFTTest is Test, HelperContract {
