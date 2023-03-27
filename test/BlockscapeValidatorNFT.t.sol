@@ -6,7 +6,7 @@ import "forge-std/Test.sol";
 
 import {console} from "forge-std/console.sol";
 
-import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFT.sol";
+import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
 import {BlockscapeValidatorNFTTestHelper} from "./utils/BlockscapeValidatorNFTTestHelper.sol";
 
 contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {

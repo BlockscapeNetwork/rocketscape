@@ -3,7 +3,7 @@ pragma solidity 0.8.16;
 // SPDX-License-Identifier: BUSL-1.1
 
 import "forge-std/Script.sol";
-import {BlockscapeValidatorNFT} from "src_2_audit_fixes/BlockscapeValidatorNFT.sol";
+import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
 
 contract EthAllocatorScript is Script {
     BlockscapeValidatorNFT blockscapeValidatorNFT;

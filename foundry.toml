@@ -1,5 +1,5 @@
 [profile.default]
-src = 'src_2_audit_fixes'
+src = 'src'
 out = 'out'
 libs = ['lib']
 solc-version = "0.8.16"
