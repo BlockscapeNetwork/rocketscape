@@ -10,6 +10,8 @@ import {UD60x18, sqrt, exp, ud, mul, div, intoUint256} from "@prb/math/UD60x18.s
 import "./utils/BlockscapeAccess.sol";
 import "./utils/BlockscapeShared.sol";
 
+import {console} from "forge-std/console.sol";
+
 /** 
     @title Rocketpool Staking Allocation Contract
     @author Blockscape Finance AG <info@blockscape.network>
@@ -68,7 +70,6 @@ contract BlockscapeETHStakeNFT is
     //     Address.sendValue(blockscapeRocketPoolNode, 8 ether);
     // }
 
-    
     /// @notice used when staking eth into the contract
     /// @dev the vault must be open and equal the depositing amount
 
@@ -76,7 +77,7 @@ contract BlockscapeETHStakeNFT is
      * @notice used when staking eth into the contract
      * @dev the vault must be open and equal the depositing amount
      * @dev the staker must have enough RPL staked in the Rocketpool
-     * 
+     *
      */
     function depositStakeNFT() external payable {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
@@ -127,7 +128,7 @@ contract BlockscapeETHStakeNFT is
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
     function prepareWithdrawalProcess(uint256 _tokenID) external override {
-        if (senderToTimestamp[msg.sender] <= 0) revert();
+        if (senderToTimestamp[msg.sender] > 0) revert();
 
         tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);
 
@@ -137,7 +138,7 @@ contract BlockscapeETHStakeNFT is
                 _tokenID,
                 msg.sender,
                 tokenIDtoMetadata[_tokenID].stakedETH,
-                calcRewards(_tokenID)
+                tokenIDToExitReward[_tokenID]
             );
         }
     }
@@ -146,7 +147,7 @@ contract BlockscapeETHStakeNFT is
      *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
     function withdrawFunds(uint256 _tokenID) external override {
-        if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
+        if (senderToTimestamp[msg.sender] + timelockWithdraw >= block.timestamp)
             revert();
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
@@ -233,12 +234,12 @@ contract BlockscapeETHStakeNFT is
 
     function calcRewards(uint256 _tokenID) internal view returns (uint256) {
         uint256 secRewards = calcApr() / 365 days;
+        console.log("secRewards", secRewards);
         uint256 secStaked = block.timestamp -
             tokenIDtoMetadata[_tokenID].stakedTimestamp;
-        uint256 rewards = tokenIDtoMetadata[_tokenID].stakedETH *
-            secRewards *
-            secStaked;
-        uint256 wFee = rewards * calcWithdrawFee(_tokenID, msg.sender);
+        uint256 rewards = secRewards * secStaked;
+        uint256 wFee = ((rewards * calcWithdrawFee(_tokenID, msg.sender)) /
+            1e19);
         return (rewards - wFee);
     }
 
