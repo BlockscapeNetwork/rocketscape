@@ -6,16 +6,13 @@ import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
 import "openzeppelin-contracts/utils/Strings.sol";
 import {UD60x18, sqrt, exp, ud, mul, div, intoUint256} from "@prb/math/UD60x18.sol";
-
 import "./utils/BlockscapeAccess.sol";
 import "./utils/BlockscapeShared.sol";
 
-import {console} from "forge-std/console.sol";
-
 /** 
-    @title Rocketpool Staking Allocation Contract
+    @title Rocketpool Staking Allocation Contract - Blockscape ETH Stake NFT
     @author Blockscape Finance AG <info@blockscape.network>
-    @notice collects staking, mints NFT in return for stake, which can be any amount of ETH
+    @notice collects ETH, mints NFT in return for stake, which can be any amount of ETH. The ETH is staked in the blockscape rocketpool infrastructure.
 */
 contract BlockscapeETHStakeNFT is
     ERC1155Supply,
@@ -60,24 +57,9 @@ contract BlockscapeETHStakeNFT is
         return super.supportsInterface(interfaceId);
     }
 
-    //TODO: maybe not needed
-    // /**
-    //     @notice withdraw the given amount to the backend, externaly triggered when the smart contract balance is eqal or above 8 ETH
-    //  */
-    // function withdrawForMinipool() external onlyRole(RP_BACKEND_ROLE) {
-    //     if (vaultOpen)
-    //         revert ErrorVaultState(vaultOpen);
-    //     Address.sendValue(blockscapeRocketPoolNode, 8 ether);
-    // }
-
-    /// @notice used when staking eth into the contract
-    /// @dev the vault must be open and equal the depositing amount
-
     /**
-     * @notice used when staking eth into the contract
-     * @dev the vault must be open and equal the depositing amount
-     * @dev the staker must have enough RPL staked in the Rocketpool
-     *
+     * @notice used by stakers to deposit ETH into the contract
+     * @dev the vault must be open and enought RPL must be staked in the rocketpool by the node
      */
     function depositStakeNFT() external payable {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
@@ -86,7 +68,6 @@ contract BlockscapeETHStakeNFT is
 
         if (msg.value == 0) revert();
 
-        // create metadata for the new tokenID
         _setMetadataForStakeInternal(msg.value, tokenID);
         _mint(msg.sender, tokenID, 1, "");
 
@@ -107,12 +88,10 @@ contract BlockscapeETHStakeNFT is
         if (balanceOf(msg.sender, _tokenID) >= 1) {
             if (msg.value == 0) revert();
 
-            // update ETH value of the tokenID by adding the msg.value
             tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
 
             poolSupply += msg.value;
 
-            // emit event
             emit StakeUpdated(
                 _tokenID,
                 msg.sender,
@@ -124,8 +103,12 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-        @notice used when user wants to u nstake
-        @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
+        @notice used by the staker when he or he wants to unstake
+        @param _tokenID which ETH Stake NFT the staker wants to unstake
+        the backend will listen on the event and will unstake the validator. 
+        The ETH value with rewards is transparantly available 
+        via beacon chain explorers and will be reduced by the withdraw fee, 
+        which is fixed to 0.5% after one year.
      */
     function prepareWithdrawalProcess(uint256 _tokenID) external override {
         if (senderToTimestamp[msg.sender] > 0) revert();
@@ -144,7 +127,10 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-     *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
+     *  @notice used by the staker after prepareWithdrawalProcess() & the timelock has passed to withdraw the funds
+     *  @dev the rewards are calculated by the backend controller and are then stored in the contract,
+     *  this is needed to be able to calculate the rewards correctly including MEV rewards.
+     *  There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
     function withdrawFunds(uint256 _tokenID) external override {
         if (senderToTimestamp[msg.sender] + timelockWithdraw >= block.timestamp)
@@ -159,10 +145,8 @@ contract BlockscapeETHStakeNFT is
         );
     }
 
-    // view / pure functions
-
     /**
-     * @notice returns the current ETH supply of the pool(s)
+     * @notice returns the current ETH supply of the pool
      *
      */
     function getPoolSupply() public view returns (uint256) {
@@ -170,10 +154,10 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-        @notice how much fees would the user has to pay if he would unstake now
+        @notice how much fees would the user have to pay if he or she would to unstake now
         within the first year of staking the fee is starting at 20% & decreasing linearly, afterwards 0.5%
-        @param _tokenID which pool the staker wants to unstake
-        @return _amount how much the user would pay on fees
+        @param _tokenID which NFT the staker wants to unstake
+        @return _amount how much the user would pay on fees in percent*1e18
      */
     function calcWithdrawFee(
         uint256 _tokenID,
@@ -199,42 +183,42 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-        @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
-        @return rewards in wei
-        // TODO: Implement or abstract me -> DONE 
+        @notice this function is a on-chain calculation of the rocketpool ETH rewards. 
+        @notice It does take MEV (estimated) into account.
+        @dev exp(((31556926 / 384) * 64) / 31622 / sqrt(balanceStaked)) - 1) * 100 - 0.5
+        @dev 31556926 = seconds per year
+        @dev 384 = seconds per epoch
+        @dev 31556926 / 384 = epochs per year
+        @dev 64 = BASE_REWARD_FACTOR
+        @dev 31622 = sqrt(gwei per ETH)
+        @dev 166.32368815e18 = ((31556926 / 384) * 64) / 31622
+        @dev 0x00000000219ab540356cBB839Cbe05303d7705Fa = deposit contract address
+        @return rewards annual procentage rate * 1e18
      */
-    function calcApr() public view returns (uint256) {
-        // deposit contract ETH balance
+    function calcApr() internal view returns (uint256) {
         UD60x18 balanceStaked = ud(
             address(0x00000000219ab540356cBB839Cbe05303d7705Fa).balance
         );
-
-        // exp(((31556926 / 384) * 64) / 31622 / sqrt(balanceStaked)) - 1) * 100 - 0.5
-        // 31556926 = seconds per year
-        // 384 = seconds per epoch
-        // 31556926 / 384 = epochs per year
-        // 64 = BASE_REWARD_FACTOR
-        // 31622 = sqrt(gwei per ETH)
-        // 166.32368815e18 = ((31556926 / 384) * 64) / 31622
         uint256 baseAPR = (intoUint256(
             exp(div(ud(166.32368815e18), sqrt(balanceStaked)))
         ) - 1e18) *
             100 -
             5e17;
         uint256 ethreturn = (baseAPR * 16) / 100;
-
-        uint256 mevreturn = 0.23e18; // estimated MEV return
-        uint256 feereturn = 0.23e18; // estimated fee return
-        uint256 commission = (15 * ethreturn) / 100; // rp commission
-
+        uint256 mevreturn = 0.23e18;
+        uint256 feereturn = 0.23e18;
+        uint256 commission = (15 * ethreturn) / 100;
         uint256 totalETHReturn = ethreturn + mevreturn + feereturn + commission;
-
         return (totalETHReturn / 16) * 100;
     }
 
+    /**
+     * @notice calculates the rewards for the staker based on the current APR and the time staked
+     * @param _tokenID which the rewards are calculated for
+     * @return ETH rewards in wei minus the withdraw fee
+     */
     function calcRewards(uint256 _tokenID) internal view returns (uint256) {
         uint256 secRewards = calcApr() / 365 days;
-        console.log("secRewards", secRewards);
         uint256 secStaked = block.timestamp -
             tokenIDtoMetadata[_tokenID].stakedTimestamp;
         uint256 rewards = secRewards * secStaked;
@@ -243,12 +227,12 @@ contract BlockscapeETHStakeNFT is
         return (rewards - wFee);
     }
 
-    /// @notice how many staker are there totally
-    /// @return total amount of staker
+    /// @notice how many NFTs are there totally
+    /// @return total amount of NFTs minted
     function totalSupply() external view returns (uint256) {
         uint256 amount = 0;
-        for (uint256 i = 1; i <= this.getTokenID(); i++) {
-            amount += this.totalSupply(i);
+        for (uint256 i = 1; i <= getTokenID(); i++) {
+            amount += totalSupply(i);
         }
         return amount;
     }
@@ -263,9 +247,9 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-        @notice gets the url to the metadata of a given pool
+        @notice gets the url to the metadata of a given NFT tokenID
         @param _tokenID the pool
-        @return the url
+        @return the NFT metadata url
      */
     function uri(
         uint256 _tokenID

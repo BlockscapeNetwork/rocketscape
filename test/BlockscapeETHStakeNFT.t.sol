@@ -88,25 +88,12 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
     }
 
     function testWithdraw() public {
-        // _testInitStakeRPLReadyForStaking();
-        // vm.prank(singleStaker);
-        // blockscapeETHStakeNFT.depositStakeNFT{value: 4 ether}();
-        // // assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
-        // // assertEq(blockscapeETHStakeNFT.getPoolSupply(), 4 ether);
-
-        // _testPrepareWithdrawProcess(1);
-
-        // _testReceive();
-
-        // // _testWithdrawFunds(1);
-
-        // assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
-
-        // vm.expectRevert();
-        // _testWithdrawFunds(2);
-
         _complete();
     }
+
+      function testDepositWithdrawalMulti() public {
+      _completeMutlti();
+      }
 
 
     function testMiscellaneous() public {
@@ -117,7 +104,7 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
 
         _testUri();
         _testContractURI();
-        _testCalcApr();
+        _testlowerTimelockWithdraw();
 
         _testCloseVault();
         _testOpenVault();

@@ -20,10 +20,10 @@ abstract contract BlockscapeShared is
     /// @dev using OZs sendValue implementation
     using Address for address payable;
 
-    /// TODO
+    /// @dev the initial vault state is open
     bool public vaultOpen = true;
 
-    /// @notice Current initial RP commission for 8 ETH minipools
+    /// @notice current initial RP commission for 8 ETH minipools
     uint256 public rpComm8 = 14;
 
     /// @notice Blockscape Rocket Pool Node Address
@@ -32,14 +32,14 @@ abstract contract BlockscapeShared is
 
     /** 
         @notice initial tokenID
-        @dev the tokenID is used to identify the ETH NFTs
+        @dev the tokenID is used to identify the NFTs
     */
     uint256 tokenID = 1;
 
-    // TODO: implement change function
+    /// @dev the current timelock for a withdrawal request
     uint256 timelockWithdraw = 7 days;
 
-    /// @notice Current initial withdraw fee
+    /// @notice current initial withdraw fee
     uint256 public initWithdrawFee = 20 * 1e18;
 
     /// @dev Mapping withdrawal requester to timestamp of request to keep record
@@ -50,11 +50,6 @@ abstract contract BlockscapeShared is
         uint256 stakedETH;
         uint256 stakedTimestamp;
     }
-
-    /// @dev event for when a batch is tried to withdrawn but not enough rpl
-    /// are available yet
-    // TODO: Not used??
-    // event RPLStakeRequired(uint256 _availRPL, uint256 _requiredRPL);
 
     /// @dev Mappings of tokenID to Metadata
     mapping(uint256 => Metadata) tokenIDtoMetadata;
@@ -125,7 +120,11 @@ abstract contract BlockscapeShared is
         return (minimumRPLStake / minipoolLimit);
     }
 
-    /// @notice has the node enough RPL to stake another minipool
+    /**
+     * @notice has the node enough RPL to stake another minipool
+     * @return true if the node has enough RPL to stake another minipool
+     */
+
     function hasNodeEnoughRPLStake() public view returns (bool) {
         uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
             blockscapeRocketPoolNode
@@ -154,15 +153,18 @@ abstract contract BlockscapeShared is
         emit RocketPoolNodeAddressChanged(_newBlockscapeRocketPoolNode);
     }
 
+    /**
+     * @notice sets the stakedETH and stakedTimestamp for a given tokenID inm the Metadata struct
+     * @param _stakedETH the amount of ETH staked
+     * @param _tokenID  the tokenID of the NFT
+     */
     function _setMetadataForStakeInternal(
         uint256 _stakedETH,
         uint256 _tokenID
     ) internal {
         Metadata memory metadata;
-
         metadata.stakedETH = _stakedETH;
         metadata.stakedTimestamp = block.timestamp;
-
         tokenIDtoMetadata[_tokenID] = metadata;
     }
 
@@ -193,15 +195,15 @@ abstract contract BlockscapeShared is
         return (tokenIDtoMetadata[_tokenID]);
     }
 
-    /// @notice makes the vault stakable again after it has been closed
-    /// @dev is triggered when the vault can be staked at rocketpool
-    // TODO: Is further visibility needed here?
-    function openVault() public onlyRole(EMERGENCY_ROLE) {
+    /**
+     * @notice makes the vault stakable again after it has been closed
+     * @dev is triggered when the vault can be staked at rocketpool
+     */
+    function openVault() external onlyRole(EMERGENCY_ROLE) {
         if (!BlockscapeShared.hasNodeEnoughRPLStake())
             revert NotEnoughRPLStake();
 
-        // TODO: revert Error()?
-        if (vaultOpen) revert();
+        if (vaultOpen) revert ErrorVaultState(vaultOpen);
 
         vaultOpen = true;
     }
@@ -237,6 +239,7 @@ abstract contract BlockscapeShared is
 
     /**
         @notice the withdraw fee might be lowered in the future
+        @dev only the user with the ADJ_CONFIG_ROLE can call this function
         @param _amount the new fee in wei
      */
     function lowerWithdrawFee(
@@ -246,13 +249,28 @@ abstract contract BlockscapeShared is
         initWithdrawFee = _amount;
     }
 
-    // Allow contract to receive ETH without making a delegated call
+    /**
+        @notice the timelock for withdraw might be lowered in the future
+        @dev only the user with the ADJ_CONFIG_ROLE can call this function
+        @param _newTimelock the new timelock period in days
+     */
+    function lowerTimelockWithdraw(
+        uint256 _newTimelock
+    ) external onlyRole(ADJ_CONFIG_ROLE) {
+        if (_newTimelock > 7 days) revert();
+        timelockWithdraw = _newTimelock;
+    }
+
+    /// @notice allow contract to receive ETH without making a delegated call
     receive() external payable {}
 
+    /// @notice allow user to request a withdrawal
     function prepareWithdrawalProcess(uint256 _tokenID) external virtual {}
 
+    /// @notice enable the user to withdraw his/her funds
     function withdrawFunds(uint256 _tokenID) external virtual {}
 
+    /// @notice calculates the withdraw fee for a given user and tokenID
     function calcWithdrawFee(
         uint256 _tokenID,
         address _user

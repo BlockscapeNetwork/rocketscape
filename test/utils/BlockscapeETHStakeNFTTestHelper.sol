@@ -247,6 +247,54 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
    
     }
 
+    function _completeMutlti() public {
+        _testInitStakeRPLReadyForStaking();
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 4 ether}();
+        assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
+        assertEq(blockscapeETHStakeNFT.getPoolSupply(), 4 ether);
+
+        vm.deal(poolStaker1, 320 ether);
+
+        vm.prank(poolStaker1);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 320 ether}();
+        assertEq(blockscapeETHStakeNFT.balanceOf(poolStaker1, 2), 1);
+        assertEq(blockscapeETHStakeNFT.getPoolSupply(), 324 ether);
+
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.updateStake{value: 6 ether}(1);
+
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.updateStake{value: 6 ether}(2);
+
+        assertEq(blockscapeETHStakeNFT.getPoolSupply(), 330 ether);
+
+        vm.warp(block.timestamp + 365 days);
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.prepareWithdrawalProcess(1);
+
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.prepareWithdrawalProcess(2);
+
+        vm.prank(poolStaker1);
+        blockscapeETHStakeNFT.prepareWithdrawalProcess(2);
+
+        vm.deal(address(blockscapeETHStakeNFT), 3000 ether);
+
+        vm.warp(block.timestamp + 8 days);
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.withdrawFunds(1);
+
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.withdrawFunds(2);
+
+        vm.prank(poolStaker1);
+        blockscapeETHStakeNFT.withdrawFunds(2);
+    }
+
     function _testGetPoolSupply() internal view returns (uint256) {
         return blockscapeETHStakeNFT.getPoolSupply();
     }
@@ -257,10 +305,10 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         assertEq(fee, 20e18);
     }
 
-    function _testCalcApr() internal {
-        apr = blockscapeETHStakeNFT.calcApr(); // date: Tue Jan 10 2023 13:48:59 GMT+0000
-        assertEq(apr, 7188133266311924300);
-    }
+    // function _testCalcApr() internal {
+    //     apr = blockscapeETHStakeNFT.calcApr(); // date: Tue Jan 10 2023 13:48:59 GMT+0000
+    //     assertEq(apr, 7188133266311924300);
+    // }
 
     function _testTotalSupply() internal {
         assertEq(blockscapeETHStakeNFT.totalSupply(), 0);
@@ -319,6 +367,14 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
     function _testGetMetadata(uint256 _tokenID) internal view {
         blockscapeETHStakeNFT.getMetadata(_tokenID);
+    }
+
+    function _testlowerTimelockWithdraw() internal {
+        vm.prank(foundryDeployer);
+        blockscapeETHStakeNFT.lowerTimelockWithdraw(6 days);
+
+        vm.expectRevert();
+        blockscapeETHStakeNFT.lowerTimelockWithdraw(12 days);
     }
 
     function _testOpenVault() internal {

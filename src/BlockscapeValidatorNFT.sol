@@ -10,16 +10,19 @@ import "openzeppelin-contracts/utils/Strings.sol";
 import "./utils/BlockscapeAccess.sol";
 import "./utils/BlockscapeShared.sol";
 
-error ValidatorAlreadySet(address _vali);
-
 /** 
-    @title Rocketpool Staking Allocation Contract
+    @title Rocketpool Staking Allocation Contract - Blockscape Validator NFT
     @author Blockscape Finance AG <info@blockscape.network>
     @notice collects staking, mints NFT in return for staker and let's backend controller 
     transfer the stake when the pool is full (currently 16 ETH) and enough RPL are available
     @notice this implementation relies on a backend controller which is a core component
     of the implementation.
 */
+
+/**
+ * @notice error message if a validator is already set
+ */
+error ValidatorAlreadySet(address _vali);
 
 contract BlockscapeValidatorNFT is
     ERC1155Supply,
@@ -67,11 +70,11 @@ contract BlockscapeValidatorNFT is
         return super.supportsInterface(interfaceId);
     }
 
-    // functions
-    // public & external functions
-
-    /// @notice used when staking eth into the contract
-    /// @dev the vault must be open and equal the depositing amount
+    /**
+     * @notice used by stakers to deposit ETH into the contract
+     * @dev the vault must be open and equal the depositing amount
+     * @dev enought RPL must be staked in the rocketpool by the node
+     * */
     function depositValidatorNFT() external payable {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
@@ -79,14 +82,12 @@ contract BlockscapeValidatorNFT is
 
         if (curETHlimit != msg.value) revert IncorrectDepositValueSent();
 
-        // create metadata for the new tokenID
         _setMetadataForStakeInternal(msg.value, tokenID);
 
         _mint(msg.sender, tokenID, 1, "");
 
         tokenID++;
 
-        // close the vault
         _closeVaultInternal();
     }
 
@@ -120,7 +121,7 @@ contract BlockscapeValidatorNFT is
     }
 
     /**
-        @notice used when user wants to unstake
+        @notice used by the staker when he or he wants to unstake
         @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
      */
     function prepareWithdrawalProcess(uint256 _tokenID) external override {
@@ -144,7 +145,9 @@ contract BlockscapeValidatorNFT is
     }
 
     /**
-     *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
+     *  @notice used by the staker after prepareWithdrawalProcess() & the timelock has passed to withdraw the funds
+     *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards.
+     *  @dev There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      */
     function withdrawFunds(uint256 _tokenID) external override {
         if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
@@ -177,18 +180,22 @@ contract BlockscapeValidatorNFT is
         tokenIDToExitReward[_tokenID] = _calcReward;
     }
 
-    // functions for future maintainability
-    // all functions below are only callable by the ADJ_CONFIG_ROLE, which is only assigned to a multi-sig wallet owned by the team
-
     /**
         @notice the limit might change in the future if rocketpool supports 
         smaller pool sizes (RPIP-8)
+        @dev this function is only callable by our multisig wallet with ADJ_CONFIG_ROLE 
+        @dev it will only allow to set the limit to 8 ETH
     */
     function changeETHLimit8() external onlyRole(ADJ_CONFIG_ROLE) {
         curETHlimit = 8 ether;
         emit ETHLimitChanged(8 ether);
     }
 
+    /**
+     * @dev this function is only callable by our multisig wallet with ADJ_CONFIG_ROLE
+     * @dev this will set the comission fee for 8 ETH minipools
+     * @param _amount the new comission
+     */
     function lowerRPCommFee8(
         uint256 _amount
     ) external onlyRole(ADJ_CONFIG_ROLE) {
@@ -196,21 +203,19 @@ contract BlockscapeValidatorNFT is
         rpComm8 = _amount;
     }
 
-    // view / pure functions
-
     /**
         @notice the current depositing threshold
-        @return is depositing enabled
+        @return the current ETH limit in wei
     */
     function getCurrentEthLimit() public view returns (uint256) {
         return curETHlimit;
     }
 
     /**
-        @notice how much fees would the user has to pay if he would unstake now
+        @notice how much fees would the user has to pay if he or she would unstake now
         within the first year of staking the fee is starting at 20% & decreasing linearly, afterwards 0.5%
-        @param _tokenID which pool the staker wants to unstake
-        @return _amount how much the user would pay on fees
+        @param _tokenID which NFT the staker wants to unstake
+        @return _amount how much the user would pay on fees in percent*1e18
      */
     function calcWithdrawFee(
         uint256 _tokenID,
@@ -238,7 +243,7 @@ contract BlockscapeValidatorNFT is
     /**
         @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
         @param _tokenID tokenID of the NFT, the user wants to unstake
-        @return rewards in wei
+        @return rewards in wei minus the withdraw fee
      */
     function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
         uint256 balance;
