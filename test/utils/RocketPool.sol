@@ -45,7 +45,7 @@ abstract contract RocketPoolHelperContract is Test {
     }
 
     function _blockscapeUnstakeRPL() internal {
-        // vm.prank(blockscapeRocketPoolNode);
+        vm.prank(blockscapeRocketPoolNode);
         rocketNodeStaking.withdrawRPL(rplStakeAsPerTx);
     }
 

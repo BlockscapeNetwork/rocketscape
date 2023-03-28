@@ -8,6 +8,8 @@ import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
 import {RocketPoolHelperContract} from "./RocketPool.sol";
 
 contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
+    address minipoolAddr = 0x626CA3f82a4A11C2226101eeEA35Fcc25a5fE91D;
+
     address foundryDeployer = 0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84;
 
     // address internal deployer;
@@ -152,21 +154,21 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
             blockscapeValidatorNFT.getBalance(),
             blockscapeValidatorNFT.curETHlimit()
         );
+        assertEq(blockscapeValidatorNFT.balanceOf(singleStaker, 0), 0);
+        assertEq(blockscapeValidatorNFT.balanceOf(singleStaker, 1), 1);
+        assertEq(blockscapeValidatorNFT.balanceOf(singleStaker, 2), 0);
         assertEq(blockscapeValidatorNFT.getTokenID(), 2);
         assertEq(blockscapeValidatorNFT.totalSupply(), 1);
     }
 
-    // function _openVaultDepositAndTestInitSetup() internal {
-    //     _testInitContractSetup();
+    function _testInitDepositAndUpdateVali() internal {
+        _testInitAndDeposit();
 
-    //     _depositSoloStaker();
-
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
-    //     assertEq(
-    //         blockscapeValidatorNFT.getBalance(),
-    //         blockscapeValidatorNFT.curETHlimit()
-    //     );
-    // }
+        vm.startPrank(rp_backend_role);
+        blockscapeValidatorNFT.withdrawBatch();
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
+        vm.stopPrank();
+    }
 
     function _testAccessControl() internal {
         // assertEq(

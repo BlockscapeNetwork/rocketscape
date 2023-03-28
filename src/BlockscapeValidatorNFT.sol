@@ -17,6 +17,8 @@ error ValidatorAlreadySet(address _vali);
     @author Blockscape Finance AG <info@blockscape.network>
     @notice collects staking, mints NFT in return for staker and let's backend controller 
     transfer the stake when the pool is full (currently 16 ETH) and enough RPL are available
+    @notice this implementation relies on a backend controller which is a core component
+    of the implementation.
 */
 
 contract BlockscapeValidatorNFT is
@@ -128,15 +130,16 @@ contract BlockscapeValidatorNFT is
         if (senderToTimestamp[msg.sender] != 0)
             revert AlreadyPreparingForWithdrawal();
 
-        uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
-
         senderToTimestamp[msg.sender] = block.timestamp;
+
+        uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
+        uint256 rewards = estRewardsNoMEV(_tokenID);
         emit UserRequestedWithdrawalVali(
             _tokenID,
             msg.sender,
             curWithdrawFee,
             tokenIDtoMetadata[_tokenID].stakedETH,
-            estRewardsNoMEV(_tokenID)
+            rewards
         );
     }
 
@@ -240,6 +243,7 @@ contract BlockscapeValidatorNFT is
     function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
         uint256 balance;
         uint256 balanceComm;
+
         if (curETHlimit >= 16 ether) {
             balance = (address(tokenIDtoValidator[_tokenID]).balance / 2);
             balanceComm = (15 * balance) / 100;
@@ -247,6 +251,7 @@ contract BlockscapeValidatorNFT is
             balance = (address(tokenIDtoValidator[_tokenID]).balance / 4);
             balanceComm = (rpComm8 * (balance * 3)) / 100;
         }
+
         uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * balanceComm;
         return (balance + balanceComm - wfee);
     }
