@@ -3025,46 +3025,6 @@
         }
       }
     },
-    "src/lib/Calculations.sol": {
-      "lastModificationDate": 1679907840534,
-      "contentHash": "36cf531ce54f9cefa330c8b23f13671a",
-      "sourceName": "src/lib/Calculations.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "=0.8.16",
-      "artifacts": {
-        "Calculations": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "Calculations.sol/Calculations.json"
-        }
-      }
-    },
     "src/utils/BlockscapeAccess.sol": {
       "lastModificationDate": 1679907840534,
       "contentHash": "bd38e1f647a933527811c802a7acfa0b",
@@ -3696,8 +3656,8 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
-      "lastModificationDate": 1679994530033,
-      "contentHash": "91991cec0d5e3f4e74ad9448df29a601",
+      "lastModificationDate": 1679996502913,
+      "contentHash": "e0f8cda8570ac048d20e8439fbf1796e",
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3972,7 +3932,7 @@
       }
     },
     "test/utils/RocketPool.sol": {
-      "lastModificationDate": 1679984943387,
+      "lastModificationDate": 1679996070307,
       "contentHash": "cadd6672468ca5c87322cba7124fce39",
       "sourceName": "test/utils/RocketPool.sol",
       "solcConfig": {
