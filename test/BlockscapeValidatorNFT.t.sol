@@ -10,13 +10,6 @@ import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
 import {BlockscapeValidatorNFTTestHelper} from "./utils/BlockscapeValidatorNFTTestHelper.sol";
 
 contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
-    // uint256 initWithdrawFee = 20 ether;
-
-    bytes validatorBytesAddress =
-        hex"a2e78385831894094502727373588fc1794ea2800b2b6e614358fea78dcf0cc4d103008a53c665f294e31af0397253e3";
-
-    address minipoolAddr = 0x626CA3f82a4A11C2226101eeEA35Fcc25a5fE91D;
-
     error NotEnoughRPLStake();
 
     constructor() BlockscapeValidatorNFTTestHelper(blockscapeValidatorNFT) {}
@@ -25,19 +18,14 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         _setupParticipants();
 
         _testInitContractSetup();
+        _testInitRocketPoolSetup();
     }
 
     function testAccess() public {
-        _testInitContractSetup();
-        _testInitRocketPoolSetup();
-
         _testAccessControl();
     }
 
     function testVault() public {
-        _testInitContractSetup();
-        _testInitRocketPoolSetup();
-
         _testClosingVault();
 
         _blockscapeStakeRPL();
@@ -114,19 +102,28 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     function testWithdrawal() public {
         _testInitAndDeposit();
 
-        assertEq(
-            blockscapeValidatorNFT.getBalance(),
-            blockscapeValidatorNFT.curETHlimit()
-        );
+        uint256 tokenID = 1;
+        // uint256 tokenID = blockscapeValidatorNFT.getTokenID() - 1;
 
         // only owner should be able to call function
-        // vm.expectRevert(YouDontOwnThisNft.selector); //"Ownable: caller is not the owner");
-        // vm.prank(poolStaker1);
-        // blockscapeValidatorNFT.prepareWithdrawalProcess(
-        //     blockscapeValidatorNFT.curETHlimit()
-        // );
+        vm.expectRevert();
+        vm.prank(poolStaker1);
+        blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
-        // uint256 deployerBalance = rp_backend_role.balance;
+        // a withdrawal has to be prepared first
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.withdrawFunds(tokenID);
+
+        // uint256 deployerBalance = foundryDeployer.balance;
+
+        // vm.prank(singleStaker);
+        // blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
+
+        // already preparing
+        // vm.expectRevert();
+        // vm.prank(singleStaker);
+        // blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
         // vm.prank(rp_backend);
         // blockscapeValidatorNFT.withdraw(curETHlimit);
@@ -138,120 +135,117 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         // assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
     }
 
-    // function testWithdrawBatch() public {
-    //     _stakeRPL();
+    function testBackgroundController() public {
+        _testInitStakeRPLReadyForStaking();
 
-    //     // nothing deposited yet
-    //     vm.expectRevert();
-    //     vm.prank(rp_backend);
-    //     blockscapeValidatorNFT.withdrawBatch();
+        // nothing deposited yet
+        vm.expectRevert();
+        vm.prank(rp_backend_role);
+        blockscapeValidatorNFT.withdrawBatch();
 
-    //     assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
+        assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
 
-    //     _depositSoloStaker();
+        // _warpAfterStakingCooldown();
+        // _blockscapeUnstakeRPL();
 
-    //     assertEq(blockscapeValidatorNFT.getBalance(), curETHlimit);
+        _depositSoloStaker();
 
-    //     availableRPL = blockscapeValidatorNFT.getAvailableRPLStake();
+        assertEq(
+            blockscapeValidatorNFT.getBalance(),
+            blockscapeValidatorNFT.getCurrentEthLimit()
+        );
 
-    //     // only owner should be able to call function
-    //     vm.expectRevert("Ownable: caller is not the owner");
-    //     vm.prank(singleStaker);
-    //     blockscapeValidatorNFT.withdrawBatch();
+        availableRPL = blockscapeValidatorNFT.getAvailableRPLStake();
 
-    //     vm.startPrank(rp_backend);
-    //     blockscapeValidatorNFT.withdrawBatch();
+        // only owner should be able to call function
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.withdrawBatch();
 
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
-    //     assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
+        vm.startPrank(rp_backend_role);
+        blockscapeValidatorNFT.withdrawBatch();
 
-    //     blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
+        assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
 
-    //     vm.stopPrank();
+        // only rp_backend_role can call updateValidator
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
 
-    // TODO: check that vault can't reopen if not enough RPL are there
-    // use either depositRocketpool or transfer RPL away from blockscape
-    // (second option would be an workaround)
-    // _depositToRocketpool();
+        vm.expectRevert();
+        vm.prank(foundryDeployer);
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
 
-    // availableRPL = blockscapeValidatorNFT.getAvailableRPLStake();
-    // console.log("availableRPL");
-    // console.logUint(availableRPL);
-    // }
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
 
-    //     // _warpAfterStakingCooldown();
-    //     // _blockscapeUnstakeRPL();
-    // }
+        // updateValidator can only be called once
+        vm.expectRevert();
+        blockscapeValidatorNFT.updateValidator(1, address(0x0));
 
-    // function testUpdateValidator() public {
-    //     _blockscapeStakeRPL();
-    //     _openValidatorNFT();
-    //     _depositSoloStaker();
+        address validator = blockscapeValidatorNFT.tokenIDtoValidator(1);
+        assertEq(validator, minipoolAddr);
 
-    //     bytes memory otherBytesAddr = abi.encodePacked(address(2));
+        assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
 
-    //     // only owner should be able to call function
-    //     vm.expectRevert("Ownable: caller is not the owner");
-    //     vm.prank(singleStaker);
-    //     blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
+        vm.stopPrank();
 
-    //     vm.prank(rp_backend);
-    //     blockscapeValidatorNFT.updateValidator(1, validatorBytesAddress);
+        // TODO: check that vault can't reopen if not enough RPL are there
+        // use either depositRocketpool or transfer RPL away from blockscape
+        // (second option would be a workaround)
+        // _depositToRocketpool();
 
-    //     (, bytes memory validator) = blockscapeValidatorNFT
-    //         .getMetadata(1);
+        // availableRPL = blockscapeValidatorNFT.getAvailableRPLStake();
+        // console.log("availableRPL");
+        // console.logUint(availableRPL);
 
-    //     // TODO: Right test cases for other token ids that they return
-    //     // default values == they are unset?
+        // _warpAfterStakingCooldown();
+        // _blockscapeUnstakeRPL();
+    }
 
-    //    // assertEq(staker, singleStaker);
-    //     assertEq(validator, validatorBytesAddress);
+    function testUserRequestWithdraw() public {
+        _testInitDepositAndUpdateVali();
 
-    //     // can only be set once
-    //     vm.expectRevert();
-    //     vm.prank(rp_backend);
-    //     blockscapeValidatorNFT.updateValidator(1, otherBytesAddr);
-    // }
+        uint256 initWithdrawFee = blockscapeValidatorNFT.initWithdrawFee();
 
-    // function testUserRequestWithdraw() public {
-    //     _stakeRPL();
-    //     _depositSoloStaker();
+        uint256 amount = blockscapeValidatorNFT.calcWithdrawFee(
+            1,
+            foundryDeployer
+        );
+        assertEq(amount, 0);
 
-    //     uint256 amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, initWithdrawFee);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        assertEq(amount, initWithdrawFee);
 
-    //     vm.startPrank(singleStaker);
-    //     amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, initWithdrawFee);
+        vm.startPrank(singleStaker);
 
-    //     uint256 origTimestamp = block.timestamp;
-    //     uint256 feesDropTimestamp = block.timestamp + 30747600;
+        uint256 origTimestamp = block.timestamp;
+        uint256 feesDropTimestamp = block.timestamp + 30747600;
 
-    //     vm.warp(origTimestamp + 10 days);
-    //     amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(
-    //         amount,
-    //         initWithdrawFee - (initWithdrawFee / 365 days) * 10 days
-    //     );
+        vm.warp(origTimestamp + 10 days);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        assertEq(
+            amount,
+            initWithdrawFee - (initWithdrawFee / 365 days) * 10 days
+        );
 
-    //     vm.warp(origTimestamp + 100 days);
-    //     amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(
-    //         amount,
-    //         initWithdrawFee - (initWithdrawFee / 365 days) * 100 days
-    //     );
+        vm.warp(origTimestamp + 100 days);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        assertEq(
+            amount,
+            initWithdrawFee - (initWithdrawFee / 365 days) * 100 days
+        );
 
-    //     vm.warp(feesDropTimestamp);
-    //     amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, 0.5 ether);
+        vm.warp(feesDropTimestamp);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        assertEq(amount, 0.5 ether);
 
-    //     vm.warp(feesDropTimestamp + 1000 days);
-    //     amount = blockscapeValidatorNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, 0.5 ether);
+        vm.warp(feesDropTimestamp + 1000 days);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        assertEq(amount, 0.5 ether);
 
-    //     vm.stopPrank();
-    // }
+        vm.stopPrank();
+    }
 
     // function testChangeETHLimit() public {
     //     uint256 ethLimit = blockscapeValidatorNFT.getCurrentEthLimit();
