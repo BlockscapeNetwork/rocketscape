@@ -30,17 +30,17 @@ contract BlockscapeValidatorNFT is
     BlockscapeAccess,
     BlockscapeShared
 {
-    /// @notice name constant used for blockexplorers
+    /// @notice name constant used for blockexplorers (as to be lower case as per blockexplorer standards)
     string public constant name = "Blockscape Validator NFTs";
 
-    /// @notice symbol constant used for blockexplorers
+    /// @notice symbol constant used for blockexplorers (as to be lower case as per blockexplorer standards)
     string public constant symbol = "BSV";
 
     /// @notice Current Rocketpool Minipool Limit
-    uint256 public curETHlimit = 16 ether;
+    uint256 private curETHlimit = 16 ether;
 
-    /// @dev Mappings of tokenID to Validator public key
-    mapping(uint256 => address) public tokenIDtoValidator;
+    /// @dev mapping of tokenID to validator minipool address
+    mapping(uint256 => address) private tokenIDtoValidator;
 
     /** 
         @notice each validator related vault gets its separate tokenID which depicts 
@@ -93,16 +93,20 @@ contract BlockscapeValidatorNFT is
 
     /**
         @notice this gets triggered by the backend controller when a new token is minted
+        @dev the backend controller is only able to withdraw the current ETH limit
      */
-    function withdrawBatch() external onlyRole(RP_BACKEND_ROLE) {
+    function withdrawBatch() external onlyRole(RP_BACKEND_ROLE) nonReentrant {
         if (vaultOpen) revert ErrorVaultState(vaultOpen);
 
         Address.sendValue(blockscapeRocketPoolNode, curETHlimit);
     }
 
     /**
-        @notice update validator address for given token id only once after the NFT has been issued and the validator was created by the backend, this function will only be called by the backend
+        @notice update validator address for given token id only once after the NFT has been issued 
+        and the validator was created by the backend 
+        this function will only be called by the backend
         @dev works only once for a tokenID; it will reopen the vault 
+        @dev emits no event by design to reduce maintenance costs
         @param _tokenID Identifier of the NFT
         @param _vali the current address of the validator
     */
@@ -113,7 +117,7 @@ contract BlockscapeValidatorNFT is
         if (address(0) != tokenIDtoValidator[_tokenID]) {
             revert ValidatorAlreadySet(tokenIDtoValidator[_tokenID]);
         }
-        if (vaultOpen == true) revert ErrorVaultState(vaultOpen);
+        if (vaultOpen) revert ErrorVaultState(vaultOpen);
 
         tokenIDtoValidator[_tokenID] = _vali;
 
@@ -121,8 +125,13 @@ contract BlockscapeValidatorNFT is
     }
 
     /**
-        @notice used by the staker when he or he wants to unstake
-        @param _tokenID which validator NFT the staker wants to unstake; the backend will listen on the event and will unstake the validator. The ETH value with rewards is transparantly available via beacon chain explorers and will be reduced by the withdraw fee, which is fixed to 0.5% after one year.
+        @notice Withdraw is a two step process, first the staker has to call prepareWithdrawalProcess()
+        @dev fist step used by the staker when he or she wants to unstake
+        @param _tokenID which validator NFT the staker wants to unstake; 
+        the backend will listen on the event and will unstake the validator. 
+        The ETH value with rewards is transparantly available 
+        via beacon chain explorers and will be reduced by the withdraw fee,
+        which is fixed to 0.5% after one year.
      */
     function prepareWithdrawalProcess(uint256 _tokenID) external override {
         if (balanceOf(msg.sender, _tokenID) == 0)
@@ -146,10 +155,11 @@ contract BlockscapeValidatorNFT is
 
     /**
      *  @notice used by the staker after prepareWithdrawalProcess() & the timelock has passed to withdraw the funds
-     *  @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards.
+     *  @dev the rewards are calculated by the backend controller and are then stored in the contract,
+     *  this is needed to be able to calculate the rewards correctly including MEV rewards.
      *  @dev There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      */
-    function withdrawFunds(uint256 _tokenID) external override {
+    function withdrawFunds(uint256 _tokenID) external override nonReentrant {
         if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
             revert();
         if (tokenIDToExitReward[_tokenID] < estRewardsNoMEV(_tokenID)) {
@@ -158,12 +168,12 @@ contract BlockscapeValidatorNFT is
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
 
-        senderToTimestamp[msg.sender] = 0;
         Address.sendValue(
             payable(msg.sender),
             tokenIDtoMetadata[_tokenID].stakedETH +
                 tokenIDToExitReward[_tokenID]
         );
+        senderToTimestamp[msg.sender] = 0;
     }
 
     /**
@@ -238,6 +248,17 @@ contract BlockscapeValidatorNFT is
             curWithdrawFee = 0;
         }
         return curWithdrawFee;
+    }
+
+    /**
+     * @notice this function is used to get the validator address from the tokenID
+     * @param _tokenID the tokenID of the NFT
+     * @return the minipool address of the validator
+     */
+    function getValidatorAddress(
+        uint256 _tokenID
+    ) public view returns (address) {
+        return tokenIDtoValidator[_tokenID];
     }
 
     /**

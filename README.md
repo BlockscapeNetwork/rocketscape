@@ -12,6 +12,10 @@ Blockscape aims to provide a user-friendly and secure way for users to stake ETH
 
 Goerli Playground <https://stakedev.blockscape.network/pstake/ETH/solo/>
 
+## Deploy by yourself
+
+forge script script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol --fork-url $GOERLI_RPC_URL --broadcast --verify --optimize
+
 ## Workflow Diagram: Blockscape Validator NFT 
 
 ![Blockscape Validator NFT](https://i.ibb.co/6DdcbgV/Screenshot-2023-02-21-at-09-50-53.png)

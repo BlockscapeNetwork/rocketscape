@@ -371,10 +371,10 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
     function _testlowerTimelockWithdraw() internal {
         vm.prank(foundryDeployer);
-        blockscapeETHStakeNFT.lowerTimelockWithdraw(6 days);
+        blockscapeETHStakeNFT.changeTimelockWithdraw(6 days);
 
         vm.expectRevert();
-        blockscapeETHStakeNFT.lowerTimelockWithdraw(12 days);
+        blockscapeETHStakeNFT.changeTimelockWithdraw(12 days);
     }
 
     function _testOpenVault() internal {
@@ -393,7 +393,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
     function _textLowerWithdrawFee(uint256 _newLimit) internal {
         vm.prank(foundryDeployer);
-        blockscapeETHStakeNFT.lowerWithdrawFee(_newLimit);
+        blockscapeETHStakeNFT.changeWithdrawFee(_newLimit);
     }
 
     function _testReceive() internal {

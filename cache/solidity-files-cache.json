@@ -2775,13 +2775,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -2854,13 +2849,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -2870,8 +2860,8 @@
       }
     },
     "src/BlockscapeETHStakeNFT.sol": {
-      "lastModificationDate": 1680014595454,
-      "contentHash": "756f01a7bdab9d3c26d1bbda75e0acf2",
+      "lastModificationDate": 1680082880571,
+      "contentHash": "dae7bd67cbcef5b58eb377081d3d967f",
       "sourceName": "src/BlockscapeETHStakeNFT.sol",
       "solcConfig": {
         "settings": {
@@ -2943,13 +2933,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -2959,8 +2944,8 @@
       }
     },
     "src/BlockscapeValidatorNFT.sol": {
-      "lastModificationDate": 1680015504888,
-      "contentHash": "c7e2bef237fe64110dde417db23d7fe9",
+      "lastModificationDate": 1680083190249,
+      "contentHash": "4c3668eeefbd63d42440097193ebf69f",
       "sourceName": "src/BlockscapeValidatorNFT.sol",
       "solcConfig": {
         "settings": {
@@ -3009,13 +2994,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -3025,8 +3005,8 @@
       }
     },
     "src/utils/BlockscapeAccess.sol": {
-      "lastModificationDate": 1679907840534,
-      "contentHash": "bd38e1f647a933527811c802a7acfa0b",
+      "lastModificationDate": 1680083008542,
+      "contentHash": "33ff765ba64b265a60d57605c14ca2f1",
       "sourceName": "src/utils/BlockscapeAccess.sol",
       "solcConfig": {
         "settings": {
@@ -3153,8 +3133,8 @@
       }
     },
     "src/utils/BlockscapeShared.sol": {
-      "lastModificationDate": 1680020044186,
-      "contentHash": "f569ca8f0286feaa66128a478880d3df",
+      "lastModificationDate": 1680084067209,
+      "contentHash": "084ff5e2f9006a6b6d9ac6ec2218272a",
       "sourceName": "src/utils/BlockscapeShared.sol",
       "solcConfig": {
         "settings": {
@@ -3196,13 +3176,8 @@
         "src/utils/BlockscapeAccess.sol",
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -3252,52 +3227,6 @@
       "artifacts": {
         "RocketMinipoolInterface": {
           "0.8.16+commit.07a7930e.Darwin.appleclang": "IRocketMinipool.sol/RocketMinipoolInterface.json"
-        }
-      }
-    },
-    "src/utils/interfaces/IRocketMinipoolManager.sol": {
-      "lastModificationDate": 1679907840534,
-      "contentHash": "1293d669e32f8fd38c4a22ae92575fc3",
-      "sourceName": "src/utils/interfaces/IRocketMinipoolManager.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
-      ],
-      "versionRequirement": "^0.8.16",
-      "artifacts": {
-        "RocketMinipoolManagerInterface": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "IRocketMinipoolManager.sol/RocketMinipoolManagerInterface.json"
         }
       }
     },
@@ -3636,14 +3565,10 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
         "test/utils/BlockscapeETHStakeNFTTestHelper.sol",
         "test/utils/RocketPool.sol"
       ],
@@ -3655,8 +3580,8 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
-      "lastModificationDate": 1679999751331,
-      "contentHash": "e0f8cda8570ac048d20e8439fbf1796e",
+      "lastModificationDate": 1680084274065,
+      "contentHash": "763f63df46fcd0cb5efbc26a749bd276",
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3721,14 +3646,10 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
         "test/utils/BlockscapeValidatorNFTTestHelper.sol",
         "test/utils/RocketPool.sol"
       ],
@@ -3829,14 +3750,10 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
         "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
@@ -3847,8 +3764,8 @@
       }
     },
     "test/utils/BlockscapeValidatorNFTTestHelper.sol": {
-      "lastModificationDate": 1679999751332,
-      "contentHash": "1268fbf69c7765658ddbf874e79bb4c5",
+      "lastModificationDate": 1680084213540,
+      "contentHash": "27f725a2394aeec3eb9f5718d702b724",
       "sourceName": "test/utils/BlockscapeValidatorNFTTestHelper.sol",
       "solcConfig": {
         "settings": {
@@ -3913,14 +3830,10 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
         "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",

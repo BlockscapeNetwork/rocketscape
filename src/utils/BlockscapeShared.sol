@@ -9,7 +9,6 @@ import "./BlockscapeErrors.sol";
 
 import "./interfaces/IRocketStorage.sol";
 import "./interfaces/IRocketNodeStaking.sol";
-import "./interfaces/IRocketMinipoolManager.sol";
 
 // TODO: add all natspec
 abstract contract BlockscapeShared is
@@ -21,12 +20,12 @@ abstract contract BlockscapeShared is
     using Address for address payable;
 
     /// @dev the initial vault state is open
-    bool public vaultOpen = true;
+    bool internal vaultOpen = true;
 
-    /// @notice current initial RP commission for 8 ETH minipools
+    /// @notice current initial RP commission for 8 ETH minipools, public for transparency
     uint256 public rpComm8 = 14;
 
-    /// @notice Blockscape Rocket Pool Node Address
+    /// @notice Blockscape Rocket Pool Node Address, public for transparency
     address payable public blockscapeRocketPoolNode =
         payable(0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982); //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5;
 
@@ -34,15 +33,15 @@ abstract contract BlockscapeShared is
         @notice initial tokenID
         @dev the tokenID is used to identify the NFTs
     */
-    uint256 tokenID = 1;
+    uint256 internal tokenID = 1;
 
-    /// @dev the current timelock for a withdrawal request
-    uint256 timelockWithdraw = 7 days;
+    /// @dev the current timelock for a withdrawal request, public for transparency
+    uint256 public timelockWithdraw = 7 days;
 
-    /// @notice current initial withdraw fee
+    /// @notice current initial withdraw fee, public for transparency
     uint256 public initWithdrawFee = 20 * 1e18;
 
-    /// @dev Mapping withdrawal requester to timestamp of request to keep record
+    /// @dev Mapping withdrawal requester to timestamp of request to keep record, public for use in UI
     mapping(address => uint256) public senderToTimestamp;
 
     /// @dev Metadata struct
@@ -52,37 +51,14 @@ abstract contract BlockscapeShared is
     }
 
     /// @dev Mappings of tokenID to Metadata
-    mapping(uint256 => Metadata) tokenIDtoMetadata;
+    mapping(uint256 => Metadata) internal tokenIDtoMetadata;
 
     /// @dev Mappings of tokenID to the final exit reward for the staker
     mapping(uint256 => uint256) public tokenIDToExitReward;
 
     /// @dev RocketStorageInterface of rocketpool
-    RocketStorageInterface public constant ROCKET_STORAGE =
+    RocketStorageInterface internal constant ROCKET_STORAGE =
         RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46); // mainnet: 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46 // goerli :0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3
-
-    /// @dev rocketpool contract interface for interactions with the rocketNodeStaking contract
-    RocketNodeStakingInterface immutable rocketNodeStaking =
-        RocketNodeStakingInterface(
-            ROCKET_STORAGE.getAddress(
-                keccak256(
-                    abi.encodePacked("contract.address", "rocketNodeStaking")
-                )
-            )
-        );
-
-    /// @dev rocketpool contract interface for interactions with the rocketMinipoolManager contract
-    RocketMinipoolManagerInterface immutable rocketMinipoolManager =
-        RocketMinipoolManagerInterface(
-            ROCKET_STORAGE.getAddress(
-                keccak256(
-                    abi.encodePacked(
-                        "contract.address",
-                        "rocketMinipoolManager"
-                    )
-                )
-            )
-        );
 
     /**
         @notice show the currently available RPL stake which is needed to create 
@@ -91,11 +67,34 @@ abstract contract BlockscapeShared is
         stake
      */
     function getAvailableRPLStake() public view returns (uint256) {
+        RocketNodeStakingInterface rocketNodeStaking = getLatestRocketNodeStaking();
         uint256 nodeRPLStake = rocketNodeStaking.getNodeRPLStake(
             blockscapeRocketPoolNode
         );
 
         return nodeRPLStake;
+    }
+
+    /**
+     *  @dev rocketpool contract interface for interactions with the rocketNodeStaking contract
+     *  @return the rocketNodeStaking contract interface
+     * */
+    function getLatestRocketNodeStaking()
+        internal
+        view
+        returns (RocketNodeStakingInterface)
+    {
+        return
+            RocketNodeStakingInterface(
+                ROCKET_STORAGE.getAddress(
+                    keccak256(
+                        abi.encodePacked(
+                            "contract.address",
+                            "rocketNodeStaking"
+                        )
+                    )
+                )
+            );
     }
 
     /**
@@ -105,6 +104,7 @@ abstract contract BlockscapeShared is
         @return the RPLs needed
      */
     function getReqRPLStake() public view returns (uint256) {
+        RocketNodeStakingInterface rocketNodeStaking = getLatestRocketNodeStaking();
         uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
             blockscapeRocketPoolNode
         );
@@ -126,6 +126,7 @@ abstract contract BlockscapeShared is
      */
 
     function hasNodeEnoughRPLStake() public view returns (bool) {
+        RocketNodeStakingInterface rocketNodeStaking = getLatestRocketNodeStaking();
         uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
             blockscapeRocketPoolNode
         );
@@ -206,6 +207,7 @@ abstract contract BlockscapeShared is
         if (vaultOpen) revert ErrorVaultState(vaultOpen);
 
         vaultOpen = true;
+        emit EmergencyVaultStateChanged(vaultOpen);
     }
 
     /// @notice opens the vault after the recent Validator data has been updated
@@ -220,6 +222,7 @@ abstract contract BlockscapeShared is
      */
     function closeVault() external onlyRole(EMERGENCY_ROLE) {
         vaultOpen = false;
+        emit EmergencyVaultStateChanged(vaultOpen);
     }
 
     /// @notice closes the vault to temporarily prevent further depositing
@@ -238,27 +241,29 @@ abstract contract BlockscapeShared is
     }
 
     /**
-        @notice the withdraw fee might be lowered in the future
+        @notice the withdraw fee might be changed in the future, but cannot be higher than 20%
         @dev only the user with the ADJ_CONFIG_ROLE can call this function
         @param _amount the new fee in wei
      */
-    function lowerWithdrawFee(
+    function changeWithdrawFee(
         uint256 _amount
     ) external onlyRole(ADJ_CONFIG_ROLE) {
         if (_amount >= 20 * 1e18) revert();
         initWithdrawFee = _amount;
+        emit WithdrawFeeChanged(_amount);
     }
 
     /**
-        @notice the timelock for withdraw might be lowered in the future
+        @notice the timelock for withdraw might be changed in the future, but cannot be higher than 7 days
         @dev only the user with the ADJ_CONFIG_ROLE can call this function
         @param _newTimelock the new timelock period in days
      */
-    function lowerTimelockWithdraw(
+    function changeTimelockWithdraw(
         uint256 _newTimelock
     ) external onlyRole(ADJ_CONFIG_ROLE) {
         if (_newTimelock > 7 days) revert();
         timelockWithdraw = _newTimelock;
+        emit TimelockWithdrawChanged(_newTimelock);
     }
 
     /// @notice allow contract to receive ETH without making a delegated call

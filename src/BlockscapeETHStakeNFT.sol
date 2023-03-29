@@ -21,12 +21,12 @@ contract BlockscapeETHStakeNFT is
     BlockscapeShared
 {
     /// @notice tracks the ETH pool supply
-    uint256 poolSupply;
+    uint256 private poolSupply;
 
-    /// @notice constant used for blockexplorers to display the name of the token
+    /// @notice constant used for blockexplorers to display the name of the token (as to be lower case as per blockexplorer standards)
     string public constant name = "Blockscape ETH Stake NFTs";
 
-    /// @notice constant used for blockexplorers to display the symbol of the token
+    /// @notice constant used for blockexplorers to display the symbol of the token (as to be lower case as per blockexplorer standards)
     string public constant symbol = "BSS";
 
     /** 
@@ -59,9 +59,12 @@ contract BlockscapeETHStakeNFT is
 
     /**
      * @notice used by stakers to deposit ETH into the contract
-     * @dev the vault must be open and enought RPL must be staked in the rocketpool by the node
+     * @dev the vault must be open and enough RPL must be staked in the rocketpool by the node
+     * @dev the msg.value must be greater than 0
+     * @dev the msg.value is added to the poolSupply
+     * @dev if contract balance is greater than 8 ETH, the ETH is sent to the rocketpool node
      */
-    function depositStakeNFT() external payable {
+    function depositStakeNFT() external payable nonReentrant{
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
         if (!vaultOpen) revert ErrorVaultState(vaultOpen);
@@ -84,7 +87,7 @@ contract BlockscapeETHStakeNFT is
         @dev emits the StakeUpdated event & increases the poolSupply based on the msg.value
         @param _tokenID Identifier of the vault
     */
-    function updateStake(uint256 _tokenID) external payable nonReentrant {
+    function updateStake(uint256 _tokenID) external payable {
         if (balanceOf(msg.sender, _tokenID) >= 1) {
             if (msg.value == 0) revert();
 
@@ -103,7 +106,8 @@ contract BlockscapeETHStakeNFT is
     }
 
     /**
-        @notice used by the staker when he or he wants to unstake
+        @notice Withdraw is a two step process, first the staker has to call prepareWithdrawalProcess()
+        @dev first step used by the staker when he or she wants to unstake
         @param _tokenID which ETH Stake NFT the staker wants to unstake
         the backend will listen on the event and will unstake the validator. 
         The ETH value with rewards is transparantly available 
@@ -132,7 +136,7 @@ contract BlockscapeETHStakeNFT is
      *  this is needed to be able to calculate the rewards correctly including MEV rewards.
      *  There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
-    function withdrawFunds(uint256 _tokenID) external override {
+    function withdrawFunds(uint256 _tokenID) external override nonReentrant{
         if (senderToTimestamp[msg.sender] + timelockWithdraw >= block.timestamp)
             revert();
 

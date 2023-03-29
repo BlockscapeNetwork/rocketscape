@@ -36,7 +36,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     function testStaking() public {
         _testInitStakeRPLReadyForStaking();
 
-        uint256 ethDeposit = blockscapeValidatorNFT.curETHlimit();
+        uint256 ethDeposit = blockscapeValidatorNFT.getCurrentEthLimit();
 
         vm.expectRevert();
         vm.prank(poolStaker1);
@@ -66,7 +66,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
         assertEq(
             blockscapeValidatorNFT.getBalance(),
-            blockscapeValidatorNFT.curETHlimit()
+            blockscapeValidatorNFT.getCurrentEthLimit()
         );
         assertEq(blockscapeValidatorNFT.getTokenID(), 2);
         assertEq(blockscapeValidatorNFT.totalSupply(), 1);
@@ -183,7 +183,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.expectRevert();
         blockscapeValidatorNFT.updateValidator(1, address(0x0));
 
-        address validator = blockscapeValidatorNFT.tokenIDtoValidator(1);
+        address validator = blockscapeValidatorNFT.getValidatorAddress(1);
         assertEq(validator, minipoolAddr);
 
         assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
@@ -257,18 +257,18 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     function testSetWithdrawFee() public {
         vm.expectRevert();
         vm.prank(singleStaker);
-        blockscapeValidatorNFT.lowerWithdrawFee(1 ether);
+        blockscapeValidatorNFT.changeWithdrawFee(1 ether);
 
         vm.expectRevert();
         vm.prank(rp_backend_role);
-        blockscapeValidatorNFT.lowerWithdrawFee(1 ether);
+        blockscapeValidatorNFT.changeWithdrawFee(1 ether);
 
         vm.expectRevert();
         vm.prank(adj_config_role);
-        blockscapeValidatorNFT.lowerWithdrawFee(100 ether);
+        blockscapeValidatorNFT.changeWithdrawFee(100 ether);
 
         vm.prank(adj_config_role);
-        blockscapeValidatorNFT.lowerWithdrawFee(1 ether);
+        blockscapeValidatorNFT.changeWithdrawFee(1 ether);
 
         uint256 initWithdrawFee = blockscapeValidatorNFT.initWithdrawFee();
         assertEq(initWithdrawFee, 1 ether);
@@ -297,7 +297,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     }
 
     function testDepositWithdrawalMulti() public {
-        uint256 ethDeposit = blockscapeValidatorNFT.curETHlimit();
+        uint256 ethDeposit = blockscapeValidatorNFT.getCurrentEthLimit();
 
         _testInitAndDeposit();
 
