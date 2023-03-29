@@ -2,6 +2,8 @@
 
 pragma solidity 0.8.16;
 
+import {console} from "forge-std/console.sol";
+
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
@@ -150,8 +152,13 @@ contract BlockscapeValidatorNFT is
      *  @dev There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      */
     function withdrawFunds(uint256 _tokenID) external override {
-        if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
-            revert();
+        if (
+            senderToTimestamp[msg.sender] + timelockWithdraw > block.timestamp
+        ) {
+            revert WithdrawalTimelockNotReached(
+                senderToTimestamp[msg.sender] + timelockWithdraw
+            );
+        }
         if (tokenIDToExitReward[_tokenID] < estRewardsNoMEV(_tokenID)) {
             tokenIDToExitReward[_tokenID] = estRewardsNoMEV(_tokenID);
         }

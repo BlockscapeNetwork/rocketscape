@@ -115,15 +115,54 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(singleStaker);
         blockscapeValidatorNFT.withdrawFunds(tokenID);
 
-        // uint256 deployerBalance = foundryDeployer.balance;
+        // funds not yet moved
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
-        // vm.prank(singleStaker);
-        // blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
+        vm.startPrank(rp_backend_role);
+        blockscapeValidatorNFT.withdrawBatch();
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
+        vm.stopPrank();
+
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
         // already preparing
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
+
+        uint256 timelockWithdrawal = blockscapeValidatorNFT.timelockWithdraw();
+
+        // doesn't belong
+        vm.expectRevert();
+        vm.prank(poolStaker1);
+        blockscapeValidatorNFT.withdrawFunds(tokenID);
+
+        // too early
         // vm.expectRevert();
         // vm.prank(singleStaker);
-        // blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
+        // blockscapeValidatorNFT.withdrawFunds(tokenID);
+
+        // vm.warp(block.timestamp + timelockWithdrawal - 1 minutes);
+
+        // // still too early
+        // vm.expectRevert();
+        // vm.prank(singleStaker);
+        // blockscapeValidatorNFT.withdrawFunds(tokenID);
+
+        // vm.warp(block.timestamp + timelockWithdrawal + 1 days);
+
+        // uint256 curEthLimit = blockscapeValidatorNFT.curETHlimit();
+        // uint256 deployerBalance = foundryDeployer.balance;
+        // uint256 stakerBalance = singleStaker.balance;
+
+        // vm.prank(singleStaker);
+        // blockscapeValidatorNFT.withdrawFunds(tokenID);
+
+        // assertEq(foundryDeployer.balance, deployerBalance - curEthLimit);
+        // assertEq(singleStaker.balance, stakerBalance + curEthLimit);
 
         // vm.prank(rp_backend);
         // blockscapeValidatorNFT.withdraw(curETHlimit);
@@ -312,6 +351,9 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.startPrank(rp_backend_role);
         blockscapeValidatorNFT.withdrawBatch();
         blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
+
+        vm.expectRevert();
+        blockscapeValidatorNFT.updateValidator(1, address(0x0));
         vm.stopPrank();
 
         assertEq(blockscapeValidatorNFT.isVaultOpen(), true);
@@ -366,5 +408,13 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         payable(address(blockscapeValidatorNFT)).transfer(25 ether);
 
         assertEq(blockscapeValidatorNFT.getBalance(), 30 ether);
+    }
+
+    function testInterfaces() public {
+        bytes4 interfaceId = 0x0;
+        bool supportsInterface = blockscapeValidatorNFT.supportsInterface(
+            interfaceId
+        );
+        assertEq(supportsInterface, false);
     }
 }

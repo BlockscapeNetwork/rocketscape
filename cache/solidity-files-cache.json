@@ -2712,7 +2712,7 @@
       }
     },
     "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol": {
-      "lastModificationDate": 1679907300071,
+      "lastModificationDate": 1679907840533,
       "contentHash": "bafc6111ed61a7e2e32e9cb9d39d4878",
       "sourceName": "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol",
       "solcConfig": {
@@ -2791,7 +2791,7 @@
       }
     },
     "script/DeployMainnet_BlockscapeValidatorNFT.s.sol": {
-      "lastModificationDate": 1679907300073,
+      "lastModificationDate": 1679907840533,
       "contentHash": "1583467c251192b5c2b0e489df587d41",
       "sourceName": "script/DeployMainnet_BlockscapeValidatorNFT.s.sol",
       "solcConfig": {
@@ -2870,7 +2870,7 @@
       }
     },
     "src/BlockscapeETHStakeNFT.sol": {
-      "lastModificationDate": 1680014595454,
+      "lastModificationDate": 1680071007912,
       "contentHash": "756f01a7bdab9d3c26d1bbda75e0acf2",
       "sourceName": "src/BlockscapeETHStakeNFT.sol",
       "solcConfig": {
@@ -2959,8 +2959,8 @@
       }
     },
     "src/BlockscapeValidatorNFT.sol": {
-      "lastModificationDate": 1680015504888,
-      "contentHash": "c7e2bef237fe64110dde417db23d7fe9",
+      "lastModificationDate": 1680077673581,
+      "contentHash": "65c0c59ab6500cb71aaeedf677f536c5",
       "sourceName": "src/BlockscapeValidatorNFT.sol",
       "solcConfig": {
         "settings": {
@@ -2991,6 +2991,7 @@
         }
       },
       "imports": [
+        "lib/forge-std/src/console.sol",
         "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
         "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
         "lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol",
@@ -3073,8 +3074,8 @@
       }
     },
     "src/utils/BlockscapeErrors.sol": {
-      "lastModificationDate": 1680015713055,
-      "contentHash": "8ae832c07d011d9f4fd8f85e48fe7a03",
+      "lastModificationDate": 1680077124617,
+      "contentHash": "7801373ef12764b02eec6a929f334aad",
       "sourceName": "src/utils/BlockscapeErrors.sol",
       "solcConfig": {
         "settings": {
@@ -3153,8 +3154,8 @@
       }
     },
     "src/utils/BlockscapeShared.sol": {
-      "lastModificationDate": 1680020044186,
-      "contentHash": "f569ca8f0286feaa66128a478880d3df",
+      "lastModificationDate": 1680073101466,
+      "contentHash": "0d300f7a710e620961386cfdeaebf6b8",
       "sourceName": "src/utils/BlockscapeShared.sol",
       "solcConfig": {
         "settings": {
@@ -3547,7 +3548,7 @@
       }
     },
     "test/BlockscapeETHStakeNFT.t.sol": {
-      "lastModificationDate": 1680020856197,
+      "lastModificationDate": 1680071007914,
       "contentHash": "e3a1422506d41914d6ff3533775d322e",
       "sourceName": "test/BlockscapeETHStakeNFT.t.sol",
       "solcConfig": {
@@ -3655,8 +3656,8 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
-      "lastModificationDate": 1679999751331,
-      "contentHash": "e0f8cda8570ac048d20e8439fbf1796e",
+      "lastModificationDate": 1680077654363,
+      "contentHash": "7a5b1fd2f9f36e12be607f5a30b4b1e7",
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3740,7 +3741,7 @@
       }
     },
     "test/utils/BlockscapeETHStakeNFTTestHelper.sol": {
-      "lastModificationDate": 1680020846527,
+      "lastModificationDate": 1680071007914,
       "contentHash": "17a03ebc1aa01ed7b4e373c3e4a64829",
       "sourceName": "test/utils/BlockscapeETHStakeNFTTestHelper.sol",
       "solcConfig": {
@@ -3847,7 +3848,7 @@
       }
     },
     "test/utils/BlockscapeValidatorNFTTestHelper.sol": {
-      "lastModificationDate": 1679999751332,
+      "lastModificationDate": 1680071007915,
       "contentHash": "1268fbf69c7765658ddbf874e79bb4c5",
       "sourceName": "test/utils/BlockscapeValidatorNFTTestHelper.sol",
       "solcConfig": {

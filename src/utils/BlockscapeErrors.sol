@@ -2,7 +2,6 @@
 pragma solidity 0.8.16;
 
 abstract contract BlockscapeErrors {
-
     /// @dev The vault is in the wrong state
     error ErrorVaultState(bool _isOpen);
 
@@ -14,6 +13,9 @@ abstract contract BlockscapeErrors {
 
     /// @dev The vault is already preparing for withdrawal
     error AlreadyPreparingForWithdrawal();
+
+    /// @dev The withdrawal has a timelock which is not yet reached
+    error WithdrawalTimelockNotReached(uint256 unlockTimestamp);
 
     /// @dev user does not own the NFT
     error YouDontOwnThisNft(uint256 _tokenID);

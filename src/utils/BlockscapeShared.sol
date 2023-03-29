@@ -37,7 +37,7 @@ abstract contract BlockscapeShared is
     uint256 tokenID = 1;
 
     /// @dev the current timelock for a withdrawal request
-    uint256 timelockWithdraw = 7 days;
+    uint256 public timelockWithdraw = 7 days;
 
     /// @notice current initial withdraw fee
     uint256 public initWithdrawFee = 20 * 1e18;
