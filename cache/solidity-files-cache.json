@@ -2712,7 +2712,7 @@
       }
     },
     "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol": {
-      "lastModificationDate": 1679907300071,
+      "lastModificationDate": 1679907840533,
       "contentHash": "bafc6111ed61a7e2e32e9cb9d39d4878",
       "sourceName": "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol",
       "solcConfig": {
@@ -2786,7 +2786,7 @@
       }
     },
     "script/DeployMainnet_BlockscapeValidatorNFT.s.sol": {
-      "lastModificationDate": 1679907300073,
+      "lastModificationDate": 1679907840533,
       "contentHash": "1583467c251192b5c2b0e489df587d41",
       "sourceName": "script/DeployMainnet_BlockscapeValidatorNFT.s.sol",
       "solcConfig": {
@@ -2860,8 +2860,13 @@
       }
     },
     "src/BlockscapeETHStakeNFT.sol": {
+<<<<<<< HEAD
       "lastModificationDate": 1680082880571,
       "contentHash": "dae7bd67cbcef5b58eb377081d3d967f",
+=======
+      "lastModificationDate": 1680071007912,
+      "contentHash": "756f01a7bdab9d3c26d1bbda75e0acf2",
+>>>>>>> origin/feature/audit-fixes-tobias-vii
       "sourceName": "src/BlockscapeETHStakeNFT.sol",
       "solcConfig": {
         "settings": {
@@ -2944,8 +2949,13 @@
       }
     },
     "src/BlockscapeValidatorNFT.sol": {
+<<<<<<< HEAD
       "lastModificationDate": 1680083190249,
       "contentHash": "4c3668eeefbd63d42440097193ebf69f",
+=======
+      "lastModificationDate": 1680077673581,
+      "contentHash": "65c0c59ab6500cb71aaeedf677f536c5",
+>>>>>>> origin/feature/audit-fixes-tobias-vii
       "sourceName": "src/BlockscapeValidatorNFT.sol",
       "solcConfig": {
         "settings": {
@@ -2976,6 +2986,7 @@
         }
       },
       "imports": [
+        "lib/forge-std/src/console.sol",
         "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
         "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
         "lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol",
@@ -3053,8 +3064,8 @@
       }
     },
     "src/utils/BlockscapeErrors.sol": {
-      "lastModificationDate": 1680015713055,
-      "contentHash": "8ae832c07d011d9f4fd8f85e48fe7a03",
+      "lastModificationDate": 1680077124617,
+      "contentHash": "7801373ef12764b02eec6a929f334aad",
       "sourceName": "src/utils/BlockscapeErrors.sol",
       "solcConfig": {
         "settings": {
@@ -3133,8 +3144,13 @@
       }
     },
     "src/utils/BlockscapeShared.sol": {
+<<<<<<< HEAD
       "lastModificationDate": 1680084067209,
       "contentHash": "084ff5e2f9006a6b6d9ac6ec2218272a",
+=======
+      "lastModificationDate": 1680073101466,
+      "contentHash": "0d300f7a710e620961386cfdeaebf6b8",
+>>>>>>> origin/feature/audit-fixes-tobias-vii
       "sourceName": "src/utils/BlockscapeShared.sol",
       "solcConfig": {
         "settings": {
@@ -3476,7 +3492,7 @@
       }
     },
     "test/BlockscapeETHStakeNFT.t.sol": {
-      "lastModificationDate": 1680020856197,
+      "lastModificationDate": 1680071007914,
       "contentHash": "e3a1422506d41914d6ff3533775d322e",
       "sourceName": "test/BlockscapeETHStakeNFT.t.sol",
       "solcConfig": {
@@ -3580,8 +3596,13 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
+<<<<<<< HEAD
       "lastModificationDate": 1680084274065,
       "contentHash": "763f63df46fcd0cb5efbc26a749bd276",
+=======
+      "lastModificationDate": 1680077654363,
+      "contentHash": "7a5b1fd2f9f36e12be607f5a30b4b1e7",
+>>>>>>> origin/feature/audit-fixes-tobias-vii
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3661,7 +3682,7 @@
       }
     },
     "test/utils/BlockscapeETHStakeNFTTestHelper.sol": {
-      "lastModificationDate": 1680020846527,
+      "lastModificationDate": 1680071007914,
       "contentHash": "17a03ebc1aa01ed7b4e373c3e4a64829",
       "sourceName": "test/utils/BlockscapeETHStakeNFTTestHelper.sol",
       "solcConfig": {
@@ -3764,8 +3785,13 @@
       }
     },
     "test/utils/BlockscapeValidatorNFTTestHelper.sol": {
+<<<<<<< HEAD
       "lastModificationDate": 1680084213540,
       "contentHash": "27f725a2394aeec3eb9f5718d702b724",
+=======
+      "lastModificationDate": 1680071007915,
+      "contentHash": "1268fbf69c7765658ddbf874e79bb4c5",
+>>>>>>> origin/feature/audit-fixes-tobias-vii
       "sourceName": "test/utils/BlockscapeValidatorNFTTestHelper.sol",
       "solcConfig": {
         "settings": {

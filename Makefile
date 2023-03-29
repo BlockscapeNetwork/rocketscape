@@ -47,3 +47,22 @@ test-verbose:
 		--fork-block-number 16376809
 .PHONY: test-verbose
 
+test-coverage:
+	@echo "forge coverage"
+	@forge coverage \
+		--fork-url ${MAINNET_RPC_URL} \
+		--fork-block-number 16376809
+.PHONY: test-coverage
+
+coverage-report:
+	@echo "forge coverage with lcov report"
+	@forge coverage \
+		--fork-url ${MAINNET_RPC_URL} \
+		--fork-block-number 16376809
+		--report lcov
+.PHONY: coverage-report
+
+gen-report-html:
+	@echo "generating report html files"
+	@genhtml -o report --branch-coverage lcov.info
+.PHONY: gen-report-html

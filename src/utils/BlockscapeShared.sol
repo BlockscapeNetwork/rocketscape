@@ -35,7 +35,11 @@ abstract contract BlockscapeShared is
     */
     uint256 internal tokenID = 1;
 
+<<<<<<< HEAD
     /// @dev the current timelock for a withdrawal request, public for transparency
+=======
+    /// @dev the current timelock for a withdrawal request
+>>>>>>> origin/feature/audit-fixes-tobias-vii
     uint256 public timelockWithdraw = 7 days;
 
     /// @notice current initial withdraw fee, public for transparency

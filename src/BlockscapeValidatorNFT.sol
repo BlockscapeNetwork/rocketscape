@@ -2,6 +2,8 @@
 
 pragma solidity 0.8.16;
 
+import {console} from "forge-std/console.sol";
+
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
@@ -159,9 +161,20 @@ contract BlockscapeValidatorNFT is
      *  this is needed to be able to calculate the rewards correctly including MEV rewards.
      *  @dev There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      */
+<<<<<<< HEAD
     function withdrawFunds(uint256 _tokenID) external override nonReentrant {
         if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
             revert();
+=======
+    function withdrawFunds(uint256 _tokenID) external override {
+        if (
+            senderToTimestamp[msg.sender] + timelockWithdraw > block.timestamp
+        ) {
+            revert WithdrawalTimelockNotReached(
+                senderToTimestamp[msg.sender] + timelockWithdraw
+            );
+        }
+>>>>>>> origin/feature/audit-fixes-tobias-vii
         if (tokenIDToExitReward[_tokenID] < estRewardsNoMEV(_tokenID)) {
             tokenIDToExitReward[_tokenID] = estRewardsNoMEV(_tokenID);
         }
