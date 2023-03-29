@@ -161,11 +161,6 @@ contract BlockscapeValidatorNFT is
      *  this is needed to be able to calculate the rewards correctly including MEV rewards.
      *  @dev There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      */
-<<<<<<< HEAD
-    function withdrawFunds(uint256 _tokenID) external override nonReentrant {
-        if (senderToTimestamp[msg.sender] + timelockWithdraw < block.timestamp)
-            revert();
-=======
     function withdrawFunds(uint256 _tokenID) external override {
         if (
             senderToTimestamp[msg.sender] + timelockWithdraw > block.timestamp
@@ -174,7 +169,6 @@ contract BlockscapeValidatorNFT is
                 senderToTimestamp[msg.sender] + timelockWithdraw
             );
         }
->>>>>>> origin/feature/audit-fixes-tobias-vii
         if (tokenIDToExitReward[_tokenID] < estRewardsNoMEV(_tokenID)) {
             tokenIDToExitReward[_tokenID] = estRewardsNoMEV(_tokenID);
         }
