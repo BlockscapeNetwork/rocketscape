@@ -3581,8 +3581,8 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
-      "lastModificationDate": 1680098396966,
-      "contentHash": "9ac15b0134c30f522571f661dc56bd07",
+      "lastModificationDate": 1680151383152,
+      "contentHash": "a7e72a0bb848e4351d1a791eb84f5da5",
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {

@@ -2,6 +2,7 @@
 
 pragma solidity 0.8.16;
 
+import "openzeppelin-contracts/utils/Address.sol";
 import "forge-std/Test.sol";
 
 import {console} from "forge-std/console.sol";
@@ -102,8 +103,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     function testWithdrawal() public {
         _testInitAndDeposit();
 
-        uint256 tokenID = 1;
-        // uint256 tokenID = blockscapeValidatorNFT.getTokenID() - 1;
+        uint256 tokenID = blockscapeValidatorNFT.getTokenID() - 1;
 
         // only owner should be able to call function
         vm.expectRevert();
@@ -133,45 +133,63 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(singleStaker);
         blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
+        // backend controller task
+        uint256 validatorBalance = address(blockscapeValidatorNFT).balance;
+
+        vm.prank(blockscapeRocketPoolNode);
+        Address.sendValue(
+            payable(address(blockscapeValidatorNFT)),
+            blockscapeValidatorNFT.getCurrentEthLimit()
+        );
+        assertEq(
+            address(blockscapeValidatorNFT).balance,
+            validatorBalance + blockscapeValidatorNFT.getCurrentEthLimit()
+        );
+
         uint256 timelockWithdrawal = blockscapeValidatorNFT.timelockWithdraw();
 
-        // doesn't belong
+        // nft doesn't belong to caller
         vm.expectRevert();
         vm.prank(poolStaker1);
         blockscapeValidatorNFT.withdrawFunds(tokenID);
 
         // too early
-        // vm.expectRevert();
-        // vm.prank(singleStaker);
-        // blockscapeValidatorNFT.withdrawFunds(tokenID);
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.withdrawFunds(tokenID);
 
-        // vm.warp(block.timestamp + timelockWithdrawal - 1 minutes);
+        vm.warp(block.timestamp + timelockWithdrawal - 1 minutes);
 
-        // // still too early
-        // vm.expectRevert();
-        // vm.prank(singleStaker);
-        // blockscapeValidatorNFT.withdrawFunds(tokenID);
+        // still too early
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.withdrawFunds(tokenID);
 
-        // vm.warp(block.timestamp + timelockWithdrawal + 1 days);
+        vm.warp(block.timestamp + timelockWithdrawal + 1 days);
 
-        // uint256 curEthLimit = blockscapeValidatorNFT.curETHlimit();
-        // uint256 deployerBalance = foundryDeployer.balance;
-        // uint256 stakerBalance = singleStaker.balance;
+        validatorBalance = address(blockscapeValidatorNFT).balance;
+        uint256 stakerBalance = singleStaker.balance;
 
-        // vm.prank(singleStaker);
-        // blockscapeValidatorNFT.withdrawFunds(tokenID);
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.withdrawFunds(tokenID);
 
-        // assertEq(foundryDeployer.balance, deployerBalance - curEthLimit);
-        // assertEq(singleStaker.balance, stakerBalance + curEthLimit);
+        assertEq(
+            address(blockscapeValidatorNFT).balance,
+            validatorBalance - blockscapeValidatorNFT.getCurrentEthLimit()
+        );
+        assertEq(
+            singleStaker.balance,
+            stakerBalance + blockscapeValidatorNFT.getCurrentEthLimit()
+        );
 
-        // vm.prank(rp_backend);
-        // blockscapeValidatorNFT.withdraw(curETHlimit);
+        // already withdrawn
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.withdrawFunds(tokenID);
 
-        // assertEq(
-        //     rp_backend_role.balance - deployerBalance,
-        //     blockscapeValidatorNFT.curETHlimit()
-        // );
-        // assertEq(blockscapeValidatorNFT.getBalance(), 0 ether);
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
     }
 
     function testBackgroundController() public {
