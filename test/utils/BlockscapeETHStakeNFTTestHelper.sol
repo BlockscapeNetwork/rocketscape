@@ -319,6 +319,8 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         vm.deal(address(blockscapeETHStakeNFT), 3000 ether);
 
+        assertEq(blockscapeETHStakeNFT.tokenIDToExitReward(1), 6828726602986459200);
+
         vm.warp(block.timestamp + 8 days);
         vm.prank(singleStaker);
         blockscapeETHStakeNFT.withdrawFunds(1);

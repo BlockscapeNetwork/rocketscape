@@ -3477,8 +3477,8 @@
       }
     },
     "test/BlockscapeETHStakeNFT.t.sol": {
-      "lastModificationDate": 1680179103914,
-      "contentHash": "a20d72505c621a4bce7232f61d9a0a25",
+      "lastModificationDate": 1680184819693,
+      "contentHash": "1e56d62b719cd4f5d06598bee60092a4",
       "sourceName": "test/BlockscapeETHStakeNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3662,8 +3662,8 @@
       }
     },
     "test/utils/BlockscapeETHStakeNFTTestHelper.sol": {
-      "lastModificationDate": 1680180125560,
-      "contentHash": "16ef3859cfb4f8e8c8d9f814da236695",
+      "lastModificationDate": 1680185422848,
+      "contentHash": "bce307aa0eadfbf051ca8d83c8eb504c",
       "sourceName": "test/utils/BlockscapeETHStakeNFTTestHelper.sol",
       "solcConfig": {
         "settings": {
