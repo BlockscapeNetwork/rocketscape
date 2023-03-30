@@ -3,6 +3,7 @@ pragma solidity 0.8.16;
 // SPDX-License-Identifier: BUSL-1.1
 
 import "forge-std/Test.sol";
+import "forge-std/StdUtils.sol";
 import {console} from "forge-std/console.sol";
 import {BlockscapeETHStakeNFT} from "src/BlockscapeETHStakeNFT.sol";
 import "openzeppelin-contracts/access/AccessControl.sol";
@@ -14,6 +15,7 @@ import "./RocketPool.sol";
 
 contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     address foundryDeployer = 0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84;
+    address foundryEmergency = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
     // address blockscapeRocketPoolNode =
     //     0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982;
 
@@ -51,8 +53,8 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         vm.prank(foundryDeployer);
         blockscapeETHStakeNFT = new BlockscapeETHStakeNFT();
 
-        adj_config_role = vm.addr(uint256(uint160(foundryDeployer)));
-        emergency_role = vm.addr(uint256(uint160(foundryDeployer)));
+        adj_config_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
+        emergency_role = foundryEmergency; //vm.addr(uint256(uint160(foundryDeployer)));
         rp_backend_role = address(blockscapeRocketPoolNode);
 
         vm.deal(rp_backend_role, 1 ether);
@@ -102,7 +104,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
             true
         );
         assertEq(
-            blockscapeETHStakeNFT.hasRole(EMERGENCY_ROLE, foundryDeployer),
+            blockscapeETHStakeNFT.hasRole(EMERGENCY_ROLE, foundryEmergency),
             true
         );
     }
@@ -118,7 +120,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         blockscapeETHStakeNFT.closeVault();
 
         vm.expectRevert(
-            "AccessControl: account 0xc69a22e55c2337e28a7f485be327ca2ff2533d10 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+            "AccessControl: account 0xb4c79dab8f259c7aee6e5b2aa729821864227e84 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
         );
         vm.prank(adj_config_role);
         blockscapeETHStakeNFT.closeVault();
@@ -133,7 +135,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         // console.log("emergency_role", foundryDeployer);
 
-        vm.prank(foundryDeployer);
+        vm.prank(foundryEmergency);
         blockscapeETHStakeNFT.closeVault();
 
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), false);
@@ -150,7 +152,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         blockscapeETHStakeNFT.openVault();
 
         vm.expectRevert(
-            "AccessControl: account 0xc69a22e55c2337e28a7f485be327ca2ff2533d10 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
+            "AccessControl: account 0xb4c79dab8f259c7aee6e5b2aa729821864227e84 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
         );
         vm.prank(adj_config_role);
         blockscapeETHStakeNFT.openVault();
@@ -163,7 +165,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), false);
 
-        vm.prank(foundryDeployer);
+        vm.prank(foundryEmergency);
         blockscapeETHStakeNFT.openVault();
 
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
@@ -172,6 +174,11 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     function _testSetMetadata() internal {}
 
     function _testDepositStakeNFT(uint256 _value) internal {
+
+        vm.expectRevert();
+        blockscapeETHStakeNFT.depositStakeNFT{value: _value}();
+
+
         _testInitStakeRPLReadyForStaking();
         vm.prank(singleStaker);
         blockscapeETHStakeNFT.depositStakeNFT{value: _value}();
@@ -191,6 +198,14 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         assertEq(blockscapeETHStakeNFT.getPoolSupply(), 1 ether);
 
         vm.prank(singleStaker);
+        vm.expectRevert();
+        blockscapeETHStakeNFT.updateStake(3);
+
+        vm.prank(singleStaker);
+        vm.expectRevert();
+        blockscapeETHStakeNFT.updateStake{value: 0 ether}(1);
+
+        vm.prank(singleStaker);
         blockscapeETHStakeNFT.updateStake{value: 5 ether}(1);
 
         assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
@@ -205,7 +220,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     }
 
     function _testWithdrawFunds(uint256 _tokenID) internal {
-        console.log("balance1", address(singleStaker).balance);
+        
         vm.expectRevert();
         vm.warp(block.timestamp);
         vm.prank(singleStaker);
@@ -214,13 +229,9 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         vm.warp(block.timestamp + 8 days);
         vm.prank(singleStaker);
         assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
-        blockscapeETHStakeNFT.setApprovalForAll(
-            address(blockscapeETHStakeNFT),
-            true
-        );
+        
         blockscapeETHStakeNFT.withdrawFunds(_tokenID);
-        console.log("balance2", address(singleStaker).balance);
-        console.log("balance2", address(blockscapeETHStakeNFT).balance);
+        
     }
 
     function _complete() public {
@@ -241,18 +252,43 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         vm.deal(address(blockscapeETHStakeNFT), 100 ether);
 
+        vm.expectRevert();
+        vm.warp(block.timestamp + 6 days);
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.withdrawFunds(1);
+
         vm.warp(block.timestamp + 8 days);
         vm.prank(singleStaker);
         blockscapeETHStakeNFT.withdrawFunds(1);
-   
     }
 
-    function _completeMutlti() public {
+    function _completeMulti() public {
         _testInitStakeRPLReadyForStaking();
         vm.prank(singleStaker);
         blockscapeETHStakeNFT.depositStakeNFT{value: 4 ether}();
         assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
         assertEq(blockscapeETHStakeNFT.getPoolSupply(), 4 ether);
+
+        fee = blockscapeETHStakeNFT.calcWithdrawFee(1, singleStaker);
+
+        assertEq(fee, 20e18);
+
+        // Expect 0 fee for unknown token
+        assertEq(blockscapeETHStakeNFT.calcWithdrawFee(1337, singleStaker), 0);
+
+        // Expect 0 fee for unknown token / sender
+        assertEq(blockscapeETHStakeNFT.calcWithdrawFee(1, msg.sender), 0);
+
+        vm.warp(block.timestamp + 100 days);
+        fee = blockscapeETHStakeNFT.calcWithdrawFee(1, singleStaker);
+        assertEq(fee, 14520547945208000000);
+
+        // 0.5 % after 365 days
+        vm.warp(block.timestamp + 265 days);
+        fee = blockscapeETHStakeNFT.calcWithdrawFee(1, singleStaker);
+        assertEq(fee, 5e17);
+
+        vm.warp(block.timestamp - 365 days);
 
         vm.deal(poolStaker1, 320 ether);
 
@@ -295,20 +331,19 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         blockscapeETHStakeNFT.withdrawFunds(2);
     }
 
+    function _testSupportsInterface() internal {
+        assertEq(
+            blockscapeETHStakeNFT.supportsInterface(
+                type(IAccessControl).interfaceId
+            ),
+            true
+        );
+        assertEq(blockscapeETHStakeNFT.supportsInterface(0x80ac58ce), false);
+    }
+
     function _testGetPoolSupply() internal view returns (uint256) {
         return blockscapeETHStakeNFT.getPoolSupply();
     }
-
-    function _testCalcWithdrawFee(uint256 _tokenID) internal {
-        fee = blockscapeETHStakeNFT.calcWithdrawFee(_tokenID, msg.sender);
-
-        assertEq(fee, 20e18);
-    }
-
-    // function _testCalcApr() internal {
-    //     apr = blockscapeETHStakeNFT.calcApr(); // date: Tue Jan 10 2023 13:48:59 GMT+0000
-    //     assertEq(apr, 7188133266311924300);
-    // }
 
     function _testTotalSupply() internal {
         assertEq(blockscapeETHStakeNFT.totalSupply(), 0);
@@ -352,8 +387,9 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     }
 
     function _testSetBlockscapeRocketPoolNode() internal {
+        vm.prank(foundryDeployer);
         blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(
-            0x9C838949427022610ab4D4fbe6EDC9e6dD83b2D8
+            0xca317A4ecCbe0Dd5832dE2A7407e3c03F88b2CdD
         );
     }
 
@@ -378,12 +414,12 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     }
 
     function _testOpenVault() internal {
-        vm.prank(foundryDeployer);
+        vm.prank(foundryEmergency);
         blockscapeETHStakeNFT.openVault();
     }
 
     function _testCloseVault() internal {
-        vm.prank(foundryDeployer);
+        vm.prank(foundryEmergency);
         blockscapeETHStakeNFT.closeVault();
     }
 
@@ -408,6 +444,15 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         _blockscapeStakeRPL();
 
         _testContractSetupAfterRPLStaking();
+    }
+
+    function _testInitStakeRPLReadyForStakingOtherNode() internal {
+        _testInitContractSetup();
+        //_testInitRocketPoolSetup();
+
+        _blockscapeStakeRPLOtherNode();
+
+        //_testContractSetupAfterRPLStaking();
     }
 
     function _testInitContractSetup() internal {

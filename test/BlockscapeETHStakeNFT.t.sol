@@ -26,6 +26,17 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
         _testOpeningVault();
     }
 
+    function testSingleDeposit() public {
+        _testDepositStakeNFT(1 ether);
+    }
+
+    function testClosedSingleDeposit() public {
+        _testInitStakeRPLReadyForStaking();
+        _testClosingVault();
+        vm.expectRevert();
+        blockscapeETHStakeNFT.depositStakeNFT{value: 1 ether}();
+    }
+
     function testStaking() public {
         _testInitStakeRPLReadyForStaking();
 
@@ -91,10 +102,31 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
         _complete();
     }
 
-      function testDepositWithdrawalMulti() public {
-      _completeMutlti();
-      }
+    function testDepositWithdrawalMulti() public {
+        _completeMulti();
+    }
 
+    function testSetBlockscapeRocketPoolNode() public {
+        assertEq(
+            blockscapeRocketPoolNode,
+            blockscapeETHStakeNFT.blockscapeRocketPoolNode()
+        );
+
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
+
+        vm.expectRevert();
+        vm.prank(rp_backend_role);
+        blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
+
+        vm.prank(adj_config_role);
+        blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
+
+        address blockscapeRocketPoolNode = blockscapeETHStakeNFT
+            .blockscapeRocketPoolNode();
+        assertEq(blockscapeRocketPoolNode, address(0x1));
+    }
 
     function testMiscellaneous() public {
         _testInitStakeRPLReadyForStaking();
@@ -115,5 +147,13 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
 
         vm.expectRevert();
         _textLowerWithdrawFee(21e18);
+
+        _testSupportsInterface();
+
+        //_testCalcWithdrawFee(1);
+    }
+
+    function testTemp() public {
+        _testSupportsInterface();
     }
 }

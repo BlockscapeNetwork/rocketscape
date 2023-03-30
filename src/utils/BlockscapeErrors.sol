@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.16;
 
+/// @title Blockscape Errors
+/// @notice Shared contract for Blockscape Validator and Stake ETH NFTs to define the errors
+/// @dev This contract is abstract and cannot be deployed
 abstract contract BlockscapeErrors {
     /// @dev The vault is in the wrong state
     error ErrorVaultState(bool _isOpen);
@@ -19,4 +22,16 @@ abstract contract BlockscapeErrors {
 
     /// @dev user does not own the NFT
     error YouDontOwnThisNft(uint256 _tokenID);
+
+    /// @dev msg.value is zero
+    error MsgValueZero();
+
+    /// @dev rocket pool commission fee is too high
+    error RPCommFee8TooHigh();
+
+    /// @dev withdrawal fee is too low
+    error WithdrawFeeTooHigh();
+
+    /// @dev timelock is too high
+    error TimelockTooHigh();
 }

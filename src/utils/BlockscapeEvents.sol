@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.16;
 
+/// @title Blockscape Events
+/// @notice Shared contract for Blockscape Validator and Stake ETH NFTs to define the events
+/// @dev This contract is abstract and cannot be deployed
 abstract contract BlockscapeEvents {
     /// @dev event for when the NFT stake is updated
     event StakeUpdated(

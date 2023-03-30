@@ -24,6 +24,9 @@ abstract contract RocketPoolHelperContract is Test {
     RocketNodeStakingInterface rocketNodeStaking =
         RocketNodeStakingInterface(rocketNodeStakingAddress);
 
+        RocketNodeStakingInterface rocketNodeStaking2 =
+        RocketNodeStakingInterface(0xca317A4ecCbe0Dd5832dE2A7407e3c03F88b2CdD);
+
     RocketNodeDepositInterface rocketNodeDeposit =
         RocketNodeDepositInterface(0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5);
 
@@ -32,6 +35,23 @@ abstract contract RocketPoolHelperContract is Test {
 
         // https://etherscan.io/tx/0x944093ca45dd60ea392a7a28afa14c76f0341535f66184f178dbafb19bac6fc3
         rocketNodeStaking.stakeRPL(rplStakeAsPerTx);
+
+        // https://etherscan.io/tx/0x262befd5cd4b1ec508be35c73caea34b3c18c375cd81cc80bd70c5e4f024b628
+        rocketStorage.setWithdrawalAddress(
+            address(blockscapeRocketPoolNode),
+            0x7248f119fEa1dc252084dfDBa285C67Db3fD40A3,
+            false
+        );
+
+        vm.stopPrank();
+        _warpTimeAfterRPLStake();
+    }
+
+    function _blockscapeStakeRPLOtherNode() internal {
+        vm.startPrank(blockscapeRocketPoolNode);
+
+        // https://etherscan.io/tx/0x944093ca45dd60ea392a7a28afa14c76f0341535f66184f178dbafb19bac6fc3
+        rocketNodeStaking2.stakeRPL(rplStakeAsPerTx);
 
         // https://etherscan.io/tx/0x262befd5cd4b1ec508be35c73caea34b3c18c375cd81cc80bd70c5e4f024b628
         rocketStorage.setWithdrawalAddress(

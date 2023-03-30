@@ -44,7 +44,7 @@ contract BlockscapeETHStakeNFT is
         BlockscapeAccess(
             msg.sender,
             BlockscapeShared.blockscapeRocketPoolNode,
-            msg.sender
+            0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 //! TODO: change to correct address before deployment!
         )
     {}
 
@@ -64,12 +64,12 @@ contract BlockscapeETHStakeNFT is
      * @dev the msg.value is added to the poolSupply
      * @dev if contract balance is greater than 8 ETH, the ETH is sent to the rocketpool node
      */
-    function depositStakeNFT() external payable nonReentrant{
+    function depositStakeNFT() external payable nonReentrant {
         if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
         if (!vaultOpen) revert ErrorVaultState(vaultOpen);
 
-        if (msg.value == 0) revert();
+        if (msg.value == 0) revert MsgValueZero();
 
         _setMetadataForStakeInternal(msg.value, tokenID);
         _mint(msg.sender, tokenID, 1, "");
@@ -89,7 +89,7 @@ contract BlockscapeETHStakeNFT is
     */
     function updateStake(uint256 _tokenID) external payable {
         if (balanceOf(msg.sender, _tokenID) >= 1) {
-            if (msg.value == 0) revert();
+            if (msg.value == 0) revert MsgValueZero();
 
             tokenIDtoMetadata[_tokenID].stakedETH += msg.value;
 
@@ -115,7 +115,7 @@ contract BlockscapeETHStakeNFT is
         which is fixed to 0.5% after one year.
      */
     function prepareWithdrawalProcess(uint256 _tokenID) external override {
-        if (senderToTimestamp[msg.sender] > 0) revert();
+        if (senderToTimestamp[msg.sender] > 0) revert AlreadyPreparingForWithdrawal();
 
         tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);
 
@@ -136,9 +136,11 @@ contract BlockscapeETHStakeNFT is
      *  this is needed to be able to calculate the rewards correctly including MEV rewards.
      *  There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
-    function withdrawFunds(uint256 _tokenID) external override nonReentrant{
+    function withdrawFunds(uint256 _tokenID) external override nonReentrant {
         if (senderToTimestamp[msg.sender] + timelockWithdraw >= block.timestamp)
-            revert();
+            revert WithdrawalTimelockNotReached(
+                senderToTimestamp[msg.sender] + timelockWithdraw
+            );
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
 
@@ -147,6 +149,7 @@ contract BlockscapeETHStakeNFT is
             tokenIDtoMetadata[_tokenID].stakedETH +
                 tokenIDToExitReward[_tokenID]
         );
+        senderToTimestamp[msg.sender] = 0;
     }
 
     /**

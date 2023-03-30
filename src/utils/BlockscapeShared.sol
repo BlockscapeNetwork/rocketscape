@@ -10,7 +10,9 @@ import "./BlockscapeErrors.sol";
 import "./interfaces/IRocketStorage.sol";
 import "./interfaces/IRocketNodeStaking.sol";
 
-// TODO: add all natspec
+/// @title Blockscape Shared
+/// @notice Shared contract for Blockscape Validator and Stake ETH NFTs
+/// @dev This contract is abstract and cannot be deployed
 abstract contract BlockscapeShared is
     BlockscapeAccess,
     BlockscapeErrors,
@@ -138,8 +140,8 @@ abstract contract BlockscapeShared is
             blockscapeRocketPoolNode
         );
         uint256 minimumReqRPL = getReqRPLStake();
-
-        return (nodeRPLStake - minimumReqRPL) >= 0;
+       
+        return (nodeRPLStake >= minimumReqRPL);
     }
 
     /**
@@ -186,9 +188,9 @@ abstract contract BlockscapeShared is
     }
 
     /**
-        @notice gets the metadata of a given pool
-        @param _tokenID identifies the pool
-        @return BlockscapeStaking.Metadata of the pool
+        @notice gets the metadata of a given NFT
+        @param _tokenID identifies the NFT
+        @return Metadata of the NFT
      */
     function getMetadata(
         uint256 _tokenID
@@ -210,12 +212,6 @@ abstract contract BlockscapeShared is
         emit EmergencyVaultStateChanged(vaultOpen);
     }
 
-    /// @notice opens the vault after the recent Validator data has been updated
-    /// and is associated with the recent _tokenID
-    function _openVaultInternal() internal {
-        vaultOpen = true;
-    }
-
     /**
         @notice is triggered when the vault can be staked at rocketpool
         @dev future staking interactions are prevented afterwards
@@ -225,10 +221,6 @@ abstract contract BlockscapeShared is
         emit EmergencyVaultStateChanged(vaultOpen);
     }
 
-    /// @notice closes the vault to temporarily prevent further depositing
-    function _closeVaultInternal() internal {
-        vaultOpen = false;
-    }
 
     /** 
         @notice does the vault currently allow depositing
@@ -248,7 +240,7 @@ abstract contract BlockscapeShared is
     function changeWithdrawFee(
         uint256 _amount
     ) external onlyRole(ADJ_CONFIG_ROLE) {
-        if (_amount >= 20 * 1e18) revert();
+        if (_amount >= 20 * 1e18) revert WithdrawFeeTooHigh();
         initWithdrawFee = _amount;
         emit WithdrawFeeChanged(_amount);
     }
@@ -261,7 +253,7 @@ abstract contract BlockscapeShared is
     function changeTimelockWithdraw(
         uint256 _newTimelock
     ) external onlyRole(ADJ_CONFIG_ROLE) {
-        if (_newTimelock > 7 days) revert();
+        if (_newTimelock > 7 days) revert TimelockTooHigh();
         timelockWithdraw = _newTimelock;
         emit TimelockWithdrawChanged(_newTimelock);
     }

@@ -59,7 +59,7 @@ contract BlockscapeValidatorNFT is
         BlockscapeAccess(
             msg.sender,
             BlockscapeShared.blockscapeRocketPoolNode,
-            msg.sender
+            msg.sender //! TODO: change to correct address before deployment!
         )
     {}
 
@@ -90,7 +90,7 @@ contract BlockscapeValidatorNFT is
 
         tokenID++;
 
-        _closeVaultInternal();
+        vaultOpen = false;
     }
 
     /**
@@ -123,7 +123,7 @@ contract BlockscapeValidatorNFT is
 
         tokenIDtoValidator[_tokenID] = _vali;
 
-        _openVaultInternal();
+        vaultOpen = true;
     }
 
     /**
@@ -161,7 +161,7 @@ contract BlockscapeValidatorNFT is
      *  this is needed to be able to calculate the rewards correctly including MEV rewards.
      *  @dev There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      */
-    function withdrawFunds(uint256 _tokenID) external override {
+    function withdrawFunds(uint256 _tokenID) external override nonReentrant {
         if (
             senderToTimestamp[msg.sender] + timelockWithdraw > block.timestamp
         ) {
@@ -216,7 +216,7 @@ contract BlockscapeValidatorNFT is
     function lowerRPCommFee8(
         uint256 _amount
     ) external onlyRole(ADJ_CONFIG_ROLE) {
-        if (_amount >= 14) revert();
+        if (_amount >= 14) revert RPCommFee8TooHigh();
         rpComm8 = _amount;
     }
 
@@ -241,13 +241,13 @@ contract BlockscapeValidatorNFT is
         uint256 curWithdrawFee = initWithdrawFee;
 
         if (balanceOf(_user, _tokenID) >= 1) {
-            uint256 secFee = (initWithdrawFee / 365 days); // 20%
+            uint256 secFee = (initWithdrawFee / 365 days);
             uint256 timePassed = block.timestamp -
                 (tokenIDtoMetadata[_tokenID].stakedTimestamp);
 
             uint256 maxTime05EthReached = 30747600;
             if (timePassed >= maxTime05EthReached) {
-                curWithdrawFee = 5 * 1e17; // fixed minimum fee 0,5 %
+                curWithdrawFee = 5 * 1e17;
             } else {
                 curWithdrawFee = (initWithdrawFee - (secFee * timePassed));
             }
