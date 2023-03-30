@@ -410,10 +410,21 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         blockscapeETHStakeNFT.changeTimelockWithdraw(6 days);
 
         vm.expectRevert();
+        vm.prank(foundryDeployer);
         blockscapeETHStakeNFT.changeTimelockWithdraw(12 days);
     }
 
+    function _testnoRPLOpenVault() internal {
+        vm.expectRevert();
+        vm.prank(foundryEmergency);
+        blockscapeETHStakeNFT.openVault();
+    }
+
     function _testOpenVault() internal {
+        vm.prank(foundryEmergency);
+        blockscapeETHStakeNFT.openVault();
+
+        vm.expectRevert();
         vm.prank(foundryEmergency);
         blockscapeETHStakeNFT.openVault();
     }

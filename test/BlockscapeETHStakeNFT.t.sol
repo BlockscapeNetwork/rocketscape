@@ -129,6 +129,7 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
     }
 
     function testMiscellaneous() public {
+        _testnoRPLOpenVault();
         _testInitStakeRPLReadyForStaking();
         _testGetAvailableRPLStake();
         _testGetReqRPLStake();
