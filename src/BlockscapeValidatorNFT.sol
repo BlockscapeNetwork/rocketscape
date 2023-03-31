@@ -144,13 +144,13 @@ contract BlockscapeValidatorNFT is
 
         uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
         uint256 rewards = estRewardsNoMEV(_tokenID);
-        // emit UserRequestedWithdrawalVali(
-        //     _tokenID,
-        //     msg.sender,
-        //     curWithdrawFee,
-        //     tokenIDtoMetadata[_tokenID].stakedETH,
-        //     rewards
-        // );
+        emit UserRequestedWithdrawalVali(
+            _tokenID,
+            msg.sender,
+            curWithdrawFee,
+            tokenIDtoMetadata[_tokenID].stakedETH,
+            rewards
+        );
     }
 
     /**
@@ -287,8 +287,9 @@ contract BlockscapeValidatorNFT is
             balanceComm = (rpComm8 * (balance * 3)) / 100;
         }
 
-        // uint256 wfee = calcWithdrawFee(_tokenID, msg.sender) * balanceComm;
-        return (balance + balanceComm); // - wfee
+        uint256 wfee = ((calcWithdrawFee(_tokenID, msg.sender) * balanceComm) /
+            1e19);
+        return (balance + balanceComm - wfee);
     }
 
     /// @notice total amount of supply
