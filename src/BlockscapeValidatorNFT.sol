@@ -2,8 +2,6 @@
 
 pragma solidity 0.8.16;
 
-import {console} from "forge-std/console.sol";
-
 import "openzeppelin-contracts/token/ERC1155/ERC1155.sol";
 import "openzeppelin-contracts/token/ERC1155/extensions/ERC1155Supply.sol";
 import "openzeppelin-contracts/security/ReentrancyGuard.sol";
@@ -185,7 +183,9 @@ contract BlockscapeValidatorNFT is
 
     /**
      * @notice this function is called by the backend controller when the UserRequestedWithdrawal is emited
-     * @dev the rewards are calculated by the backend controller and are then stored in the contract, this is needed to be able to calculate the rewards correctly including MEV rewards. There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
+     * @dev the rewards are calculated by the backend controller and are then stored in the contract,
+     * this is needed to be able to calculate the rewards correctly including MEV rewards.
+     * There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      * @param _tokenID the tokenID of the validator
      * @param _calcReward the calculated rewards in wei
      *
@@ -269,7 +269,9 @@ contract BlockscapeValidatorNFT is
     }
 
     /**
-        @notice this function is a on-chain calculation of the rocketpool ETH rewards. It does not take MEV into account & will only work correctly after the Shapella/Shanghai upgrade
+        @notice this function is a on-chain calculation of the rocketpool ETH rewards. 
+        It does not take MEV into account & will only work correctly 
+        after the Shapella/Shanghai upgrade
         @param _tokenID tokenID of the NFT, the user wants to unstake
         @return rewards in wei minus the withdraw fee
      */
