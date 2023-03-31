@@ -12,7 +12,8 @@ import "./utils/BlockscapeShared.sol";
 /** 
     @title Rocketpool Staking Allocation Contract - Blockscape ETH Stake NFT
     @author Blockscape Finance AG <info@blockscape.network>
-    @notice collects ETH, mints NFT in return for stake, which can be any amount of ETH. The ETH is staked in the blockscape rocketpool infrastructure.
+    @notice collects ETH, mints NFT in return for stake, which can be any amount of ETH. 
+    The ETH is staked in the blockscape rocketpool infrastructure.
 */
 contract BlockscapeETHStakeNFT is
     ERC1155Supply,
@@ -23,10 +24,12 @@ contract BlockscapeETHStakeNFT is
     /// @notice tracks the ETH pool supply
     uint256 private poolSupply;
 
-    /// @notice constant used for blockexplorers to display the name of the token (as to be lower case as per blockexplorer standards)
+    /// @notice constant used for blockexplorers to display the name of the token 
+    /// (as to be lower case as per blockexplorer standards)
     string public constant name = "Blockscape ETH Stake NFTs";
 
-    /// @notice constant used for blockexplorers to display the symbol of the token (as to be lower case as per blockexplorer standards)
+    /// @notice constant used for blockexplorers to display the symbol of the token 
+    /// (as to be lower case as per blockexplorer standards)
     string public constant symbol = "BSS";
 
     /** 

@@ -13,6 +13,15 @@ import {BlockscapeValidatorNFTTestHelper} from "./utils/BlockscapeValidatorNFTTe
 contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     error NotEnoughRPLStake();
 
+    event ETHLimitChanged(uint256 _newLimit);
+    event UserRequestedWithdrawalVali(
+        uint256 indexed _tokenID,
+        address indexed _user,
+        uint256 _fee,
+        uint256 _stakedETH,
+        uint256 _rewards
+    );
+
     constructor() BlockscapeValidatorNFTTestHelper(blockscapeValidatorNFT) {}
 
     function setUp() public {
@@ -134,8 +143,32 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
         vm.stopPrank();
 
+        vm.expectEmit(true, true, true, false);
+        emit UserRequestedWithdrawalVali(
+            1,
+            singleStaker,
+            blockscapeValidatorNFT.getCurrentEthLimit(),
+            blockscapeValidatorNFT.getCurrentEthLimit(),
+            0
+        );
         vm.prank(singleStaker);
         blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
+
+        uint256 calcRewards = 0.1 ether;
+
+        vm.expectRevert();
+        vm.prank(foundryDeployer);
+        blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
+
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
+
+        vm.prank(rp_backend_role);
+        blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
+
+        uint256 rewards = blockscapeValidatorNFT.tokenIDToExitReward(tokenID);
+        assertEq(rewards, calcRewards);
 
         // already preparing
         vm.expectRevert();
@@ -148,11 +181,13 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(blockscapeRocketPoolNode);
         Address.sendValue(
             payable(address(blockscapeValidatorNFT)),
-            blockscapeValidatorNFT.getCurrentEthLimit()
+            blockscapeValidatorNFT.getCurrentEthLimit() + calcRewards
         );
         assertEq(
             address(blockscapeValidatorNFT).balance,
-            validatorBalance + blockscapeValidatorNFT.getCurrentEthLimit()
+            validatorBalance +
+                blockscapeValidatorNFT.getCurrentEthLimit() +
+                calcRewards
         );
 
         uint256 timelockWithdrawal = blockscapeValidatorNFT.timelockWithdraw();
@@ -184,11 +219,15 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
 
         assertEq(
             address(blockscapeValidatorNFT).balance,
-            validatorBalance - blockscapeValidatorNFT.getCurrentEthLimit()
+            validatorBalance -
+                blockscapeValidatorNFT.getCurrentEthLimit() -
+                calcRewards
         );
         assertEq(
             singleStaker.balance,
-            stakerBalance + blockscapeValidatorNFT.getCurrentEthLimit()
+            stakerBalance +
+                blockscapeValidatorNFT.getCurrentEthLimit() +
+                calcRewards
         );
 
         // already withdrawn
@@ -279,6 +318,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     function testUserRequestWithdraw() public {
         _testInitDepositAndUpdateVali();
 
+        uint256 tokenID = 1;
         uint256 initWithdrawFee = blockscapeValidatorNFT.initWithdrawFee();
 
         uint256 amount = blockscapeValidatorNFT.calcWithdrawFee(
@@ -287,7 +327,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         );
         assertEq(amount, 0);
 
-        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(tokenID, singleStaker);
         assertEq(amount, initWithdrawFee);
 
         vm.startPrank(singleStaker);
@@ -296,25 +336,25 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         uint256 feesDropTimestamp = block.timestamp + 30747600;
 
         vm.warp(origTimestamp + 10 days);
-        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(tokenID, singleStaker);
         assertEq(
             amount,
             initWithdrawFee - (initWithdrawFee / 365 days) * 10 days
         );
 
         vm.warp(origTimestamp + 100 days);
-        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(tokenID, singleStaker);
         assertEq(
             amount,
             initWithdrawFee - (initWithdrawFee / 365 days) * 100 days
         );
 
         vm.warp(feesDropTimestamp);
-        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(tokenID, singleStaker);
         assertEq(amount, 0.5 ether);
 
         vm.warp(feesDropTimestamp + 1000 days);
-        amount = blockscapeValidatorNFT.calcWithdrawFee(1, singleStaker);
+        amount = blockscapeValidatorNFT.calcWithdrawFee(tokenID, singleStaker);
         assertEq(amount, 0.5 ether);
 
         vm.stopPrank();
@@ -332,6 +372,8 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(rp_backend_role);
         blockscapeValidatorNFT.changeETHLimit8();
 
+        vm.expectEmit(false, false, false, true);
+        emit ETHLimitChanged(8 ether);
         vm.prank(adj_config_role);
         blockscapeValidatorNFT.changeETHLimit8();
 
