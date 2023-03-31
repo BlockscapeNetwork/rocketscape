@@ -28,13 +28,6 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
 
     BlockscapeValidatorNFT blockscapeValidatorNFT;
 
-    event UserRequestedWithdrawalStake(
-        uint256 indexed _tokenID,
-        address indexed _user,
-        uint256 _stakedETH,
-        uint256 _rewards
-    );
-
     constructor(BlockscapeValidatorNFT _blockscapeValidatorNFT) {
         blockscapeValidatorNFT = _blockscapeValidatorNFT;
     }

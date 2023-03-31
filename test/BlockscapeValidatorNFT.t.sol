@@ -145,9 +145,21 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(singleStaker);
         blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
-        // vm.expectRevert();
-        // vm.prank(foundryDeployer);
-        // uint256 rewards = blockscapeValidatorNFT.calcRewards(tokenID);
+        uint256 calcRewards = 0.1 ether;
+
+        vm.expectRevert();
+        vm.prank(foundryDeployer);
+        blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
+
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
+
+        vm.prank(rp_backend_role);
+        blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
+
+        uint256 rewards = blockscapeValidatorNFT.tokenIDToExitReward(tokenID);
+        assertEq(rewards, calcRewards);
 
         // already preparing
         vm.expectRevert();
@@ -160,11 +172,13 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(blockscapeRocketPoolNode);
         Address.sendValue(
             payable(address(blockscapeValidatorNFT)),
-            blockscapeValidatorNFT.getCurrentEthLimit()
+            blockscapeValidatorNFT.getCurrentEthLimit() + calcRewards
         );
         assertEq(
             address(blockscapeValidatorNFT).balance,
-            validatorBalance + blockscapeValidatorNFT.getCurrentEthLimit()
+            validatorBalance +
+                blockscapeValidatorNFT.getCurrentEthLimit() +
+                calcRewards
         );
 
         uint256 timelockWithdrawal = blockscapeValidatorNFT.timelockWithdraw();
@@ -196,11 +210,15 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
 
         assertEq(
             address(blockscapeValidatorNFT).balance,
-            validatorBalance - blockscapeValidatorNFT.getCurrentEthLimit()
+            validatorBalance -
+                blockscapeValidatorNFT.getCurrentEthLimit() -
+                calcRewards
         );
         assertEq(
             singleStaker.balance,
-            stakerBalance + blockscapeValidatorNFT.getCurrentEthLimit()
+            stakerBalance +
+                blockscapeValidatorNFT.getCurrentEthLimit() +
+                calcRewards
         );
 
         // already withdrawn
