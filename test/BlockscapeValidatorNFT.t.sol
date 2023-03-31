@@ -13,6 +13,15 @@ import {BlockscapeValidatorNFTTestHelper} from "./utils/BlockscapeValidatorNFTTe
 contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
     error NotEnoughRPLStake();
 
+    event ETHLimitChanged(uint256 _newLimit);
+    event UserRequestedWithdrawalVali(
+        uint256 indexed _tokenID,
+        address indexed _user,
+        uint256 _fee,
+        uint256 _stakedETH,
+        uint256 _rewards
+    );
+
     constructor() BlockscapeValidatorNFTTestHelper(blockscapeValidatorNFT) {}
 
     function setUp() public {
@@ -125,6 +134,14 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
         vm.stopPrank();
 
+        vm.expectEmit(true, true, true, false);
+        emit UserRequestedWithdrawalVali(
+            1,
+            singleStaker,
+            blockscapeValidatorNFT.getCurrentEthLimit(),
+            blockscapeValidatorNFT.getCurrentEthLimit(),
+            0
+        );
         vm.prank(singleStaker);
         blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
@@ -304,6 +321,8 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(rp_backend_role);
         blockscapeValidatorNFT.changeETHLimit8();
 
+        vm.expectEmit(false, false, false, true);
+        emit ETHLimitChanged(0 ether);
         vm.prank(adj_config_role);
         blockscapeValidatorNFT.changeETHLimit8();
 
