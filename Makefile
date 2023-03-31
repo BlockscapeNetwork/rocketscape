@@ -1,8 +1,8 @@
 # lint
-lint-vault16:
-	@echo "linting vault16 contract..."
-	@npx solhint src/BlockscapeValidatorNFT.sol
-.PHONY: lint-vault16
+lint:
+	@echo "linting main contracts..."
+	@npx solhint src/*.sol
+.PHONY: lint
 
 # docs
 gen-docs:
