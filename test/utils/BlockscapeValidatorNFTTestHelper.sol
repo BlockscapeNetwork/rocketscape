@@ -12,6 +12,8 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
 
     address foundryDeployer = 0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84;
 
+    address foundryEmergency = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
+
     // address internal deployer;
     address internal rp_backend_role;
     address internal adj_config_role;
@@ -37,7 +39,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
 
         adj_config_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
-        emergency_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
+        emergency_role = foundryEmergency; //vm.addr(uint256(uint160(foundryDeployer)));
         // deployer = vm.addr(0xDe);
 
         rp_backend_role = address(blockscapeRocketPoolNode);
@@ -195,7 +197,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         assertEq(
             blockscapeValidatorNFT.hasRole(
                 keccak256("EMERGENCY_ROLE"),
-                foundryDeployer
+                foundryEmergency
             ),
             true
         );
