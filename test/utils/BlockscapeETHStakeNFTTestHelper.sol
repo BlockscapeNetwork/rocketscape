@@ -49,6 +49,19 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     /// @dev role to open / close vault in cases of emergencies
     bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 
+    event StakeUpdated(
+        uint256 indexed _tokenID,
+        address indexed _owner,
+        uint256 _newStake
+    );
+
+    event UserRequestedWithdrawalStake(
+        uint256 indexed _tokenID,
+        address indexed _user,
+        uint256 _stakedETH,
+        uint256 _rewards
+    );
+
     function _setupParticipants() internal {
         vm.prank(foundryDeployer);
         blockscapeETHStakeNFT = new BlockscapeETHStakeNFT();
@@ -174,10 +187,8 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     function _testSetMetadata() internal {}
 
     function _testDepositStakeNFT(uint256 _value) internal {
-
         vm.expectRevert();
         blockscapeETHStakeNFT.depositStakeNFT{value: _value}();
-
 
         _testInitStakeRPLReadyForStaking();
         vm.prank(singleStaker);
@@ -205,6 +216,9 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         vm.expectRevert();
         blockscapeETHStakeNFT.updateStake{value: 0 ether}(1);
 
+        vm.expectEmit(true, true, false, false);
+        emit StakeUpdated(1, singleStaker, 5 ether);
+
         vm.prank(singleStaker);
         blockscapeETHStakeNFT.updateStake{value: 5 ether}(1);
 
@@ -215,12 +229,15 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
     function _testPrepareWithdrawProcess(uint256 _tokenID) internal {
         vm.warp(block.timestamp + 365 days);
         assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
+
+        vm.expectEmit(true, true, true, false);
+        emit UserRequestedWithdrawalStake(1, singleStaker, 5 ether, 0);
+
         vm.prank(singleStaker);
         blockscapeETHStakeNFT.prepareWithdrawalProcess(_tokenID);
     }
 
     function _testWithdrawFunds(uint256 _tokenID) internal {
-        
         vm.expectRevert();
         vm.warp(block.timestamp);
         vm.prank(singleStaker);
@@ -229,9 +246,8 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         vm.warp(block.timestamp + 8 days);
         vm.prank(singleStaker);
         assertEq(blockscapeETHStakeNFT.balanceOf(singleStaker, 1), 1);
-        
+
         blockscapeETHStakeNFT.withdrawFunds(_tokenID);
-        
     }
 
     function _complete() public {
@@ -319,7 +335,10 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         vm.deal(address(blockscapeETHStakeNFT), 3000 ether);
 
-        assertEq(blockscapeETHStakeNFT.tokenIDToExitReward(1), 6828726602986459200);
+        assertEq(
+            blockscapeETHStakeNFT.tokenIDToExitReward(1),
+            6828726602986459200
+        );
 
         vm.warp(block.timestamp + 8 days);
         vm.prank(singleStaker);
