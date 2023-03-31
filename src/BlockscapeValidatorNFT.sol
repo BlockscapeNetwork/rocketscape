@@ -57,7 +57,7 @@ contract BlockscapeValidatorNFT is
         BlockscapeAccess(
             msg.sender,
             BlockscapeShared.blockscapeRocketPoolNode,
-            msg.sender //! TODO: change to correct address before deployment!
+            0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 //! TODO: change to correct address before deployment!
         )
     {}
 
