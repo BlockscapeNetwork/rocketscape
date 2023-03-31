@@ -164,6 +164,7 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(singleStaker);
         blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
 
+        // sets the rewards through calculation process
         vm.prank(rp_backend_role);
         blockscapeValidatorNFT.calcRewards(tokenID, calcRewards);
 
@@ -254,7 +255,6 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         blockscapeValidatorNFT.lowerRPCommFee8(13);
     }
 
-   
     function testGetValidatorAddress() public view {
         blockscapeValidatorNFT.getValidatorAddress(1);
     }
@@ -300,6 +300,15 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.expectRevert();
         vm.prank(foundryDeployer);
         blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
+
+        // vault mustn't be open
+        vm.prank(emergency_role);
+        blockscapeValidatorNFT.openVault();
+        vm.expectRevert();
+        vm.prank(foundryDeployer);
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
+        vm.prank(emergency_role);
+        blockscapeValidatorNFT.closeVault();
 
         blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
 
@@ -478,14 +487,69 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
 
         _blockscapeStakeRPL();
 
+        // change eth limit
+        vm.prank(foundryDeployer);
+        blockscapeValidatorNFT.changeETHLimit8();
+
+        vm.expectRevert();
         vm.prank(poolStaker2);
         blockscapeValidatorNFT.depositValidatorNFT{value: ethDeposit}();
-        assertEq(blockscapeValidatorNFT.getBalance(), ethDeposit);
+
+        vm.prank(poolStaker2);
+        blockscapeValidatorNFT.depositValidatorNFT{value: ethDeposit / 2}();
+        assertEq(blockscapeValidatorNFT.getBalance(), ethDeposit / 2);
 
         vm.startPrank(rp_backend_role);
         blockscapeValidatorNFT.withdrawBatch();
         blockscapeValidatorNFT.updateValidator(3, address(0x2));
         vm.stopPrank();
+
+        uint256 tokenID = 3;
+        uint256 amount = blockscapeValidatorNFT.calcWithdrawFee(
+            tokenID,
+            poolStaker2
+        );
+
+        vm.prank(poolStaker2);
+        blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
+
+        // backend controller task
+        // uint256 validatorBalance = address(blockscapeValidatorNFT).balance;
+
+        // vm.prank(blockscapeRocketPoolNode);
+        // Address.sendValue(
+        //     payable(address(blockscapeValidatorNFT)),
+        //     blockscapeValidatorNFT.getCurrentEthLimit() + calcRewards
+        // );
+        // assertEq(
+        //     address(blockscapeValidatorNFT).balance,
+        //     validatorBalance +
+        //         blockscapeValidatorNFT.getCurrentEthLimit() +
+        //         calcRewards
+        // );
+
+        // uint256 timelockWithdrawal = blockscapeValidatorNFT.timelockWithdraw();
+
+        //  vm.warp(block.timestamp + timelockWithdrawal + 1 days);
+
+        // validatorBalance = address(blockscapeValidatorNFT).balance;
+        // uint256 stakerBalance = singleStaker.balance;
+
+        // vm.prank(singleStaker);
+        // blockscapeValidatorNFT.withdrawFunds(tokenID);
+
+        // assertEq(
+        //     address(blockscapeValidatorNFT).balance,
+        //     validatorBalance -
+        //         blockscapeValidatorNFT.getCurrentEthLimit() -
+        //         calcRewards
+        // );
+        // assertEq(
+        //     singleStaker.balance,
+        //     stakerBalance +
+        //         blockscapeValidatorNFT.getCurrentEthLimit() +
+        //         calcRewards
+        // );
     }
 
     function testFallbacks() public {
