@@ -120,6 +120,15 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.prank(singleStaker);
         blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
 
+        vm.prank(emergency_role);
+        blockscapeValidatorNFT.openVault();
+
+        vm.expectRevert();
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
+
+        vm.prank(emergency_role);
+        blockscapeValidatorNFT.closeVault();
+
         vm.startPrank(rp_backend_role);
         blockscapeValidatorNFT.withdrawBatch();
         blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
@@ -190,6 +199,25 @@ contract BlockscapeValidatorNFTTest is Test, BlockscapeValidatorNFTTestHelper {
         vm.expectRevert();
         vm.prank(singleStaker);
         blockscapeValidatorNFT.prepareWithdrawalProcess(tokenID);
+    }
+
+    function testCalcRewards() public {
+        vm.prank(rp_backend_role);
+        blockscapeValidatorNFT.calcRewards(1, 1337);
+    }
+
+    function testLowerRPCommFee8() public {
+        vm.expectRevert();
+        vm.prank(adj_config_role);
+        blockscapeValidatorNFT.lowerRPCommFee8(15);
+
+        vm.prank(adj_config_role);
+        blockscapeValidatorNFT.lowerRPCommFee8(13);
+    }
+
+   
+    function testGetValidatorAddress() public view {
+        blockscapeValidatorNFT.getValidatorAddress(1);
     }
 
     function testBackgroundController() public {
