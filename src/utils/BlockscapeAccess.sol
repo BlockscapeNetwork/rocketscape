@@ -3,16 +3,18 @@ pragma solidity 0.8.16;
 
 import "openzeppelin-contracts/access/AccessControl.sol";
 
-// TODO: add all natspec
+/// @title Blockscape Access
+/// @notice Shared contract for Blockscape Validator and Stake ETH NFTs, used to set the access roles
+/// @dev This contract is abstract and cannot be deployed
 abstract contract BlockscapeAccess is AccessControl {
     /// @dev role to adjust the config of the smart contract parameters
-    bytes32 public constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
+    bytes32 internal constant ADJ_CONFIG_ROLE = keccak256("ADJ_CONFIG_ROLE");
 
     /// @dev role for the backendController executer
-    bytes32 public constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
+    bytes32 internal constant RP_BACKEND_ROLE = keccak256("RP_BACKEND_ROLE");
 
     /// @dev role to open / close vault in cases of emergencies
-    bytes32 public constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
+    bytes32 internal constant EMERGENCY_ROLE = keccak256("EMERGENCY_ROLE");
 
     constructor(
         address adj_config_role,

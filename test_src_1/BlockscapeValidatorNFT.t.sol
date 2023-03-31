@@ -102,7 +102,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
             bytes memory validator
         ) = blockscapeValidatorNFT.getMetadata(1);
 
-        // TODO: Right test cases for other token ids that they return
+        // TODO: Write test cases for other token ids that they return
         // default values == they are unset?
 
         assertEq(m.stakedETH, shouldBeM.stakedETH);
@@ -223,7 +223,7 @@ contract BlockscapeValidatorNFTTest is Test, HelperContract {
         (, bytes memory validator) = blockscapeValidatorNFT
             .getMetadata(1);
 
-        // TODO: Right test cases for other token ids that they return
+        // TODO: Write test cases for other token ids that they return
         // default values == they are unset?
 
        // assertEq(staker, singleStaker);

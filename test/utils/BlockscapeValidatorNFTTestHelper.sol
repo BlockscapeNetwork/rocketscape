@@ -8,7 +8,11 @@ import {BlockscapeValidatorNFT} from "src/BlockscapeValidatorNFT.sol";
 import {RocketPoolHelperContract} from "./RocketPool.sol";
 
 contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
+    address minipoolAddr = 0x626CA3f82a4A11C2226101eeEA35Fcc25a5fE91D;
+
     address foundryDeployer = 0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84;
+
+    address foundryEmergency = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
 
     // address internal deployer;
     address internal rp_backend_role;
@@ -35,7 +39,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
 
         adj_config_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
-        emergency_role = foundryDeployer; //vm.addr(uint256(uint160(foundryDeployer)));
+        emergency_role = foundryEmergency; //vm.addr(uint256(uint160(foundryDeployer)));
         // deployer = vm.addr(0xDe);
 
         rp_backend_role = address(blockscapeRocketPoolNode);
@@ -67,7 +71,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         assertEq(blockscapeValidatorNFT.totalSupply(), 0);
         assertEq(
             blockscapeValidatorNFT.getCurrentEthLimit(),
-            blockscapeValidatorNFT.curETHlimit()
+            blockscapeValidatorNFT.getCurrentEthLimit()
         );
 
         _testInitRocketPoolSetup();
@@ -107,7 +111,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         assertEq(blockscapeValidatorNFT.totalSupply(), 0);
         assertEq(
             blockscapeValidatorNFT.getCurrentEthLimit(),
-            blockscapeValidatorNFT.curETHlimit()
+            blockscapeValidatorNFT.getCurrentEthLimit()
         );
 
         // RocketPool
@@ -137,7 +141,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
     }
 
     function _depositSoloStaker() internal {
-        uint256 value = blockscapeValidatorNFT.curETHlimit();
+        uint256 value = blockscapeValidatorNFT.getCurrentEthLimit();
         vm.prank(singleStaker);
         blockscapeValidatorNFT.depositValidatorNFT{value: value}();
     }
@@ -150,23 +154,23 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
         assertEq(
             blockscapeValidatorNFT.getBalance(),
-            blockscapeValidatorNFT.curETHlimit()
+            blockscapeValidatorNFT.getCurrentEthLimit()
         );
+        assertEq(blockscapeValidatorNFT.balanceOf(singleStaker, 0), 0);
+        assertEq(blockscapeValidatorNFT.balanceOf(singleStaker, 1), 1);
+        assertEq(blockscapeValidatorNFT.balanceOf(singleStaker, 2), 0);
         assertEq(blockscapeValidatorNFT.getTokenID(), 2);
         assertEq(blockscapeValidatorNFT.totalSupply(), 1);
     }
 
-    // function _openVaultDepositAndTestInitSetup() internal {
-    //     _testInitContractSetup();
+    function _testInitDepositAndUpdateVali() internal {
+        _testInitAndDeposit();
 
-    //     _depositSoloStaker();
-
-    //     assertEq(blockscapeValidatorNFT.isVaultOpen(), false);
-    //     assertEq(
-    //         blockscapeValidatorNFT.getBalance(),
-    //         blockscapeValidatorNFT.curETHlimit()
-    //     );
-    // }
+        vm.startPrank(rp_backend_role);
+        blockscapeValidatorNFT.withdrawBatch();
+        blockscapeValidatorNFT.updateValidator(1, minipoolAddr);
+        vm.stopPrank();
+    }
 
     function _testAccessControl() internal {
         // assertEq(
@@ -178,22 +182,22 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
         // );
         assertEq(
             blockscapeValidatorNFT.hasRole(
-                blockscapeValidatorNFT.ADJ_CONFIG_ROLE(),
+                keccak256("ADJ_CONFIG_ROLE"),
                 foundryDeployer
             ),
             true
         );
         assertEq(
             blockscapeValidatorNFT.hasRole(
-                blockscapeValidatorNFT.RP_BACKEND_ROLE(),
+                keccak256("RP_BACKEND_ROLE"),
                 blockscapeValidatorNFT.blockscapeRocketPoolNode()
             ),
             true
         );
         assertEq(
             blockscapeValidatorNFT.hasRole(
-                blockscapeValidatorNFT.EMERGENCY_ROLE(),
-                foundryDeployer
+                keccak256("EMERGENCY_ROLE"),
+                foundryEmergency
             ),
             true
         );

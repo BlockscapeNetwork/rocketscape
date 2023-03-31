@@ -26,227 +26,135 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
         _testOpeningVault();
     }
 
+    function testSingleDeposit() public {
+        _testDepositStakeNFT(1 ether);
+    }
+
+    function testClosedSingleDeposit() public {
+        _testInitStakeRPLReadyForStaking();
+        _testClosingVault();
+        vm.expectRevert();
+        blockscapeETHStakeNFT.depositStakeNFT{value: 1 ether}();
+    }
+
     function testStaking() public {
-        _testSetMetadata();
+        _testInitStakeRPLReadyForStaking();
 
-        _blockscapeStakeRPL();
-        //_testContractSetupAfterRPLStaking();
-        // only RP_BACKEND_ROLE should be able to call function
-        vm.expectRevert(
-            "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xbf233dd2aafeb4d50879c4aa5c81e96d92f6e6945c906a58f9f2d1c1631b4b26"
-        );
-        vm.prank(singleStaker);
-        blockscapeETHStakeNFT.closeVault();
+        vm.expectRevert();
+        vm.prank(poolStaker1);
+        blockscapeETHStakeNFT.depositStakeNFT();
+
+        _testHasNodeEnoughRPLStake();
+
+        vm.prank(poolStaker1);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 1 ether}();
+
+        vm.prank(poolStaker2);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 4 ether}();
+
+        vm.prank(poolStaker3);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 4 ether}();
+
+        vm.prank(poolStaker4);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 7 ether}();
+
+        vm.prank(poolStaker2);
+        blockscapeETHStakeNFT.depositStakeNFT{value: 1.5 ether}();
+
         assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
+
+        assertEq(blockscapeETHStakeNFT.getTokenID(), 6);
+        assertEq(blockscapeETHStakeNFT.totalSupply(), 5);
+
+        // check metadata
+        BlockscapeETHStakeNFT.Metadata memory m = blockscapeETHStakeNFT
+            .getMetadata(1);
+
+        BlockscapeETHStakeNFT.Metadata memory shouldBeM;
+        shouldBeM.stakedETH = 1 ether;
+        shouldBeM.stakedTimestamp = block.timestamp;
+        assertEq(
+            blockscapeETHStakeNFT.contractURI(),
+            "https://ipfs.blockscape.network/ipfs/TBD"
+        );
+        assertEq(
+            blockscapeETHStakeNFT.uri(1),
+            "https://ipfs.blockscape.network/ipns/TBD/1.json"
+        );
+
+        assertEq(m.stakedETH, shouldBeM.stakedETH);
+        assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
+
+        // only current tokenID has been changed
+        m = blockscapeETHStakeNFT.getMetadata(0);
+        assertEq(m.stakedETH, 0);
+        assertEq(m.stakedTimestamp, 0);
+        m = blockscapeETHStakeNFT.getMetadata(2);
+        assertEq(m.stakedETH, 4 ether);
+        assertEq(m.stakedTimestamp, shouldBeM.stakedTimestamp);
     }
 
-    function testDeposit() public {
-        _testDepositStakeNFT(1);
+    function testUpdatingStaking() public {
+        _testUpdateStake(1);
     }
 
-    // function testCloseVault() public {
-    //     _testInitContractSetup();
-    //     _testInitRocketPoolSetup();
-    //     // only owner should be able to call function
-    //     vm.expectRevert(
-    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
-    //     );
-    //     vm.prank(singleStaker);
-    //     blockscapeETHStakeNFT.closeVault();
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.closeVault();
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), false);
-    //     _blockscapeStakeRPL();
-    //     // assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
-    //     // only owner should be able to call function
-    //     vm.expectRevert(
-    //         "AccessControl: account 0xd3f7f429d80b7cdf98026230c1997b3e8a780dc5 is missing role 0xd543757584911476a8af46cc6d4e1f21c04dfb6c2270b4c853cd66ba1cdf876e"
-    //     );
-    //     vm.prank(singleStaker);
-    //     blockscapeETHStakeNFT.closeVault();
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.closeVault();
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), false);
-    // }
+    function testWithdraw() public {
+        _complete();
+    }
 
-    // function testDepositETHStakeNFT() public {
-    //     blockscapeETHStakeNFT.depositStakeNFT();
-    // }
+    function testDepositWithdrawalMulti() public {
+        _completeMulti();
+    }
 
-    // function testFallbacks() public {
-    //     vm.expectRevert();
-    //     vm.prank(poolStaker1);
-    //     payable(address(blockscapeETHStakeNFT)).transfer(5 ether);
-    // }
+    function testSetBlockscapeRocketPoolNode() public {
+        assertEq(
+            blockscapeRocketPoolNode,
+            blockscapeETHStakeNFT.blockscapeRocketPoolNode()
+        );
 
-    // function testWithdraw() public {
-    //     _blockscapeStakeRPL();
-    //     _openETHStakeNFT();
-    //     _depositSoloStaker();
-    //     assertEq(blockscapeETHStakeNFT.getBalance(), curETHlimit);
-    //     // only owner should be able to call function
-    //     vm.expectRevert("Ownable: caller is not the owner");
-    //     //vm.prank(singleStaker);
-    //     //blockscapeETHStakeNFT.withdraw(curETHlimit);
-    //     uint256 deployerBalance = rp_backend.balance;
-    //     // vm.prank(rp_backend);
-    //     // blockscapeETHStakeNFT.withdraw(curETHlimit);
-    //     assertEq(rp_backend.balance - deployerBalance, curETHlimit);
-    //     assertEq(blockscapeETHStakeNFT.getBalance(), 0 ether);
-    // }
+        vm.expectRevert();
+        vm.prank(singleStaker);
+        blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
 
-    // function testWithdrawBatch() public {
-    //     _stakeRPL();
-    //     // nothing deposited yet
-    //     vm.expectRevert();
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.withdrawBatch();
-    //     assertEq(blockscapeETHStakeNFT.getBalance(), 0 ether);
-    //     _depositSoloStaker();
-    //     assertEq(blockscapeETHStakeNFT.getBalance(), curETHlimit);
-    //     availableRPL = blockscapeETHStakeNFT.getAvailableRPLStake();
-    //     // only owner should be able to call function
-    //     vm.expectRevert("Ownable: caller is not the owner");
-    //     vm.prank(singleStaker);
-    //     blockscapeETHStakeNFT.withdrawBatch();
-    //     vm.startPrank(rp_backend);
-    //     blockscapeETHStakeNFT.withdrawBatch();
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), false);
-    //     assertEq(blockscapeETHStakeNFT.getBalance(), 0 ether);
-    //     blockscapeETHStakeNFT.updateValidator(1, minipoolAddr);
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
-    //     vm.stopPrank();
-    //     // TODO: check that vault can't reopen if not enough RPL are there
-    //     // use either depositRocketpool or transfer RPL away from blockscape
-    //     // (second option would be an workaround)
-    //     _depositToRocketpool();
-    //     availableRPL = blockscapeETHStakeNFT.getAvailableRPLStake();
-    //     console.log("availableRPL");
-    //     console.logUint(availableRPL);
+        vm.expectRevert();
+        vm.prank(rp_backend_role);
+        blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
 
-    //     // _warpAfterStakingCooldown();
-    //     // _blockscapeUnstakeRPL();
-    // }
+        vm.prank(adj_config_role);
+        blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
 
-    // function testUpdateValidator() public {
-    //     _blockscapeStakeRPL();
-    //     _openETHStakeNFT();
-    //     _depositSoloStaker();
-    //     bytes memory otherBytesAddr = abi.encodePacked(address(2));
-    //     // only owner should be able to call function
-    //     vm.expectRevert("Ownable: caller is not the owner");
-    //     vm.prank(singleStaker);
-    //     blockscapeETHStakeNFT.updateValidator(1, validatorBytesAddress);
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.updateValidator(1, validatorBytesAddress);
-    //     (, bytes memory validator) = blockscapeETHStakeNFT.getMetadata(1);
-    //     // TODO: Right test cases for other token ids that they return
-    //     // default values == they are unset?
-    //     // assertEq(staker, singleStaker);
-    //     assertEq(validator, validatorBytesAddress);
-    //     // can only be set once
-    //     vm.expectRevert();
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.updateValidator(1, otherBytesAddr);
-    // }
+        address blockscapeRocketPoolNode = blockscapeETHStakeNFT
+            .blockscapeRocketPoolNode();
+        assertEq(blockscapeRocketPoolNode, address(0x1));
+    }
 
-    // function testUserRequestWithdraw() public {
-    //     _stakeRPL();
-    //     _depositSoloStaker();
-    //     uint256 amount = blockscapeETHStakeNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, initWithdrawFee);
-    //     vm.startPrank(singleStaker);
-    //     amount = blockscapeETHStakeNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, initWithdrawFee);
-    //     uint256 origTimestamp = block.timestamp;
-    //     uint256 feesDropTimestamp = block.timestamp + 30747600;
-    //     vm.warp(origTimestamp + 10 days);
-    //     amount = blockscapeETHStakeNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(
-    //         amount,
-    //         initWithdrawFee - (initWithdrawFee / 365 days) * 10 days
-    //     );
-    //     vm.warp(origTimestamp + 100 days);
-    //     amount = blockscapeETHStakeNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(
-    //         amount,
-    //         initWithdrawFee - (initWithdrawFee / 365 days) * 100 days
-    //     );
-    //     vm.warp(feesDropTimestamp);
-    //     amount = blockscapeETHStakeNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, 0.5 ether);
-    //     vm.warp(feesDropTimestamp + 1000 days);
-    //     amount = blockscapeETHStakeNFT.calcWithdrawFee(1, msg.sender);
-    //     assertEq(amount, 0.5 ether);
-    //     vm.stopPrank();
-    // }
+    function testMiscellaneous() public {
+        _testnoRPLOpenVault();
+        _testInitStakeRPLReadyForStaking();
+        _testGetAvailableRPLStake();
+        _testGetReqRPLStake();
+        _testHasNodeEnoughRPLStake();
 
-    // function testChangeETHLimit() public {
-    //     uint256 ethLimit = blockscapeETHStakeNFT.getCurrentEthLimit();
-    //     assertEq(ethLimit, curETHlimit);
-    //     vm.expectRevert(
-    //         "AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5"
-    //     );
-    //     blockscapeETHStakeNFT.changeETHLimit8();
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.changeETHLimit8();
-    //     ethLimit = blockscapeETHStakeNFT.getCurrentEthLimit();
-    //     assertEq(ethLimit, 8 ether);
-    // }
+        _testUri();
+        _testContractURI();
+        _testlowerTimelockWithdraw();
 
-    // function testSetWithdrawFee() public {
-    //     vm.expectRevert(
-    //         "AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5"
-    //     );
-    //     blockscapeETHStakeNFT.lowerWithdrawFee(1 ether);
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.lowerWithdrawFee(1 ether);
-    // }
+        _testCloseVault();
+        _testOpenVault();
+        _textIsVaultOpen();
+        //_testReceive();
+        payable(blockscapeETHStakeNFT).transfer(20 ether);
+        _textLowerWithdrawFee(5e18);
 
-    // function testSetBlockscapeRocketPoolNode() public {
-    //     vm.expectRevert(
-    //         "AccessControl: account 0x7fa9385be102ac3eac297483dd6233d62b3e1496 is missing role 0xd10a1ed6b8db63dab91ea7216f374c2aa39f78fdaf594b4a6da95d2846ad0fa5"
-    //     );
-    //     blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.setBlockscapeRocketPoolNode(address(0x1));
-    // }
+        vm.expectRevert();
+        _textLowerWithdrawFee(21e18);
 
-    // function testDepositWithdrawalMulti() public {
-    //     _stakeRPL();
-    //     _depositSoloStaker();
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.withdrawBatch();
-    //     // can't deposit before updateValidator function has been run
-    //     // and vault is opened
-    //     vm.expectRevert();
-    //     vm.prank(poolStaker1);
-    //     blockscapeETHStakeNFT.depositETHStakeNFT{value: curETHlimit}();
-    //     vm.prank(poolStaker1);
-    //     blockscapeETHStakeNFT.depositETHStakeNFT{value: curETHlimit}();
-    //     // can't deposit before stake has been withdrawn
-    //     vm.expectRevert();
-    //     vm.prank(poolStaker2);
-    //     blockscapeETHStakeNFT.depositETHStakeNFT{value: curETHlimit}();
-    //     vm.prank(rp_backend);
-    //     blockscapeETHStakeNFT.withdrawBatch();
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), false);
-    //     assertEq(blockscapeETHStakeNFT.getBalance(), 0 ether);
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), true);
-    //     vm.prank(poolStaker2);
-    //     blockscapeETHStakeNFT.depositETHStakeNFT{value: curETHlimit}();
-    //     assertEq(blockscapeETHStakeNFT.getBalance(), curETHlimit);
-    //     vm.startPrank(rp_backend);
-    //     blockscapeETHStakeNFT.withdrawBatch();
-    //     //     console.log(blockscapeETHStakeNFT.getAvailableRPLStake());
-    //     //     _warpAfterStakingCooldown();
-    //     //     _blockscapeUnstakeRPL();
-    //     //     console.log(blockscapeETHStakeNFT.getAvailableRPLStake());
-    //     //     console.log(blockscapeETHStakeNFT.getReqRPLStake());
-    //     // updateValidator doesn't open vault as not enough RPL are present
-    //     assertEq(blockscapeETHStakeNFT.isVaultOpen(), false);
-    //     assertEq(blockscapeETHStakeNFT.totalSupply(), 3);
-    //     assertEq(blockscapeETHStakeNFT.getTokenID(), 4);
-    //     vm.stopPrank();
-    // }
+        _testSupportsInterface();
+
+        //_testCalcWithdrawFee(1);
+    }
+
+    function testTemp() public {
+        _testSupportsInterface();
+    }
 }

@@ -12,7 +12,7 @@
   },
   "files": {
     "lib/forge-std/src/Base.sol": {
-      "lastModificationDate": 1679906838762,
+      "lastModificationDate": 1679674915902,
       "contentHash": "8f04bbbb2c16f79e14fdc321695a8ec2",
       "sourceName": "lib/forge-std/src/Base.sol",
       "solcConfig": {
@@ -61,7 +61,7 @@
       }
     },
     "lib/forge-std/src/Script.sol": {
-      "lastModificationDate": 1679906838762,
+      "lastModificationDate": 1679674915902,
       "contentHash": "83c39354c1e43190bce4dc43860dc786",
       "sourceName": "lib/forge-std/src/Script.sol",
       "solcConfig": {
@@ -113,7 +113,7 @@
       }
     },
     "lib/forge-std/src/StdAssertions.sol": {
-      "lastModificationDate": 1679906838762,
+      "lastModificationDate": 1679674915902,
       "contentHash": "5bc6a90903a666d831370fa46838ed73",
       "sourceName": "lib/forge-std/src/StdAssertions.sol",
       "solcConfig": {
@@ -156,7 +156,7 @@
       }
     },
     "lib/forge-std/src/StdChains.sol": {
-      "lastModificationDate": 1679906838762,
+      "lastModificationDate": 1679674915902,
       "contentHash": "7e81ca873875f24995d81df8ccb66381",
       "sourceName": "lib/forge-std/src/StdChains.sol",
       "solcConfig": {
@@ -198,7 +198,7 @@
       }
     },
     "lib/forge-std/src/StdCheats.sol": {
-      "lastModificationDate": 1679906838762,
+      "lastModificationDate": 1679674915902,
       "contentHash": "027b46591bff2397c69867fd06ddc0c1",
       "sourceName": "lib/forge-std/src/StdCheats.sol",
       "solcConfig": {
@@ -244,7 +244,7 @@
       }
     },
     "lib/forge-std/src/StdError.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915902,
       "contentHash": "64c896e1276a291776e5ea5aecb3870a",
       "sourceName": "lib/forge-std/src/StdError.sol",
       "solcConfig": {
@@ -284,7 +284,7 @@
       }
     },
     "lib/forge-std/src/StdJson.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "016de2d7ee55960094cc97ec792025bb",
       "sourceName": "lib/forge-std/src/StdJson.sol",
       "solcConfig": {
@@ -326,7 +326,7 @@
       }
     },
     "lib/forge-std/src/StdMath.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "9da8f453eba6bb98f3d75bc6822bfb29",
       "sourceName": "lib/forge-std/src/StdMath.sol",
       "solcConfig": {
@@ -366,7 +366,7 @@
       }
     },
     "lib/forge-std/src/StdStorage.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "3cb9868082df39a53927db09dbc21f23",
       "sourceName": "lib/forge-std/src/StdStorage.sol",
       "solcConfig": {
@@ -411,7 +411,7 @@
       }
     },
     "lib/forge-std/src/StdUtils.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "45fc08daaa17b7908fa5de7d758d8c86",
       "sourceName": "lib/forge-std/src/StdUtils.sol",
       "solcConfig": {
@@ -454,7 +454,7 @@
       }
     },
     "lib/forge-std/src/Test.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "9ca73393dbc2f8cde2aa628f8d05c5d5",
       "sourceName": "lib/forge-std/src/Test.sol",
       "solcConfig": {
@@ -509,7 +509,7 @@
       }
     },
     "lib/forge-std/src/Vm.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "86d01713430fa0877970a6ed8f99dc78",
       "sourceName": "lib/forge-std/src/Vm.sol",
       "solcConfig": {
@@ -552,7 +552,7 @@
       }
     },
     "lib/forge-std/src/console.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "100b8a33b917da1147740d7ab8b0ded3",
       "sourceName": "lib/forge-std/src/console.sol",
       "solcConfig": {
@@ -592,7 +592,7 @@
       }
     },
     "lib/forge-std/src/console2.sol": {
-      "lastModificationDate": 1679906838763,
+      "lastModificationDate": 1679674915903,
       "contentHash": "2096b4e5f252c5df9909cccbe3d2da2e",
       "sourceName": "lib/forge-std/src/console2.sol",
       "solcConfig": {
@@ -632,7 +632,7 @@
       }
     },
     "lib/forge-std/src/interfaces/IMulticall3.sol": {
-      "lastModificationDate": 1679906838764,
+      "lastModificationDate": 1679674915904,
       "contentHash": "7b131ca1ca32ef6378b7b9ad5488b901",
       "sourceName": "lib/forge-std/src/interfaces/IMulticall3.sol",
       "solcConfig": {
@@ -672,7 +672,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/access/AccessControl.sol": {
-      "lastModificationDate": 1679906838774,
+      "lastModificationDate": 1679674915912,
       "contentHash": "13aaf678c43b20fcff7bcfb856ecaef2",
       "sourceName": "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
       "solcConfig": {
@@ -719,7 +719,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol": {
-      "lastModificationDate": 1679906838774,
+      "lastModificationDate": 1679674915912,
       "contentHash": "e1367e77ec4738c94c9085736b4cce03",
       "sourceName": "lib/openzeppelin-contracts/contracts/access/IAccessControl.sol",
       "solcConfig": {
@@ -759,7 +759,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol": {
-      "lastModificationDate": 1679906838786,
+      "lastModificationDate": 1679674915925,
       "contentHash": "d740a44d8a24bf46ae0687c8645bec8e",
       "sourceName": "lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol",
       "solcConfig": {
@@ -799,7 +799,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol": {
-      "lastModificationDate": 1679906838786,
+      "lastModificationDate": 1679674915926,
       "contentHash": "cee0a7b1a328f70439c51f3d7f0bcf4e",
       "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC1155/ERC1155.sol",
       "solcConfig": {
@@ -847,7 +847,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol": {
-      "lastModificationDate": 1679906838786,
+      "lastModificationDate": 1679674915926,
       "contentHash": "e8288d7ad0fa45f99d368abb62d323c9",
       "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol",
       "solcConfig": {
@@ -889,7 +889,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155Receiver.sol": {
-      "lastModificationDate": 1679906838786,
+      "lastModificationDate": 1679674915926,
       "contentHash": "22f551961de450821ebc181cdcc55723",
       "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155Receiver.sol",
       "solcConfig": {
@@ -931,7 +931,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/token/ERC1155/extensions/ERC1155Supply.sol": {
-      "lastModificationDate": 1679906838786,
+      "lastModificationDate": 1679674915926,
       "contentHash": "690a37743d50e3e166540e15eede9b7b",
       "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC1155/extensions/ERC1155Supply.sol",
       "solcConfig": {
@@ -980,7 +980,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol": {
-      "lastModificationDate": 1679906838787,
+      "lastModificationDate": 1679674915926,
       "contentHash": "9c4aa765932afb987a356cb32ce8c715",
       "sourceName": "lib/openzeppelin-contracts/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol",
       "solcConfig": {
@@ -1023,7 +1023,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/Address.sol": {
-      "lastModificationDate": 1679906838791,
+      "lastModificationDate": 1679674915930,
       "contentHash": "43f2660fe10c1ec1b117b18fa8207985",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/Address.sol",
       "solcConfig": {
@@ -1063,7 +1063,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/Context.sol": {
-      "lastModificationDate": 1679906838791,
+      "lastModificationDate": 1679674915931,
       "contentHash": "703b82bfeeb539bb166992997604be25",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/Context.sol",
       "solcConfig": {
@@ -1103,7 +1103,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/Strings.sol": {
-      "lastModificationDate": 1679906838791,
+      "lastModificationDate": 1679674915931,
       "contentHash": "2ae42b1f1a26bb8152c75950380fd718",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
       "solcConfig": {
@@ -1145,7 +1145,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol": {
-      "lastModificationDate": 1679906838792,
+      "lastModificationDate": 1679674915932,
       "contentHash": "3833f90acfd661b6282f8d89753f39a6",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
       "solcConfig": {
@@ -1187,7 +1187,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
-      "lastModificationDate": 1679906838792,
+      "lastModificationDate": 1679674915932,
       "contentHash": "4b38d5b50bc0d58178926c27924748dc",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
       "solcConfig": {
@@ -1227,7 +1227,7 @@
       }
     },
     "lib/openzeppelin-contracts/contracts/utils/math/Math.sol": {
-      "lastModificationDate": 1679906838792,
+      "lastModificationDate": 1679674915932,
       "contentHash": "b6bc61213dfa3533d322d4cdcc648555",
       "sourceName": "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
       "solcConfig": {
@@ -1267,7 +1267,7 @@
       }
     },
     "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol": {
-      "lastModificationDate": 1679906865142,
+      "lastModificationDate": 1679674978727,
       "contentHash": "abdafe4b187f548ef0145173f5b93247",
       "sourceName": "lib/prb-math/lib/forge-std/lib/ds-test/src/test.sol",
       "solcConfig": {
@@ -1307,7 +1307,7 @@
       }
     },
     "lib/prb-math/src/Common.sol": {
-      "lastModificationDate": 1679906865088,
+      "lastModificationDate": 1679674976017,
       "contentHash": "6cdfe4c16364eafe10bbd14d2884799d",
       "sourceName": "lib/prb-math/src/Common.sol",
       "solcConfig": {
@@ -1347,7 +1347,7 @@
       }
     },
     "lib/prb-math/src/UD60x18.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976019,
       "contentHash": "094b74f09063a9548678eb5e0b4b1c01",
       "sourceName": "lib/prb-math/src/UD60x18.sol",
       "solcConfig": {
@@ -1410,7 +1410,7 @@
       }
     },
     "lib/prb-math/src/sd1x18/Casting.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "7f0dc4c5e36dc37bb9713b13aff0ec25",
       "sourceName": "lib/prb-math/src/sd1x18/Casting.sol",
       "solcConfig": {
@@ -1472,7 +1472,7 @@
       }
     },
     "lib/prb-math/src/sd1x18/Constants.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "64da4f1fd711005a4aeae76211e64344",
       "sourceName": "lib/prb-math/src/sd1x18/Constants.sol",
       "solcConfig": {
@@ -1534,7 +1534,7 @@
       }
     },
     "lib/prb-math/src/sd1x18/Errors.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "6a2af201b57c8dfd090e16c9cad97009",
       "sourceName": "lib/prb-math/src/sd1x18/Errors.sol",
       "solcConfig": {
@@ -1596,7 +1596,7 @@
       }
     },
     "lib/prb-math/src/sd1x18/ValueType.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "5ddfffde73635c59246a130a65dcbdb5",
       "sourceName": "lib/prb-math/src/sd1x18/ValueType.sol",
       "solcConfig": {
@@ -1658,7 +1658,7 @@
       }
     },
     "lib/prb-math/src/sd59x18/Casting.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "5668bd2f408dacc6cdd44a68e2c2b60c",
       "sourceName": "lib/prb-math/src/sd59x18/Casting.sol",
       "solcConfig": {
@@ -1720,7 +1720,7 @@
       }
     },
     "lib/prb-math/src/sd59x18/Constants.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "1c08bc6f343be4e923e598a7ce447911",
       "sourceName": "lib/prb-math/src/sd59x18/Constants.sol",
       "solcConfig": {
@@ -1782,7 +1782,7 @@
       }
     },
     "lib/prb-math/src/sd59x18/Errors.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "7fa5269cd570f062c9d7fd6c4e976e3a",
       "sourceName": "lib/prb-math/src/sd59x18/Errors.sol",
       "solcConfig": {
@@ -1844,7 +1844,7 @@
       }
     },
     "lib/prb-math/src/sd59x18/Helpers.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "873917b05e21d398ff513fe29c2bd174",
       "sourceName": "lib/prb-math/src/sd59x18/Helpers.sol",
       "solcConfig": {
@@ -1906,7 +1906,7 @@
       }
     },
     "lib/prb-math/src/sd59x18/Math.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "c5e93a7ef16f2c984f60e2d8c0a73b73",
       "sourceName": "lib/prb-math/src/sd59x18/Math.sol",
       "solcConfig": {
@@ -1968,7 +1968,7 @@
       }
     },
     "lib/prb-math/src/sd59x18/ValueType.sol": {
-      "lastModificationDate": 1679906865089,
+      "lastModificationDate": 1679674976020,
       "contentHash": "e660b6bc339c146c77e036528d9c9f33",
       "sourceName": "lib/prb-math/src/sd59x18/ValueType.sol",
       "solcConfig": {
@@ -2030,7 +2030,7 @@
       }
     },
     "lib/prb-math/src/ud2x18/Casting.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "a86aa86368f2d0665ce1d98ad5789691",
       "sourceName": "lib/prb-math/src/ud2x18/Casting.sol",
       "solcConfig": {
@@ -2092,7 +2092,7 @@
       }
     },
     "lib/prb-math/src/ud2x18/Constants.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "9ea59a8a9f62e316e0a5711e2c192d89",
       "sourceName": "lib/prb-math/src/ud2x18/Constants.sol",
       "solcConfig": {
@@ -2154,7 +2154,7 @@
       }
     },
     "lib/prb-math/src/ud2x18/Errors.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "df96f11ecdbe7b223255eb98beecb355",
       "sourceName": "lib/prb-math/src/ud2x18/Errors.sol",
       "solcConfig": {
@@ -2216,7 +2216,7 @@
       }
     },
     "lib/prb-math/src/ud2x18/ValueType.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "1d5df463be63d101ecbb99fcb015db20",
       "sourceName": "lib/prb-math/src/ud2x18/ValueType.sol",
       "solcConfig": {
@@ -2278,7 +2278,7 @@
       }
     },
     "lib/prb-math/src/ud60x18/Casting.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "5bfa70310a7346b2321ea37049642048",
       "sourceName": "lib/prb-math/src/ud60x18/Casting.sol",
       "solcConfig": {
@@ -2340,7 +2340,7 @@
       }
     },
     "lib/prb-math/src/ud60x18/Constants.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "4ac07c882079f6238a820190b13fb8be",
       "sourceName": "lib/prb-math/src/ud60x18/Constants.sol",
       "solcConfig": {
@@ -2402,7 +2402,7 @@
       }
     },
     "lib/prb-math/src/ud60x18/Conversions.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "d66b64f6d7579deb0b7ddfc7fda30226",
       "sourceName": "lib/prb-math/src/ud60x18/Conversions.sol",
       "solcConfig": {
@@ -2464,7 +2464,7 @@
       }
     },
     "lib/prb-math/src/ud60x18/Errors.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "9562146d665393fb9288cf4ca1477e44",
       "sourceName": "lib/prb-math/src/ud60x18/Errors.sol",
       "solcConfig": {
@@ -2526,7 +2526,7 @@
       }
     },
     "lib/prb-math/src/ud60x18/Helpers.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "273d7d6264ccc217492afccb918180f1",
       "sourceName": "lib/prb-math/src/ud60x18/Helpers.sol",
       "solcConfig": {
@@ -2588,7 +2588,7 @@
       }
     },
     "lib/prb-math/src/ud60x18/Math.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "2fe6f80d1bab9e6f117c9cd25e641b73",
       "sourceName": "lib/prb-math/src/ud60x18/Math.sol",
       "solcConfig": {
@@ -2650,7 +2650,7 @@
       }
     },
     "lib/prb-math/src/ud60x18/ValueType.sol": {
-      "lastModificationDate": 1679906865090,
+      "lastModificationDate": 1679674976021,
       "contentHash": "a6a244d5acf47d53a4e78e940c2c6283",
       "sourceName": "lib/prb-math/src/ud60x18/ValueType.sol",
       "solcConfig": {
@@ -2712,7 +2712,7 @@
       }
     },
     "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol": {
-      "lastModificationDate": 1679906904502,
+      "lastModificationDate": 1679907300071,
       "contentHash": "bafc6111ed61a7e2e32e9cb9d39d4878",
       "sourceName": "script/DeployGoerli_BlockscapeValidatorNFTGoerli.s.sol",
       "solcConfig": {
@@ -2775,13 +2775,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -2791,7 +2786,7 @@
       }
     },
     "script/DeployMainnet_BlockscapeValidatorNFT.s.sol": {
-      "lastModificationDate": 1679906904497,
+      "lastModificationDate": 1679907300073,
       "contentHash": "1583467c251192b5c2b0e489df587d41",
       "sourceName": "script/DeployMainnet_BlockscapeValidatorNFT.s.sol",
       "solcConfig": {
@@ -2854,13 +2849,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -2870,8 +2860,8 @@
       }
     },
     "src/BlockscapeETHStakeNFT.sol": {
-      "lastModificationDate": 1679906838940,
-      "contentHash": "e5de96eb8f12b71b037545012e4124ca",
+      "lastModificationDate": 1680257753781,
+      "contentHash": "6c932fd095ef3520085c530a6c9cf977",
       "sourceName": "src/BlockscapeETHStakeNFT.sol",
       "solcConfig": {
         "settings": {
@@ -2943,13 +2933,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -2959,8 +2944,8 @@
       }
     },
     "src/BlockscapeValidatorNFT.sol": {
-      "lastModificationDate": 1679906838941,
-      "contentHash": "54049b5191bf810c3fb05c67aaa90a56",
+      "lastModificationDate": 1680263519739,
+      "contentHash": "fda72a0ebbb8a3c5407463cedd9843ee",
       "sourceName": "src/BlockscapeValidatorNFT.sol",
       "solcConfig": {
         "settings": {
@@ -3009,13 +2994,8 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -3024,49 +3004,9 @@
         }
       }
     },
-    "src/lib/Calculations.sol": {
-      "lastModificationDate": 1679906838941,
-      "contentHash": "36cf531ce54f9cefa330c8b23f13671a",
-      "sourceName": "src/lib/Calculations.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "=0.8.16",
-      "artifacts": {
-        "Calculations": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "Calculations.sol/Calculations.json"
-        }
-      }
-    },
     "src/utils/BlockscapeAccess.sol": {
-      "lastModificationDate": 1679906838941,
-      "contentHash": "bd38e1f647a933527811c802a7acfa0b",
+      "lastModificationDate": 1680166067580,
+      "contentHash": "7c0468fb964354de403dc9b710b3dc91",
       "sourceName": "src/utils/BlockscapeAccess.sol",
       "solcConfig": {
         "settings": {
@@ -3113,8 +3053,8 @@
       }
     },
     "src/utils/BlockscapeErrors.sol": {
-      "lastModificationDate": 1679906838941,
-      "contentHash": "3c4fd5994dc5470148c87bacc7013773",
+      "lastModificationDate": 1680166672178,
+      "contentHash": "4bb2f3345020c5fc21686ebca2ec6d80",
       "sourceName": "src/utils/BlockscapeErrors.sol",
       "solcConfig": {
         "settings": {
@@ -3153,8 +3093,8 @@
       }
     },
     "src/utils/BlockscapeEvents.sol": {
-      "lastModificationDate": 1679906838941,
-      "contentHash": "5b9520a31a6437feba442dc0ae342e98",
+      "lastModificationDate": 1680166094755,
+      "contentHash": "ad2a3d1ed453515702ba8a4e320e3929",
       "sourceName": "src/utils/BlockscapeEvents.sol",
       "solcConfig": {
         "settings": {
@@ -3193,8 +3133,8 @@
       }
     },
     "src/utils/BlockscapeShared.sol": {
-      "lastModificationDate": 1679906838941,
-      "contentHash": "a12f4161b3c964fefccda48aec551aa4",
+      "lastModificationDate": 1680166941982,
+      "contentHash": "d74622c5bc7eb76bf2270eefd1a98961",
       "sourceName": "src/utils/BlockscapeShared.sol",
       "solcConfig": {
         "settings": {
@@ -3236,13 +3176,8 @@
         "src/utils/BlockscapeAccess.sol",
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
+        "src/utils/interfaces/IRocketStorage.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
@@ -3252,7 +3187,7 @@
       }
     },
     "src/utils/interfaces/IRocketMinipool.sol": {
-      "lastModificationDate": 1679906838942,
+      "lastModificationDate": 1679907300074,
       "contentHash": "2b32f75f76f0597d271e90abb5f3fcdb",
       "sourceName": "src/utils/interfaces/IRocketMinipool.sol",
       "solcConfig": {
@@ -3295,54 +3230,8 @@
         }
       }
     },
-    "src/utils/interfaces/IRocketMinipoolManager.sol": {
-      "lastModificationDate": 1679906838942,
-      "contentHash": "1293d669e32f8fd38c4a22ae92575fc3",
-      "sourceName": "src/utils/interfaces/IRocketMinipoolManager.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 10000000
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketStorage.sol",
-        "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol"
-      ],
-      "versionRequirement": "^0.8.16",
-      "artifacts": {
-        "RocketMinipoolManagerInterface": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "IRocketMinipoolManager.sol/RocketMinipoolManagerInterface.json"
-        }
-      }
-    },
     "src/utils/interfaces/IRocketNodeDeposit.sol": {
-      "lastModificationDate": 1679906838942,
+      "lastModificationDate": 1679907300074,
       "contentHash": "4cce73e176ca5e3039a2ca1563f7d2cb",
       "sourceName": "src/utils/interfaces/IRocketNodeDeposit.sol",
       "solcConfig": {
@@ -3384,7 +3273,7 @@
       }
     },
     "src/utils/interfaces/IRocketNodeStaking.sol": {
-      "lastModificationDate": 1679906838942,
+      "lastModificationDate": 1679907300074,
       "contentHash": "ea5edd938acbb06ce2009f462045004e",
       "sourceName": "src/utils/interfaces/IRocketNodeStaking.sol",
       "solcConfig": {
@@ -3424,7 +3313,7 @@
       }
     },
     "src/utils/interfaces/IRocketStorage.sol": {
-      "lastModificationDate": 1679906838942,
+      "lastModificationDate": 1679907300074,
       "contentHash": "a97df2b97d0a457f3e10d5042b97a3e5",
       "sourceName": "src/utils/interfaces/IRocketStorage.sol",
       "solcConfig": {
@@ -3464,7 +3353,7 @@
       }
     },
     "src/utils/types/MinipoolDeposit.sol": {
-      "lastModificationDate": 1679906838942,
+      "lastModificationDate": 1679907300074,
       "contentHash": "33e8691c6c4f63a3f0fc29655a668aee",
       "sourceName": "src/utils/types/MinipoolDeposit.sol",
       "solcConfig": {
@@ -3504,7 +3393,7 @@
       }
     },
     "src/utils/types/MinipoolDetails.sol": {
-      "lastModificationDate": 1679906838942,
+      "lastModificationDate": 1679907300074,
       "contentHash": "a1cc46c878b5e6ee2e2e6348802f440a",
       "sourceName": "src/utils/types/MinipoolDetails.sol",
       "solcConfig": {
@@ -3547,7 +3436,7 @@
       }
     },
     "src/utils/types/MinipoolStatus.sol": {
-      "lastModificationDate": 1679906838943,
+      "lastModificationDate": 1679907300074,
       "contentHash": "e72220e87bcccfb090468714bf1b059e",
       "sourceName": "src/utils/types/MinipoolStatus.sol",
       "solcConfig": {
@@ -3587,8 +3476,8 @@
       }
     },
     "test/BlockscapeETHStakeNFT.t.sol": {
-      "lastModificationDate": 1679906904496,
-      "contentHash": "e36c633393b6d24dce6a4cf5cc9ea620",
+      "lastModificationDate": 1680184819693,
+      "contentHash": "1e56d62b719cd4f5d06598bee60092a4",
       "sourceName": "test/BlockscapeETHStakeNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3676,15 +3565,11 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
-        "test/utils/BlockscapeETHStakeNFT_utils.sol",
+        "test/utils/BlockscapeETHStakeNFTTestHelper.sol",
         "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
@@ -3695,8 +3580,8 @@
       }
     },
     "test/BlockscapeValidatorNFT.t.sol": {
-      "lastModificationDate": 1679906904496,
-      "contentHash": "5418441b4d8f29053cb1ef8a0aeeb604",
+      "lastModificationDate": 1680267350399,
+      "contentHash": "deb195fb91e9684844a9153b597869d9",
       "sourceName": "test/BlockscapeValidatorNFT.t.sol",
       "solcConfig": {
         "settings": {
@@ -3761,14 +3646,10 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
         "test/utils/BlockscapeValidatorNFTTestHelper.sol",
         "test/utils/RocketPool.sol"
       ],
@@ -3779,10 +3660,10 @@
         }
       }
     },
-    "test/utils/BlockscapeETHStakeNFT_utils.sol": {
-      "lastModificationDate": 1679906904497,
-      "contentHash": "477942f5e81695b4cc9ceac3b361a596",
-      "sourceName": "test/utils/BlockscapeETHStakeNFT_utils.sol",
+    "test/utils/BlockscapeETHStakeNFTTestHelper.sol": {
+      "lastModificationDate": 1680257753785,
+      "contentHash": "9c614299e633533e346c6b5b6956fa98",
+      "sourceName": "test/utils/BlockscapeETHStakeNFTTestHelper.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -3869,26 +3750,22 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
         "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
       "artifacts": {
         "HelperContract": {
-          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeETHStakeNFT_utils.sol/HelperContract.json"
+          "0.8.16+commit.07a7930e.Darwin.appleclang": "BlockscapeETHStakeNFTTestHelper.sol/HelperContract.json"
         }
       }
     },
     "test/utils/BlockscapeValidatorNFTTestHelper.sol": {
-      "lastModificationDate": 1679906904497,
-      "contentHash": "a32641cf2c23222e29b91a9e809ce809",
+      "lastModificationDate": 1680259278403,
+      "contentHash": "714fcc508cdb793a5402930c4c402580",
       "sourceName": "test/utils/BlockscapeValidatorNFTTestHelper.sol",
       "solcConfig": {
         "settings": {
@@ -3953,14 +3830,10 @@
         "src/utils/BlockscapeErrors.sol",
         "src/utils/BlockscapeEvents.sol",
         "src/utils/BlockscapeShared.sol",
-        "src/utils/interfaces/IRocketMinipool.sol",
-        "src/utils/interfaces/IRocketMinipoolManager.sol",
         "src/utils/interfaces/IRocketNodeDeposit.sol",
         "src/utils/interfaces/IRocketNodeStaking.sol",
         "src/utils/interfaces/IRocketStorage.sol",
         "src/utils/types/MinipoolDeposit.sol",
-        "src/utils/types/MinipoolDetails.sol",
-        "src/utils/types/MinipoolStatus.sol",
         "test/utils/RocketPool.sol"
       ],
       "versionRequirement": "=0.8.16",
@@ -3971,8 +3844,8 @@
       }
     },
     "test/utils/RocketPool.sol": {
-      "lastModificationDate": 1679906904497,
-      "contentHash": "74942b872b033a79b48b38927796646c",
+      "lastModificationDate": 1680174560617,
+      "contentHash": "a25b5144d4addc0e37ae3cd113b770c1",
       "sourceName": "test/utils/RocketPool.sol",
       "solcConfig": {
         "settings": {
