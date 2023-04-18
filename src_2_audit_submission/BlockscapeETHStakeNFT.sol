@@ -24,11 +24,11 @@ contract BlockscapeETHStakeNFT is
     /// @notice tracks the ETH pool supply
     uint256 private poolSupply;
 
-    /// @notice constant used for blockexplorers to display the name of the token
+    /// @notice constant used for blockexplorers to display the name of the token 
     /// (as to be lower case as per blockexplorer standards)
     string public constant name = "Blockscape ETH Stake NFTs";
 
-    /// @notice constant used for blockexplorers to display the symbol of the token
+    /// @notice constant used for blockexplorers to display the symbol of the token 
     /// (as to be lower case as per blockexplorer standards)
     string public constant symbol = "BSS";
 
@@ -68,7 +68,7 @@ contract BlockscapeETHStakeNFT is
      * @dev if contract balance is greater than 8 ETH, the ETH is sent to the rocketpool node
      */
     function depositStakeNFT() external payable nonReentrant {
-        // if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
+        if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
 
         if (!vaultOpen) revert ErrorVaultState(vaultOpen);
 
@@ -118,21 +118,7 @@ contract BlockscapeETHStakeNFT is
         which is fixed to 0.5% after one year.
      */
     function prepareWithdrawalProcess(uint256 _tokenID) external override {
-        if (tokenIDToTimestamp[_tokenID] > 0)
-            revert AlreadyPreparingForWithdrawal();
-
-        if (balanceOf(msg.sender, _tokenID) == 0)
-            revert YouDontOwnThisNft(_tokenID);
-
-        if (tokenIDToTimestamp[_tokenID] != 0)
-            revert AlreadyPreparingForWithdrawal();
-
-        uint256 elapsedTime = block.timestamp -
-            tokenIDtoMetadata[_tokenID].stakedTimestamp;
-
-        if (elapsedTime < 3 days) {
-            revert PrepareWithdrawalTimelockNotReached();
-        }
+        if (tokenIDToTimestamp[_tokenID] > 0) revert AlreadyPreparingForWithdrawal();
 
         tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);
 
@@ -154,19 +140,10 @@ contract BlockscapeETHStakeNFT is
      *  There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.
      */
     function withdrawFunds(uint256 _tokenID) external override nonReentrant {
-        if (balanceOf(msg.sender, _tokenID) == 0)
-            revert YouDontOwnThisNft(_tokenID);
-
-        if (tokenIDToTimestamp[_tokenID] == 0)
-            revert NotPreparingForWithdrawal();
-
-        uint256 elapsedTime = block.timestamp - tokenIDToTimestamp[_tokenID];
-
-        if (elapsedTime < timelockWithdraw) {
+        if (tokenIDToTimestamp[_tokenID] + timelockWithdraw >= block.timestamp)
             revert WithdrawalTimelockNotReached(
                 tokenIDToTimestamp[_tokenID] + timelockWithdraw
             );
-        }
 
         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, "");
 
@@ -175,8 +152,6 @@ contract BlockscapeETHStakeNFT is
             tokenIDtoMetadata[_tokenID].stakedETH +
                 tokenIDToExitReward[_tokenID]
         );
-
-        poolSupply -= tokenIDtoMetadata[_tokenID].stakedETH;
         tokenIDToTimestamp[_tokenID] = 0;
     }
 

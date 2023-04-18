@@ -189,12 +189,12 @@
 <a name="118"><span class="lineNum">     118 </span>                :            :         which is fixed to 0.5% after one year.</a>
 <a name="119"><span class="lineNum">     119 </span>                :            :      */</a>
 <a name="120"><span class="lineNum">     120 </span>                :            :     function prepareWithdrawalProcess(uint256 _tokenID) external override {</a>
-<a name="121"><span class="lineNum">     121 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          4 :         if (senderToTimestamp[msg.sender] &gt; 0) revert AlreadyPreparingForWithdrawal();</span></a>
+<a name="121"><span class="lineNum">     121 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          4 :         if (tokenIDToTimestamp[_tokenID] &gt; 0) revert AlreadyPreparingForWithdrawal();</span></a>
 <a name="122"><span class="lineNum">     122 </span>                :            : </a>
 <a name="123"><span class="lineNum">     123 </span>                :<span class="lineCov">          3 :         tokenIDToExitReward[_tokenID] = calcRewards(_tokenID);</span></a>
 <a name="124"><span class="lineNum">     124 </span>                :            : </a>
 <a name="125"><span class="lineNum">     125 </span>        [<span class="branchCov" title="Branch 0 was taken 3 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          3 :         if (balanceOf(msg.sender, _tokenID) &gt;= 1) {</span></a>
-<a name="126"><span class="lineNum">     126 </span>                :<span class="lineCov">          3 :             senderToTimestamp[msg.sender] = block.timestamp;</span></a>
+<a name="126"><span class="lineNum">     126 </span>                :<span class="lineCov">          3 :             tokenIDToTimestamp[_tokenID] = block.timestamp;</span></a>
 <a name="127"><span class="lineNum">     127 </span>                :<span class="lineCov">          3 :             emit UserRequestedWithdrawalStake(</span></a>
 <a name="128"><span class="lineNum">     128 </span>                :            :                 _tokenID,</a>
 <a name="129"><span class="lineNum">     129 </span>                :            :                 msg.sender,</a>
@@ -211,9 +211,9 @@
 <a name="140"><span class="lineNum">     140 </span>                :            :      *  There off-chain calculated rewards cannot be lower than the on-chain esimated rewards.</a>
 <a name="141"><span class="lineNum">     141 </span>                :            :      */</a>
 <a name="142"><span class="lineNum">     142 </span>                :            :     function withdrawFunds(uint256 _tokenID) external override nonReentrant {</a>
-<a name="143"><span class="lineNum">     143 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          5 :         if (senderToTimestamp[msg.sender] + timelockWithdraw &gt;= block.timestamp)</span></a>
+<a name="143"><span class="lineNum">     143 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 4 times"> + </span>]:<span class="lineCov">          5 :         if (tokenIDToTimestamp[_tokenID] + timelockWithdraw &gt;= block.timestamp)</span></a>
 <a name="144"><span class="lineNum">     144 </span>                :<span class="lineCov">          1 :             revert WithdrawalTimelockNotReached(</span></a>
-<a name="145"><span class="lineNum">     145 </span>                :            :                 senderToTimestamp[msg.sender] + timelockWithdraw</a>
+<a name="145"><span class="lineNum">     145 </span>                :            :                 tokenIDToTimestamp[_tokenID] + timelockWithdraw</a>
 <a name="146"><span class="lineNum">     146 </span>                :            :             );</a>
 <a name="147"><span class="lineNum">     147 </span>                :            : </a>
 <a name="148"><span class="lineNum">     148 </span>                :<span class="lineCov">          4 :         safeTransferFrom(msg.sender, blockscapeRocketPoolNode, _tokenID, 1, &quot;&quot;);</span></a>
@@ -223,7 +223,7 @@
 <a name="152"><span class="lineNum">     152 </span>                :            :             tokenIDtoMetadata[_tokenID].stakedETH +</a>
 <a name="153"><span class="lineNum">     153 </span>                :            :                 tokenIDToExitReward[_tokenID]</a>
 <a name="154"><span class="lineNum">     154 </span>                :            :         );</a>
-<a name="155"><span class="lineNum">     155 </span>                :<span class="lineCov">          3 :         senderToTimestamp[msg.sender] = 0;</span></a>
+<a name="155"><span class="lineNum">     155 </span>                :<span class="lineCov">          3 :         tokenIDToTimestamp[_tokenID] = 0;</span></a>
 <a name="156"><span class="lineNum">     156 </span>                :            :     }</a>
 <a name="157"><span class="lineNum">     157 </span>                :            : </a>
 <a name="158"><span class="lineNum">     158 </span>                :            :     /**</a>

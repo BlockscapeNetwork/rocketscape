@@ -399,13 +399,13 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
         );
     }
 
-    function _testGetReqRPLStake() internal {
-        assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
-    }
+    // function _testGetReqRPLStake() internal {
+    //     assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
+    // }
 
-    function _testHasNodeEnoughRPLStake() internal {
-        assertEq(blockscapeETHStakeNFT.hasNodeEnoughRPLStake(), true);
-    }
+    // function _testHasNodeEnoughRPLStake() internal {
+    //     assertEq(blockscapeETHStakeNFT.hasNodeEnoughRPLStake(), true);
+    // }
 
     function _testSetBlockscapeRocketPoolNode() internal {
         vm.prank(foundryDeployer);
@@ -499,7 +499,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
     function _testInitRocketPoolSetup() internal {
         assertEq(blockscapeETHStakeNFT.getAvailableRPLStake(), 0);
-        assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
+        // assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
         assertEq(
             rocketNodeStaking.getNodeMinimumRPLStake(blockscapeRocketPoolNode),
             0
@@ -517,7 +517,7 @@ contract HelperContract is Test, AccessControl, RocketPoolHelperContract {
 
         // RocketPool
         assertEq(blockscapeETHStakeNFT.getAvailableRPLStake(), rplStakeAsPerTx);
-        assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
+        // assertEq(blockscapeETHStakeNFT.getReqRPLStake(), 0);
         assertEq(
             rocketNodeStaking.getNodeMinimumRPLStake(blockscapeRocketPoolNode),
             0

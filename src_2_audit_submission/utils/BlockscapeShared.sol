@@ -29,7 +29,7 @@ abstract contract BlockscapeShared is
 
     /// @notice Blockscape Rocket Pool Node Address, public for transparency
     address payable public blockscapeRocketPoolNode =
-        payable(0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982); //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5; // mainnet: 0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982
+        payable(0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5); //0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5; // mainnet: 0xF6132f532ABc3902EA2DcaE7f8D7FCCdF7Ba4982
 
     /** 
         @notice initial tokenID
@@ -43,8 +43,8 @@ abstract contract BlockscapeShared is
     /// @notice current initial withdraw fee, public for transparency
     uint256 public initWithdrawFee = 20 * 1e18;
 
-    /// @dev Mapping withdrawal tokenID to timestamp of request to keep record, public for use in UI
-    mapping(uint256 => uint256) public tokenIDToTimestamp;
+    /// @dev Mapping withdrawal requester to timestamp of request to keep record, public for use in UI
+    mapping(address => uint256) public senderToTimestamp;
 
     /// @dev Metadata struct
     struct Metadata {
@@ -60,7 +60,7 @@ abstract contract BlockscapeShared is
 
     /// @dev RocketStorageInterface of rocketpool
     RocketStorageInterface internal constant ROCKET_STORAGE =
-        RocketStorageInterface(0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46); // mainnet: 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46 // goerli :0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3
+        RocketStorageInterface(0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3); // mainnet: 0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46 // goerli :0xd8Cd47263414aFEca62d6e2a3917d6600abDceB3
 
     /**
         @notice show the currently available RPL stake which is needed to create 
@@ -99,50 +99,50 @@ abstract contract BlockscapeShared is
             );
     }
 
-    // /**
-    //     @notice calculates the required RPL needed to stake according to 
-    //     poolsize
-    //     @dev if the minipoollimit is `0` then the required stake is also `0`!
-    //     @return the RPLs needed
-    //  */
-    // function getReqRPLStake() public view returns (uint256) {
-    //     RocketNodeStakingInterface rocketNodeStaking = getLatestRocketNodeStaking();
-    //     uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
-    //         blockscapeRocketPoolNode
-    //     );
+    /**
+        @notice calculates the required RPL needed to stake according to 
+        poolsize
+        @dev if the minipoollimit is `0` then the required stake is also `0`!
+        @return the RPLs needed
+     */
+    function getReqRPLStake() public view returns (uint256) {
+        RocketNodeStakingInterface rocketNodeStaking = getLatestRocketNodeStaking();
+        uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
+            blockscapeRocketPoolNode
+        );
 
-    //     uint256 minimumRPLStake = rocketNodeStaking.getNodeMinimumRPLStake(
-    //         blockscapeRocketPoolNode
-    //     );
+        uint256 minimumRPLStake = rocketNodeStaking.getNodeMinimumRPLStake(
+            blockscapeRocketPoolNode
+        );
 
-    //     if (minipoolLimit == 0) {
-    //         return 0;
-    //     }
+        if (minipoolLimit == 0) {
+            return 0;
+        }
 
-    //     return (minimumRPLStake / minipoolLimit);
-    // }
+        return (minimumRPLStake / minipoolLimit);
+    }
 
-    // /**
-    //  * @notice has the node enough RPL to stake another minipool
-    //  * @return true if the node has enough RPL to stake another minipool
-    //  */
+    /**
+     * @notice has the node enough RPL to stake another minipool
+     * @return true if the node has enough RPL to stake another minipool
+     */
 
-    // function hasNodeEnoughRPLStake() public view returns (bool) {
-    //     RocketNodeStakingInterface rocketNodeStaking = getLatestRocketNodeStaking();
-    //     uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
-    //         blockscapeRocketPoolNode
-    //     );
-    //     if (minipoolLimit == 0) {
-    //         return false;
-    //     }
+    function hasNodeEnoughRPLStake() public view returns (bool) {
+        RocketNodeStakingInterface rocketNodeStaking = getLatestRocketNodeStaking();
+        uint256 minipoolLimit = rocketNodeStaking.getNodeMinipoolLimit(
+            blockscapeRocketPoolNode
+        );
+        if (minipoolLimit == 0) {
+            return false;
+        }
 
-    //     uint256 nodeRPLStake = rocketNodeStaking.getNodeRPLStake(
-    //         blockscapeRocketPoolNode
-    //     );
-    //     uint256 minimumReqRPL = getReqRPLStake();
+        uint256 nodeRPLStake = rocketNodeStaking.getNodeRPLStake(
+            blockscapeRocketPoolNode
+        );
+        uint256 minimumReqRPL = getReqRPLStake();
        
-    //     return (nodeRPLStake >= minimumReqRPL);
-    // }
+        return (nodeRPLStake >= minimumReqRPL);
+    }
 
     /**
         @notice gets used if blockscape changes the address of their rp node
@@ -203,8 +203,8 @@ abstract contract BlockscapeShared is
      * @dev is triggered when the vault can be staked at rocketpool
      */
     function openVault() external onlyRole(EMERGENCY_ROLE) {
-        // if (!BlockscapeShared.hasNodeEnoughRPLStake())
-        //     revert NotEnoughRPLStake();
+        if (!BlockscapeShared.hasNodeEnoughRPLStake())
+            revert NotEnoughRPLStake();
 
         if (vaultOpen) revert ErrorVaultState(vaultOpen);
 
@@ -272,9 +272,4 @@ abstract contract BlockscapeShared is
         uint256 _tokenID,
         address _user
     ) public view virtual returns (uint256 _amount) {}
-
-    /// @notice needed to change details of the collection on opensea
-    function owner() public view returns (address _owner) {
-        return blockscapeRocketPoolNode;
-    }
 }

@@ -208,10 +208,10 @@
 <a name="137"><span class="lineNum">     137 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 3 times"> + </span>]:<span class="lineCov">          5 :         if (balanceOf(msg.sender, _tokenID) == 0)</span></a>
 <a name="138"><span class="lineNum">     138 </span>                :<span class="lineCov">          2 :             revert YouDontOwnThisNft(_tokenID);</span></a>
 <a name="139"><span class="lineNum">     139 </span>                :            : </a>
-<a name="140"><span class="lineNum">     140 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          3 :         if (senderToTimestamp[msg.sender] != 0)</span></a>
+<a name="140"><span class="lineNum">     140 </span>        [<span class="branchCov" title="Branch 0 was taken 1 time"> + </span><span class="branchCov" title="Branch 1 was taken 2 times"> + </span>]:<span class="lineCov">          3 :         if (tokenIDToTimestamp[_tokenID] != 0)</span></a>
 <a name="141"><span class="lineNum">     141 </span>                :<span class="lineCov">          1 :             revert AlreadyPreparingForWithdrawal();</span></a>
 <a name="142"><span class="lineNum">     142 </span>                :            : </a>
-<a name="143"><span class="lineNum">     143 </span>                :<span class="lineCov">          2 :         senderToTimestamp[msg.sender] = block.timestamp;</span></a>
+<a name="143"><span class="lineNum">     143 </span>                :<span class="lineCov">          2 :         tokenIDToTimestamp[_tokenID] = block.timestamp;</span></a>
 <a name="144"><span class="lineNum">     144 </span>                :            : </a>
 <a name="145"><span class="lineNum">     145 </span>                :<span class="lineCov">          2 :         uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);</span></a>
 <a name="146"><span class="lineNum">     146 </span>                :<span class="lineCov">          2 :         uint256 rewards = estRewardsNoMEV(_tokenID);</span></a>
@@ -232,10 +232,10 @@
 <a name="161"><span class="lineNum">     161 </span>                :            :      */</a>
 <a name="162"><span class="lineNum">     162 </span>                :            :     function withdrawFunds(uint256 _tokenID) external override nonReentrant {</a>
 <a name="163"><span class="lineNum">     163 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:            :         if (</a>
-<a name="164"><span class="lineNum">     164 </span>                :<span class="lineCov">          7 :             senderToTimestamp[msg.sender] + timelockWithdraw &gt; block.timestamp</span></a>
+<a name="164"><span class="lineNum">     164 </span>                :<span class="lineCov">          7 :             tokenIDToTimestamp[_tokenID] + timelockWithdraw &gt; block.timestamp</span></a>
 <a name="165"><span class="lineNum">     165 </span>                :            :         ) {</a>
 <a name="166"><span class="lineNum">     166 </span>                :<span class="lineCov">          2 :             revert WithdrawalTimelockNotReached(</span></a>
-<a name="167"><span class="lineNum">     167 </span>                :            :                 senderToTimestamp[msg.sender] + timelockWithdraw</a>
+<a name="167"><span class="lineNum">     167 </span>                :            :                 tokenIDToTimestamp[_tokenID] + timelockWithdraw</a>
 <a name="168"><span class="lineNum">     168 </span>                :            :             );</a>
 <a name="169"><span class="lineNum">     169 </span>                :            :         }</a>
 <a name="170"><span class="lineNum">     170 </span>        [<span class="branchCov" title="Branch 0 was taken 2 times"> + </span><span class="branchCov" title="Branch 1 was taken 5 times"> + </span>]:<span class="lineCov">          5 :         if (tokenIDToExitReward[_tokenID] &lt; estRewardsNoMEV(_tokenID)) {</span></a>
@@ -249,7 +249,7 @@
 <a name="178"><span class="lineNum">     178 </span>                :            :             tokenIDtoMetadata[_tokenID].stakedETH +</a>
 <a name="179"><span class="lineNum">     179 </span>                :            :                 tokenIDToExitReward[_tokenID]</a>
 <a name="180"><span class="lineNum">     180 </span>                :            :         );</a>
-<a name="181"><span class="lineNum">     181 </span>                :<span class="lineCov">          2 :         senderToTimestamp[msg.sender] = 0;</span></a>
+<a name="181"><span class="lineNum">     181 </span>                :<span class="lineCov">          2 :         tokenIDToTimestamp[_tokenID] = 0;</span></a>
 <a name="182"><span class="lineNum">     182 </span>                :            :     }</a>
 <a name="183"><span class="lineNum">     183 </span>                :            : </a>
 <a name="184"><span class="lineNum">     184 </span>                :            :     /**</a>

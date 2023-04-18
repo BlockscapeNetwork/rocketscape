@@ -20,12 +20,6 @@ abstract contract BlockscapeErrors {
     /// @dev The withdrawal has a timelock which is not yet reached
     error WithdrawalTimelockNotReached(uint256 unlockTimestamp);
 
-    /// @dev The prepare withdrawal has a timelock which is not yet reached
-    error PrepareWithdrawalTimelockNotReached();
-
-    /// @dev The NFT is not preparing for withdrawal
-    error NotPreparingForWithdrawal();
-
     /// @dev user does not own the NFT
     error YouDontOwnThisNft(uint256 _tokenID);
 

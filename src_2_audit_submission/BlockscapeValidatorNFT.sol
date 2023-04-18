@@ -37,7 +37,7 @@ contract BlockscapeValidatorNFT is
     string public constant symbol = "BSV";
 
     /// @notice Current Rocketpool Minipool Limit
-    uint256 private curETHlimit = 8 ether;
+    uint256 private curETHlimit = 16 ether;
 
     /// @dev mapping of tokenID to validator minipool address
     mapping(uint256 => address) private tokenIDtoValidator;
@@ -51,13 +51,13 @@ contract BlockscapeValidatorNFT is
     constructor()
         ERC1155(
             "https://ipfs.blockscape.network/ipns/"
-            "k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/" //! TODO: change to correct address before deployment!
+            "k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/"
             "{id}.json"
         )
         BlockscapeAccess(
-            0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84, //! TODO: change to correct address before deployment!
-            blockscapeRocketPoolNode, //! TODO: change to correct address before deployment!
-            0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 //! TODO: change to correct address before deployment!
+            0xB467959ADFc3fA8d99470eC12F4c95aa4D9b59e5,
+            blockscapeRocketPoolNode,
+            msg.sender //! TODO: change to correct address before deployment!
         )
     {}
 
@@ -76,6 +76,8 @@ contract BlockscapeValidatorNFT is
      * @dev enought RPL must be staked in the rocketpool by the node
      * */
     function depositValidatorNFT() external payable {
+        if (!hasNodeEnoughRPLStake()) revert NotEnoughRPLStake();
+
         if (!isVaultOpen()) revert ErrorVaultState(isVaultOpen());
 
         if (curETHlimit != msg.value) revert IncorrectDepositValueSent();
@@ -138,13 +140,6 @@ contract BlockscapeValidatorNFT is
         if (tokenIDToTimestamp[_tokenID] != 0)
             revert AlreadyPreparingForWithdrawal();
 
-        uint256 elapsedTime = block.timestamp -
-            tokenIDtoMetadata[_tokenID].stakedTimestamp;
-
-        if (elapsedTime < 3 days) {
-            revert PrepareWithdrawalTimelockNotReached();
-        }
-
         tokenIDToTimestamp[_tokenID] = block.timestamp;
 
         uint256 curWithdrawFee = calcWithdrawFee(_tokenID, msg.sender);
@@ -165,15 +160,9 @@ contract BlockscapeValidatorNFT is
      *  @dev There off-chain calculated rewards cannot be lower than the on-chain estimated rewards.
      */
     function withdrawFunds(uint256 _tokenID) external override nonReentrant {
-        if (balanceOf(msg.sender, _tokenID) == 0)
-            revert YouDontOwnThisNft(_tokenID);
-
-        if (tokenIDToTimestamp[_tokenID] == 0)
-            revert NotPreparingForWithdrawal();
-
-        uint256 elapsedTime = block.timestamp - tokenIDToTimestamp[_tokenID];
-
-        if (elapsedTime < timelockWithdraw) {
+        if (
+            tokenIDToTimestamp[_tokenID] + timelockWithdraw > block.timestamp
+        ) {
             revert WithdrawalTimelockNotReached(
                 tokenIDToTimestamp[_tokenID] + timelockWithdraw
             );
@@ -214,10 +203,10 @@ contract BlockscapeValidatorNFT is
         @dev this function is only callable by our multisig wallet with ADJ_CONFIG_ROLE 
         @dev it will only allow to set the limit to 8 ETH
     */
-    // function changeETHLimit8() external onlyRole(ADJ_CONFIG_ROLE) {
-    //     curETHlimit = 8 ether;
-    //     emit ETHLimitChanged(8 ether);
-    // }
+    function changeETHLimit8() external onlyRole(ADJ_CONFIG_ROLE) {
+        curETHlimit = 8 ether;
+        emit ETHLimitChanged(8 ether);
+    }
 
     /**
      * @dev this function is only callable by our multisig wallet with ADJ_CONFIG_ROLE
@@ -287,8 +276,16 @@ contract BlockscapeValidatorNFT is
         @return rewards in wei minus the withdraw fee
      */
     function estRewardsNoMEV(uint256 _tokenID) internal view returns (uint256) {
-        uint256 balance = (address(tokenIDtoValidator[_tokenID]).balance / 4);
-        uint256 balanceComm = (rpComm8 * (balance * 3)) / 100;
+        uint256 balance;
+        uint256 balanceComm;
+
+        if (curETHlimit >= 16 ether) {
+            balance = (address(tokenIDtoValidator[_tokenID]).balance / 2);
+            balanceComm = (15 * balance) / 100;
+        } else {
+            balance = (address(tokenIDtoValidator[_tokenID]).balance / 4);
+            balanceComm = (rpComm8 * (balance * 3)) / 100;
+        }
 
         uint256 wfee = ((calcWithdrawFee(_tokenID, msg.sender) * balanceComm) /
             1e19);
@@ -312,7 +309,7 @@ contract BlockscapeValidatorNFT is
      */
     function contractURI() external pure returns (string memory) {
         return
-            "https://ipfs.blockscape.network/ipfs/QmP6bkWQT2Y2zdyB395nLTmqurV1SBGt8qK64hTBkbYr3W";
+            "https://ipfs.blockscape.network/ipfs/QmUr8P96kNuFjcZb2WBjBP4e1fiGGXwRGChfTi42pnujY7";
     }
 
     /**

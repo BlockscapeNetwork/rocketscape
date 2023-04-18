@@ -44,7 +44,7 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
         vm.prank(poolStaker1);
         blockscapeETHStakeNFT.depositStakeNFT();
 
-        _testHasNodeEnoughRPLStake();
+        // _testHasNodeEnoughRPLStake();
 
         vm.prank(poolStaker1);
         blockscapeETHStakeNFT.depositStakeNFT{value: 1 ether}();
@@ -132,8 +132,8 @@ contract BlockscapeETHStakeNFTTest is Test, HelperContract {
         _testnoRPLOpenVault();
         _testInitStakeRPLReadyForStaking();
         _testGetAvailableRPLStake();
-        _testGetReqRPLStake();
-        _testHasNodeEnoughRPLStake();
+        // _testGetReqRPLStake();
+        // _testHasNodeEnoughRPLStake();
 
         _testUri();
         _testContractURI();

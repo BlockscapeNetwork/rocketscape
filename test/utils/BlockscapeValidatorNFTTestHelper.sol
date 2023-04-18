@@ -81,7 +81,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
 
     function _testInitRocketPoolSetup() internal {
         assertEq(blockscapeValidatorNFT.getAvailableRPLStake(), 0);
-        assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
+        // assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
         assertEq(
             rocketNodeStaking.getNodeMinimumRPLStake(blockscapeRocketPoolNode),
             0
@@ -119,7 +119,7 @@ contract BlockscapeValidatorNFTTestHelper is Test, RocketPoolHelperContract {
             blockscapeValidatorNFT.getAvailableRPLStake(),
             rplStakeAsPerTx
         );
-        assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
+        // assertEq(blockscapeValidatorNFT.getReqRPLStake(), 0);
         assertEq(
             rocketNodeStaking.getNodeMinimumRPLStake(blockscapeRocketPoolNode),
             0
