@@ -50,14 +50,14 @@ contract BlockscapeValidatorNFT is
      */
     constructor()
         ERC1155(
-            "https://ipfs.blockscape.network/ipns/"
-            "k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/" //! TODO: change to correct address before deployment!
+            "https://ipfs.apps.blockscape.network/ipns/"
+            "k51qzi5uqu5dhnfa4f97n7u9gq678o4dg3nfj2bg4u2yh1yzm9izzw3qdg2m0h/" // mainnet
             "{id}.json"
         )
         BlockscapeAccess(
-            0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84, //! TODO: change to correct address before deployment!
-            blockscapeRocketPoolNode, //! TODO: change to correct address before deployment!
-            0x5B38Da6a701c568545dCfcB03FcB875f56beddC4 //! TODO: change to correct address before deployment!
+            0xddec97be14198D8307332EbCd6421b7f08D8E1f6, // Blockscape ADJ Config 
+            blockscapeRocketPoolNode, // Blockscape Rocketpool Node Mainnet
+            0x97E18544e156724E4076945F10c288ecBBC94e54 //Blockscape Multi Sig Wallet
         )
     {}
 
@@ -208,16 +208,6 @@ contract BlockscapeValidatorNFT is
         tokenIDToExitReward[_tokenID] = _calcReward;
     }
 
-    /**
-        @notice the limit might change in the future if rocketpool supports 
-        smaller pool sizes (RPIP-8)
-        @dev this function is only callable by our multisig wallet with ADJ_CONFIG_ROLE 
-        @dev it will only allow to set the limit to 8 ETH
-    */
-    // function changeETHLimit8() external onlyRole(ADJ_CONFIG_ROLE) {
-    //     curETHlimit = 8 ether;
-    //     emit ETHLimitChanged(8 ether);
-    // }
 
     /**
      * @dev this function is only callable by our multisig wallet with ADJ_CONFIG_ROLE
@@ -312,7 +302,7 @@ contract BlockscapeValidatorNFT is
      */
     function contractURI() external pure returns (string memory) {
         return
-            "https://ipfs.blockscape.network/ipfs/QmP6bkWQT2Y2zdyB395nLTmqurV1SBGt8qK64hTBkbYr3W";
+            "https://ipfs.apps.blockscape.network/ipfs/QmNzkCwFEwc4pcEYJihPzxCbjnnx1FNUDbgpmb7tpdi3ov";
     }
 
     /**
@@ -325,7 +315,7 @@ contract BlockscapeValidatorNFT is
     ) public pure override returns (string memory) {
         return
             string.concat(
-                "https://ipfs.blockscape.network/ipns/k51qzi5uqu5di5eo5fzr1zypdsz0zct39zpct9s4wesjustul1caeofak3zoej/",
+                "https://ipfs.apps.blockscape.network/ipns/k51qzi5uqu5dhnfa4f97n7u9gq678o4dg3nfj2bg4u2yh1yzm9izzw3qdg2m0h/",
                 Strings.toString(_tokenID),
                 ".json"
             );

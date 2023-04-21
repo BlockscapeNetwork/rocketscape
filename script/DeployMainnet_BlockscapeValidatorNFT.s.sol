@@ -15,8 +15,6 @@ contract EthAllocatorScript is Script {
 
         vm.startBroadcast(deployerPrivateKey);
         blockscapeValidatorNFT = new BlockscapeValidatorNFT();
-        //  blockscapeValidatorNFT.transferOwnership(0xf0d22Db91DE516b44e5c976F71E394c9ac97e645);
-        //blockscapeValidatorNFT.depositValidatorNFT{value: 0.001 ether}();
         vm.stopBroadcast();
     }
 }
